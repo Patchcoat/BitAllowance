@@ -3,12 +3,14 @@ package com.bitallowance;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,12 +20,11 @@ public class RemoteDatabaseTest extends AppCompatActivity {
     private Socket socket = null;
     private DataInputStream input = null;
     private DataOutputStream out = null;
+    private static final int SERVERPORT = 3490;
+    private static final String SERVER_IP = "107.174.13.151";
 
-    String connect(String address, int port) {
+    public void Connect(View view) {
         try {
-            socket = new Socket(address, port);
-            Log.d(tag, "Connected");
-
             input = new DataInputStream(System.in);
             out = new DataOutputStream(socket.getOutputStream());
         } catch (UnknownHostException u) {
@@ -34,7 +35,9 @@ public class RemoteDatabaseTest extends AppCompatActivity {
 
         String line = "";
         if (input == null) {
-            return "ERROR could not connect";
+            TextView textView = findViewById(R.id.textView);
+            textView.setText("Error connecting");
+            return;
         }
         while (!line.equals("Over")) {
             try {
@@ -52,7 +55,8 @@ public class RemoteDatabaseTest extends AppCompatActivity {
         } catch (IOException i) {
             Log.d(tag, i.toString());
         }
-        return line;
+        TextView textView = findViewById(R.id.textView);
+        textView.setText(line);
     }
 
     @Override
@@ -60,8 +64,20 @@ public class RemoteDatabaseTest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_database_test);
 
-        String line = connect( "107.174.13.151", 3490);
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(line);
+        new Thread(new ClientThread()).start();
+    }
+
+    class ClientThread implements Runnable {
+        @Override
+        public void run() {
+            try {
+                InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+                socket = new Socket(serverAddr, SERVERPORT);
+            } catch (UnknownHostException el) {
+                el.printStackTrace();
+            } catch (IOException el) {
+                el.printStackTrace();
+            }
+        }
     }
 }
