@@ -42,6 +42,9 @@ public class RemoteDatabaseTest extends AppCompatActivity {
         setContentView(R.layout.activity_remote_database_test);
     }
 
+    /**
+     * The thread for the client server interaction
+     */
     class ClientThread implements Runnable {
         @Override
         public void run() {
