@@ -71,6 +71,6 @@ public class RewardList {
     }
 
     public void openEditReward() {
-        
+
     }
 }
