@@ -16,7 +16,7 @@ public class Entity {
     private LocalDate birthday;
     private String email;
     private LocalDateTime timeSinceLastLoad;
-    private List<> transations;
+    private List<Transaction> transations;
 
     // Constructors
     public Entity() {
@@ -48,7 +48,7 @@ public class Entity {
         return  this.timeSinceLastLoad;
     }
 
-    public List<> getTransations () {
+    public List<Transaction> getTransations () {
         return this.transations;
     }
 
@@ -77,7 +77,7 @@ public class Entity {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List transations) {
+    public void setTransations(List<Transaction> transations) {
         this.transations = transations;
     }
 
@@ -120,5 +120,4 @@ public class Entity {
     public void updateEntity() {
 
     }
-
 }

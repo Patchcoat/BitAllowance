@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Bit Allowence</string>
+    <string name="usernameInputMain">Enter Username/Email</string>
+    <string name="passwordInputMain">Enter Password</string>
+    <string name="loginButton">Login</string>
+    <string name="recoverUsernamePassword">Forgot your username or password</string>
+    <string name="createAccount">Create an Account</string>
+    <string name="createFirstName">First Name</string>
+    <string name="createLastName">Last Name</string>
+    <string name="createUsername">Enter in your username</string>
+    <string name="createEmail">Enter your email</string>
+    <string name="createPasswordInitial">Enter Password</string>
+    <string name="createPasswordReEnter">Re-Enter Password</string>
+    <string name="submitNewReserveAccount">Submit</string>
 </resources>
