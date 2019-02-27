@@ -7,7 +7,7 @@ public class Reward extends Transaction {
 
     //All of these are identical to Task. Shouldn't we put them in transaction?
 
-    String _name; //Shouldn't this be part of Transaction?
+    String _name;
     Date _expirationDate;
     Date _coolDown;
     List<Boolean> _active;
