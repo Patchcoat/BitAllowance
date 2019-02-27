@@ -1,10 +1,13 @@
 package com.bitallowance;
 
 import android.os.AsyncTask;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -51,19 +55,17 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
         // generate the public and private key pair
         try {
             // prepare the key generator
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA", "SUN");
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
 
             // generate some secure randomness
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
-            keyGen.initialize(1024, random);
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+            keyGen.initialize(2048, random);
 
             // generate the key pair
             KeyPair pair = keyGen.generateKeyPair();
             _priv = pair.getPrivate();
             _pub = pair.getPublic();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchProviderException e) {
             e.printStackTrace();
         }
     }
@@ -103,14 +105,25 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             _out.flush();
 
             // read the public key into a byte array
-            byte[] serverKeyBytes = {};
-            _in.read(serverKeyBytes);
+            Log.d("Create Reserve", "accepting new");
+            ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
+            byte[] serverKeyBytes = new byte[426];
+            int read = _in.read(serverKeyBytes);
+            String serverPEMKey = new String(serverKeyBytes);
+            Log.d("Read", Integer.toString(read));
+            Log.d("Create Reserve", serverPEMKey);
+            serverPEMKey = serverPEMKey.replaceAll("\\n","");
+            serverPEMKey = serverPEMKey.replace("-----BEGIN RSA PUBLIC KEY-----", "");
+            serverPEMKey = serverPEMKey.replace("-----END RSA PUBLIC KEY-----", "");
+            Log.d("Create Reserve", serverPEMKey);
+
             // encode the data into a usable format
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(serverKeyBytes);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(serverPEMKey, Base64.DEFAULT));
             // rev up the RSA algorithm for generating the public key
             KeyFactory fact = KeyFactory.getInstance("RSA");
             // generate the public key from the encoded data
-            PublicKey serverPublic = fact.generatePublic(spec);
+            RSAPublicKey serverPublic = (RSAPublicKey) fact.generatePublic(spec);
+            Log.d("Create Reserve", serverPublic.toString());
 
             // rev up the cipher
             Cipher encryptCipher = Cipher.getInstance("RSA");
@@ -118,9 +131,9 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
             // convert to bytes, encrypt, and send the packets all in one fell swoop
             _out.write(encryptCipher.doFinal(_pub.getEncoded()));
-            _out.write(encryptCipher.doFinal(userame.getBytes()));
-            _out.write(encryptCipher.doFinal(displayName.getBytes()));
-            _out.write(encryptCipher.doFinal(email.getBytes()));
+            //_out.write(encryptCipher.doFinal(userame.getBytes()));
+            //_out.write(encryptCipher.doFinal(displayName.getBytes()));
+            //_out.write(encryptCipher.doFinal(email.getBytes()));
             _out.flush();
 
             // rev up a different cipher
@@ -134,6 +147,10 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
             String id = idBytes.toString();
 
+            Log.d("Create Reserve", id);
+
+            _out.close();
+            _in.close();
             _socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
