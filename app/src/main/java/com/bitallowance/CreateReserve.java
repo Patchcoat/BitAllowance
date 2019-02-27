@@ -122,30 +122,35 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             // rev up the RSA algorithm for generating the public key
             KeyFactory fact = KeyFactory.getInstance("RSA");
             // generate the public key from the encoded data
-            RSAPublicKey serverPublic = (RSAPublicKey) fact.generatePublic(spec);
-            Log.d("Create Reserve", serverPublic.toString());
+            //RSAPublicKey serverPublic = (RSAPublicKey) fact.generatePublic(spec);
+            //Log.d("Create Reserve", serverPublic.toString());
 
             // rev up the cipher
-            Cipher encryptCipher = Cipher.getInstance("RSA");
-            encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublic);
+            //Cipher encryptCipher = Cipher.getInstance("RSA");
+            //encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublic);
 
             // convert to bytes, encrypt, and send the packets all in one fell swoop
-            _out.write(encryptCipher.doFinal(_pub.getEncoded()));
+            //_out.write(encryptCipher.doFinal(_pub.getEncoded()));
             //_out.write(encryptCipher.doFinal(userame.getBytes()));
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
+            _out.write(_pub.getEncoded());
+            _out.write(userame.getBytes());
+            _out.write(displayName.getBytes());
+            _out.write(email.getBytes());
             _out.flush();
 
             // rev up a different cipher
-            Cipher decryptCipher = Cipher.getInstance("RSA");
-            decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
+            //Cipher decryptCipher = Cipher.getInstance("RSA");
+            //decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
 
-            byte[] idEncrypted = {};
-            _in.read(idEncrypted);
+            byte[] idBytes = {};
+            _in.read(idBytes);
+            String id = new String(idBytes);
 
-            byte[] idBytes = decryptCipher.doFinal(idEncrypted);
+            //byte[] idBytes = decryptCipher.doFinal(idEncrypted);
 
-            String id = idBytes.toString();
+            //String id = idBytes.toString();
 
             Log.d("Create Reserve", id);
 
@@ -158,7 +163,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+        }/* catch (InvalidKeySpecException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
@@ -168,7 +173,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 

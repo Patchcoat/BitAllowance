@@ -16,7 +16,7 @@ public class Entity {
     private LocalDate birthday;
     private String email;
     private LocalDateTime timeSinceLastLoad;
-    private List<Transaction> transations;
+    private List<Transaction> transactions;
 
     // Constructors
     public Entity() {
@@ -48,9 +48,7 @@ public class Entity {
         return  this.timeSinceLastLoad;
     }
 
-    public List<Transaction> getTransations () {
-        return this.transations;
-    }
+    public List<Transaction> getTransations () { return this.transactions; }
 
     // Setters
     public void setId(int id) {
@@ -77,8 +75,8 @@ public class Entity {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List<Transaction> transations) {
-        this.transations = transations;
+    public void setTransations(List transations) {
+        //this.transactions = transations;
     }
 
     // Transaction Methods
@@ -120,4 +118,5 @@ public class Entity {
     public void updateEntity() {
 
     }
+
 }
