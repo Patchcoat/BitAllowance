@@ -79,7 +79,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
     protected Void doInBackground(String... strings) {
         generateKeyPair();
 
-        String userame = strings[0];
+        String username = strings[0];
         String displayName = strings[1];
         String email = strings[2];
         String password = strings[3]; // DO NOT SEND TO SERVER DO NOT WRITE TO DISK
