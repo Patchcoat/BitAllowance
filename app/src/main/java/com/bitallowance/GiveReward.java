@@ -1,5 +1,7 @@
 package com.bitallowance;
 
+import java.util.List;
+
 public class GiveReward {
 
     // Variables

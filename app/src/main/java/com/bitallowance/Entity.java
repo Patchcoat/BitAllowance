@@ -17,6 +17,7 @@ public class Entity {
     private String email;
     private LocalDateTime timeSinceLastLoad;
     private List<Transaction> transations;
+    private BigDecimal cashBalance;
 
     // Constructors
     public Entity() {
@@ -24,6 +25,9 @@ public class Entity {
     }
 
     // Getters
+    public  BigDecimal getCashBalance() {
+        return cashBalance;
+    }
     public int getId() {
         return  this.id;
     }
@@ -103,7 +107,7 @@ public class Entity {
 
     }
 
-    public void confirmTask(Task task, bool complete) {
+    public void confirmTask(Task task, boolean complete) {
 
     }
 
@@ -112,7 +116,7 @@ public class Entity {
 
     }
 
-    public void modifyBalance(BigDecimal value, bool addToBalance) {
+    public void modifyBalance(BigDecimal value, boolean addToBalance) {
 
     }
 

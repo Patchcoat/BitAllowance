@@ -1,5 +1,7 @@
 package com.bitallowance;
 
+import android.view.View;
+
 import java.util.List;
 
 public class ViewReward {
@@ -24,11 +26,6 @@ public class ViewReward {
     private void refundAll() {
 
     }
-
-    private void getReward() {
-
-    }
-
     // Getters
     public Reward getReward() {
         return this.reward;
