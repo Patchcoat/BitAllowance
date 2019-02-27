@@ -1,11 +1,13 @@
 package com.bitallowance;
 
+import android.view.View;
+
 import java.util.List;
 
 public class ViewReward {
 
     // Variables
-    private Reward reward;
+    private Transaction reward;
     private List<Entity> entityList;
 
     // Private Methods
@@ -30,7 +32,7 @@ public class ViewReward {
     }
 
     // Getters
-    public Reward getReward() {
+    public Transaction getReward() {
         return this.reward;
     }
 
@@ -39,7 +41,7 @@ public class ViewReward {
     }
 
     // Setter
-    public void setReward(Reward reward) {
+    public void setReward(Transaction reward) {
         this.reward = reward;
     }
 

@@ -2,16 +2,17 @@ package com.bitallowance;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Filter;
 
 public class RewardList {
 
     // Variables
-    private List<Reward> rewardList;
+    private List<Transaction> rewardList;
     private List<Entity> entityList;
     private Filter filter;
-    private LocalDateTime timeFilter;
+    private Date timeFilter;
     private BigDecimal costFilter;
 
     // Private Methods
@@ -24,7 +25,7 @@ public class RewardList {
     }
 
     // Getters
-    public List<Reward> getRewardList() {
+    public List<Transaction> getRewardList() {
         return rewardList;
     }
 
@@ -36,7 +37,7 @@ public class RewardList {
         return filter;
     }
 
-    public LocalDateTime getTimeFilter() {
+    public Date getTimeFilter() {
         return timeFilter;
     }
 
@@ -45,7 +46,7 @@ public class RewardList {
     }
 
     // Setters
-    public void setRewardList(List<Reward> rewardList) {
+    public void setRewardList(List<Transaction> rewardList) {
         this.rewardList = rewardList;
     }
 

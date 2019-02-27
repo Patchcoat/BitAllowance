@@ -3,8 +3,7 @@ package com.bitallowance;
 import android.icu.util.LocaleData;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class Entity {
@@ -13,10 +12,10 @@ public class Entity {
     private int id;
     private String userName;
     private String displayName;
-    private LocalDate birthday;
+    private Date birthday;
     private String email;
-    private LocalDateTime timeSinceLastLoad;
-    private List<Transaction> transations;
+    private Date timeSinceLastLoad;
+    private List<Transaction> transactions;
 
     // Constructors
     public Entity() {
@@ -36,7 +35,7 @@ public class Entity {
         return this.displayName;
     }
 
-    public LocalDate getBirthday () {
+    public Date getBirthday () {
         return this.birthday;
     }
 
@@ -44,12 +43,12 @@ public class Entity {
         return this.email;
     }
 
-    public LocalDateTime getTimeSinceLastLoad () {
+    public Date getTimeSinceLastLoad () {
         return  this.timeSinceLastLoad;
     }
 
-    public List<Transaction> getTransations () {
-        return this.transations;
+    public List<Transaction> getTransactions () {
+        return this.transactions;
     }
 
     // Setters
@@ -65,7 +64,7 @@ public class Entity {
         this.displayName = displayName;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -73,12 +72,12 @@ public class Entity {
         this.email = email;
     }
 
-    public void setTimeSinceLastLoad(LocalDateTime timeSinceLastLoad) {
+    public void setTimeSinceLastLoad(Date timeSinceLastLoad) {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List<Transaction> transations) {
-        this.transations = transations;
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     // Transaction Methods
@@ -86,7 +85,7 @@ public class Entity {
 
     }
 
-    public void updateTransations() {
+    public void updateTransacions() {
 
     }
 
@@ -95,7 +94,7 @@ public class Entity {
     }
 
     // Task methods
-    public void loadTasks(LocalDateTime time) {
+    public void loadTasks(Date time) {
 
     }
 
@@ -103,7 +102,7 @@ public class Entity {
 
     }
 
-    public void confirmTask(Task task, bool complete) {
+    public void confirmTask(Transaction task, boolean complete) {
 
     }
 
@@ -112,7 +111,7 @@ public class Entity {
 
     }
 
-    public void modifyBalance(BigDecimal value, bool addToBalance) {
+    public void modifyBalance(BigDecimal value, boolean addToBalance) {
 
     }
 

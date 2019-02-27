@@ -6,20 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <
-
-    <
-
-    <
-
-    <
-
-    <
-
-    <
-
-    < HEAD
-
     <TextView
         android:id="@+id/titleMain"
         android:layout_width="wrap_content"
@@ -150,7 +136,6 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/recoveryMain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/recoveryMain" />
-    =======
 
     <Button
         android:id="@+id/button"
@@ -162,6 +147,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recoveryMain" />
-    >>>>>>> remotes/origin/master
 
 </android.support.constraint.ConstraintLayout>
