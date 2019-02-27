@@ -135,7 +135,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
             _out.write(_pub.getEncoded());
-            _out.write(userame.getBytes());
+            _out.write(username.getBytes());
             _out.write(displayName.getBytes());
             _out.write(email.getBytes());
             _out.flush();
