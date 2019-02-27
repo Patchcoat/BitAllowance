@@ -103,7 +103,7 @@ public class Entity {
 
     }
 
-    public void confirmTask(Task task, bool complete) {
+    public void confirmTask(Task task, boolean complete) {
 
     }
 
@@ -112,7 +112,7 @@ public class Entity {
 
     }
 
-    public void modifyBalance(BigDecimal value, bool addToBalance) {
+    public void modifyBalance(BigDecimal value, boolean addToBalance) {
 
     }
 
