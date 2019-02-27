@@ -17,6 +17,7 @@ public class Entity {
     private String email;
     private LocalDateTime timeSinceLastLoad;
     private List<Transaction> transations;
+    private BigDecimal cashBalance;
 
     // Constructors
     public Entity() {
@@ -24,6 +25,9 @@ public class Entity {
     }
 
     // Getters
+    public  BigDecimal getCashBalance() {
+        return cashBalance;
+    }
     public int getId() {
         return  this.id;
     }
