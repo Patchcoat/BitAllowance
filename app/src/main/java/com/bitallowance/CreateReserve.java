@@ -112,15 +112,11 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             String serverPEMKey = new String(serverKeyBytes);
             Log.d("Read", Integer.toString(read));
             Log.d("Create Reserve", serverPEMKey);
-            serverPEMKey = serverPEMKey.replaceAll("\\n","");
-            serverPEMKey = serverPEMKey.replace("-----BEGIN RSA PUBLIC KEY-----", "");
-            serverPEMKey = serverPEMKey.replace("-----END RSA PUBLIC KEY-----", "");
-            Log.d("Create Reserve", serverPEMKey);
 
             // encode the data into a usable format
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(serverPEMKey, Base64.DEFAULT));
+            //X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(serverPEMKey, Base64.DEFAULT));
             // rev up the RSA algorithm for generating the public key
-            KeyFactory fact = KeyFactory.getInstance("RSA");
+            //KeyFactory fact = KeyFactory.getInstance("RSA");
             // generate the public key from the encoded data
             //RSAPublicKey serverPublic = (RSAPublicKey) fact.generatePublic(spec);
             //Log.d("Create Reserve", serverPublic.toString());
@@ -134,36 +130,46 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(userame.getBytes()));
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
-            _out.write(_pub.getEncoded());
-            _out.write(username.getBytes());
-            _out.write(displayName.getBytes());
-            _out.write(email.getBytes());
+            String nul = "\0";
+            byte[] sendPub = (_pub.toString() + nul).getBytes();
+            byte[] sendUsername = (username + nul).getBytes();
+            byte[] sendDisplay = (displayName + nul).getBytes();
+            byte[] sendEmail = (email + nul).getBytes();
+            _out.write(sendPub);
+            Log.d("Create Reserve", _pub.toString());
+            _out.write(sendUsername);
+            Log.d("Create Reserve", username);
+            _out.write(sendDisplay);
+            Log.d("Create Reserve", displayName);
+            _out.write(sendEmail);
+            Log.d("Create Reserve", email);
             _out.flush();
+            Log.d("Create Reserve", "Flushed");
 
             // rev up a different cipher
             //Cipher decryptCipher = Cipher.getInstance("RSA");
             //decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
 
             byte[] idBytes = {};
+            Log.d("Create Reserve", "receiving id");
             _in.read(idBytes);
+            Log.d("Create Reserve", "received id");
             String id = new String(idBytes);
-
-            //byte[] idBytes = decryptCipher.doFinal(idEncrypted);
-
-            //String id = idBytes.toString();
 
             Log.d("Create Reserve", id);
 
+            Log.d("Create Reserve", "start closing things");
             _out.close();
             _in.close();
             _socket.close();
+            Log.d("Create Reserve", "closed everything");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
+        }/* catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }/* catch (InvalidKeySpecException e) {
+        } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
