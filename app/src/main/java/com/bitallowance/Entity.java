@@ -16,7 +16,7 @@ public class Entity {
     private LocalDate birthday;
     private String email;
     private LocalDateTime timeSinceLastLoad;
-    private List<Transaction> transations;
+    private List<Transaction> transactions;
     private BigDecimal cashBalance;
 
     // Constructors
@@ -53,7 +53,7 @@ public class Entity {
     }
 
     public List<Transaction> getTransations () {
-        return this.transations;
+        return this.transactions;
     }
 
     // Setters
@@ -81,8 +81,8 @@ public class Entity {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List<Transaction> transations) {
-        this.transations = transations;
+    public void setTransations(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     // Transaction Methods
@@ -107,7 +107,7 @@ public class Entity {
 
     }
 
-    public void confirmTask(Task task, boolean complete) {
+    public void confirmTask(Transaction task, boolean complete) {
 
     }
 

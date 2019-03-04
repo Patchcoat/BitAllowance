@@ -5,6 +5,7 @@ import java.util.List;
 public class Reserve {
     static List<Entity> _entityList;
     static List<Transaction> _transactionList;
+    static String _currency;
 
     public static void addEntity(Entity newEntity){
         _entityList.add(newEntity);
