@@ -24,6 +24,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginBottom="8dp"
+        android:onClick="EditCurrency"
         android:text="Add/Edit Currency"
         app:layout_constraintBottom_toTopOf="@+id/button4"
         app:layout_constraintStart_toStartOf="parent" />
