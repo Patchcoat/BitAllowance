@@ -22,15 +22,18 @@ public class ReserveHome extends AppCompatActivity {
     private RecyclerView.Adapter mTaskList;
     private RecyclerView.Adapter mRewardList;
 
-    private RecyclerView.LayoutManager layoutManager;
-    private List entityList;
-    private List taskList;
-    private List rewardList;
+    private RecyclerView.LayoutManager entityLayoutManager;
+    private RecyclerView.LayoutManager taskLayoutManager;
+    private RecyclerView.LayoutManager rewardLayoutManager;
+
+    List entityList;
+    List taskList;
+    List rewardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_reserve_home);
         entityList = new ArrayList();
         taskList = new ArrayList();
         rewardList = new ArrayList();
@@ -39,12 +42,15 @@ public class ReserveHome extends AppCompatActivity {
         entityView = findViewById(R.id.entityView);
         taskView = findViewById(R.id.taskView);
         rewardView = findViewById(R.id.rewardView);
-        //Layout Manager
-        layoutManager = new LinearLayoutManager(this);
 
-        entityView.setLayoutManager(layoutManager);
-        taskView.setLayoutManager(layoutManager);
-        rewardView.setLayoutManager(layoutManager);
+        //Layout Manager
+        entityLayoutManager = new LinearLayoutManager(this);
+        taskLayoutManager = new LinearLayoutManager(this);
+        rewardLayoutManager = new LinearLayoutManager(this);
+
+        entityView.setLayoutManager(entityLayoutManager);
+        taskView.setLayoutManager(taskLayoutManager);
+        rewardView.setLayoutManager(rewardLayoutManager);
 
         //Adapter
         mEntityList = new ViewList(entityList);
