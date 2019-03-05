@@ -14,8 +14,10 @@ public class Entity {
     private String displayName;
     private Date birthday;
     private String email;
+  
     private Date timeSinceLastLoad;
     private List<Transaction> transactions;
+    private BigDecimal cashBalance;
 
     // Constructors
     public Entity() {
@@ -23,6 +25,9 @@ public class Entity {
     }
 
     // Getters
+    public  BigDecimal getCashBalance() {
+        return cashBalance;
+    }
     public int getId() {
         return  this.id;
     }
@@ -103,6 +108,7 @@ public class Entity {
     }
 
     public void confirmTask(Transaction task, boolean complete) {
+
 
     }
 

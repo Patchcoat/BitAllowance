@@ -79,7 +79,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
     protected Void doInBackground(String... strings) {
         generateKeyPair();
 
-        String userame = strings[0];
+        String userName = strings[0];
         String displayName = strings[1];
         String email = strings[2];
         String password = strings[3]; // DO NOT SEND TO SERVER DO NOT WRITE TO DISK
@@ -131,7 +131,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
             // convert to bytes, encrypt, and send the packets all in one fell swoop
             _out.write(encryptCipher.doFinal(_pub.getEncoded()));
-            //_out.write(encryptCipher.doFinal(userame.getBytes()));
+            //_out.write(encryptCipher.doFinal(userName.getBytes()));
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
             _out.flush();

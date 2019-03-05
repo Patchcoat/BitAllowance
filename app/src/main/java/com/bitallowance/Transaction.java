@@ -22,6 +22,7 @@ public class Transaction {
     String _memo;
     boolean _linked;
     boolean _executed;
+    TransactionType _transactionType;
     //List<Entity> _affected;
 
 
@@ -29,7 +30,7 @@ public class Transaction {
         _timeStamp = Calendar.getInstance().getTime();
     }
 
-    void execute() {
+    void execute(Entity entity) {
     //I think this function should take a list of Entities
     }
 
@@ -62,6 +63,9 @@ public class Transaction {
     /**
      * Getters & Setters Below
      */
+    public TransactionType getTransactionType() {
+        return _transactionType;
+    }
     public String get_id() {
         return _id;
     }

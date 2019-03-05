@@ -26,7 +26,7 @@ public class ViewReward {
     private void refundAll() {
 
     }
-
+  
     // Getters
     public Transaction getReward() { return this.reward; }
 
