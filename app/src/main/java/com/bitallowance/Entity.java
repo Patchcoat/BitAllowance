@@ -5,6 +5,8 @@ import android.icu.util.LocaleData;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Entity {
@@ -13,10 +15,10 @@ public class Entity {
     private int id;
     private String userName;
     private String displayName;
-    private LocalDate birthday;
+    private Date birthday;
     private String email;
     private LocalDateTime timeSinceLastLoad;
-    private List<Transaction> transations;
+    private List<Transaction> transactions;
     private BigDecimal cashBalance;
 
     // Constructors
@@ -40,7 +42,7 @@ public class Entity {
         return this.displayName;
     }
 
-    public LocalDate getBirthday () {
+    public Date getBirthday () {
         return this.birthday;
     }
 
@@ -53,7 +55,7 @@ public class Entity {
     }
 
     public List<Transaction> getTransations () {
-        return this.transations;
+        return this.transactions;
     }
 
     // Setters
@@ -69,7 +71,7 @@ public class Entity {
         this.displayName = displayName;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -81,8 +83,8 @@ public class Entity {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List<Transaction> transations) {
-        this.transations = transations;
+    public void setTransations(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     // Transaction Methods
@@ -107,7 +109,7 @@ public class Entity {
 
     }
 
-    public void confirmTask(Task task, boolean complete) {
+    public void confirmTask(Transaction task, boolean complete) {
 
     }
 
@@ -124,4 +126,6 @@ public class Entity {
     public void updateEntity() {
 
     }
+
+
 }

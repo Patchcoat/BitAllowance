@@ -5,7 +5,7 @@ import java.util.List;
 public class GiveReward {
 
     // Variables
-    private List<Reward> rewardList;
+    private List<Transaction> rewardList;
     private List<Entity> entityList;
 
     // Getters
@@ -13,7 +13,7 @@ public class GiveReward {
         return this.entityList;
     }
 
-    public List<Reward> getRewardList() {
+    public List<Transaction> getRewardList() {
         return this.rewardList;
     }
 
@@ -22,7 +22,7 @@ public class GiveReward {
         this.entityList = entityList;
     }
 
-    public void setRewardList(List<Reward> rewardList) {
+    public void setRewardList(List<Transaction> rewardList) {
         this.rewardList = rewardList;
     }
 
