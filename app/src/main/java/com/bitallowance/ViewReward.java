@@ -27,14 +27,8 @@ public class ViewReward {
 
     }
 
-    private void getReward() {
-
-    }
-
     // Getters
-    public Transaction getReward() {
-        return this.reward;
-    }
+    public Transaction getReward() { return this.reward; }
 
     public List<Entity> getEntityList() {
         return this.entityList;
