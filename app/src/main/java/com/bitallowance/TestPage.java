@@ -55,4 +55,9 @@ public class TestPage extends AppCompatActivity {
 
         reserve.execute("Username", "Display Name", "user@website.com", "password");
     }
+
+    public void GoHome (View view) {
+        Intent intent = new Intent(this,ReserveHome.class);
+        startActivity(intent);
+    }
 }
