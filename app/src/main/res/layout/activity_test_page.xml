@@ -77,4 +77,5 @@
         android:text="@string/reserveHomePage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

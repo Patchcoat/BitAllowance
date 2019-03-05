@@ -20,7 +20,6 @@
         <activity android:name=".TestPage" />
         <activity android:name=".EditAddCurrency" />
         <activity android:name=".CreateReserveAccount" />
-        <activity android:name=".RemoteDatabaseTest" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
