@@ -13,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -42,8 +43,8 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
     private Socket _socket;
     // the reader and writer are both connected to the socket and used to read from/write to the
     // server
-    private DataOutputStream _out;
-    private DataInputStream _in;
+    //private DataOutputStream _out;
+    //private DataInputStream _in;
     private PrivateKey _priv;
     private PublicKey _pub;
     // the port is the door use to connect to the sever
@@ -96,19 +97,19 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             // connects the socket to the remote server
             _socket.connect(sockaddr, timeout);
             // instantiates the reader/writer
-            _out = new DataOutputStream(_socket.getOutputStream());
-            _in = new DataInputStream(_socket.getInputStream());
+            PrintWriter _out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream())), true);
+            InputStreamReader _in = new InputStreamReader(_socket.getInputStream());
 
             // write to the buffered writer, then sends the packet with flush
             // we're telling the server we want to 'c'reate an account
-            _out.writeByte('c');
+            _out.print('c');
             _out.flush();
 
             // read the public key into a byte array
             Log.d("Create Reserve", "accepting new");
             ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
-            byte[] serverKeyBytes = new byte[426];
-            int read = _in.read(serverKeyBytes);
+            char[] serverKeyBytes = new char[426];
+            int read = _in.read(serverKeyBytes, 0, 426);
             String serverPEMKey = new String(serverKeyBytes);
             Log.d("Read", Integer.toString(read));
             Log.d("Create Reserve", serverPEMKey);
@@ -132,16 +133,16 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(email.getBytes()));
             String nul = "\0";
             byte[] sendPub = (_pub.toString() + nul).getBytes();
-            byte[] sendUsername = (username + nul).getBytes();
-            byte[] sendDisplay = (displayName + nul).getBytes();
-            byte[] sendEmail = (email + nul).getBytes();
-            _out.write(sendPub);
+            byte[] sendUsername = new String("c\0").getBytes("UTF-8");//(username + nul).getBytes();
+            byte[] sendDisplay = (displayName + nul).getBytes("UTF-8");
+            byte[] sendEmail = (email + nul).getBytes("UTF-8");
+            _out.println(_pub.toString());
             Log.d("Create Reserve", _pub.toString());
-            _out.write(sendUsername);
+            _out.println(username);
             Log.d("Create Reserve", username);
-            _out.write(sendDisplay);
+            _out.println(displayName);
             Log.d("Create Reserve", displayName);
-            _out.write(sendEmail);
+            _out.println(email);
             Log.d("Create Reserve", email);
             _out.flush();
             Log.d("Create Reserve", "Flushed");
@@ -150,13 +151,12 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //Cipher decryptCipher = Cipher.getInstance("RSA");
             //decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
 
-            byte[] idBytes = {};
+            char[] idBytes = new char[100];
             Log.d("Create Reserve", "receiving id");
-            _in.read(idBytes);
-            Log.d("Create Reserve", "received id");
+            _in.read(idBytes, 0, 100);
             String id = new String(idBytes);
-
             Log.d("Create Reserve", id);
+            Log.d("Create Reserve", String.valueOf(id.length()));
 
             Log.d("Create Reserve", "start closing things");
             _out.close();
