@@ -49,4 +49,9 @@ public class TestPage extends AppCompatActivity {
         intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
         startActivity(intent);
     }
+
+    public void GoHome (View view) {
+        Intent intent = new Intent(this,ReserveHome.class);
+        startActivity(intent);
+    }
 }
