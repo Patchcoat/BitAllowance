@@ -66,4 +66,7 @@
     </string-array>
     <string name="reserveHomePage">Reserve Home</string>
     <string name="addEditSpinner">Add/Edit</string>
+    <string name="testEntityListButton">Test Entity</string>
+    <string name="testTaskButton">Test Task</string>
+    <string name="testRewardButton">Test Reward</string>
 </resources>
