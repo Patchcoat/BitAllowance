@@ -49,4 +49,10 @@ public class TestPage extends AppCompatActivity {
         intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
         startActivity(intent);
     }
+
+    public void Connect(View view) {
+        CreateReserve reserve = new CreateReserve();
+
+        reserve.execute("Username", "Display Name", "user@website.com", "password");
+    }
 }
