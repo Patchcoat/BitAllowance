@@ -28,4 +28,25 @@ public class TestPage extends AppCompatActivity {
         intent.putExtra("ENTITY_INDEX", -1);
         startActivity(intent);
     }
+
+    public void EditReward (View view){
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", TransactionType.REWARD);
+        startActivity(intent);
+    }
+
+    public void EditTask (View view){
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", TransactionType.TASK);
+        startActivity(intent);
+    }
+
+    public void EditFine (View view){
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
+        startActivity(intent);
+    }
 }
