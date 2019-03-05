@@ -132,10 +132,6 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
             String nul = "\0";
-            byte[] sendPub = (_pub.toString() + nul).getBytes();
-            byte[] sendUsername = new String("c\0").getBytes("UTF-8");//(username + nul).getBytes();
-            byte[] sendDisplay = (displayName + nul).getBytes("UTF-8");
-            byte[] sendEmail = (email + nul).getBytes("UTF-8");
             _out.println(_pub.toString());
             Log.d("Create Reserve", _pub.toString());
             _out.println(username);
