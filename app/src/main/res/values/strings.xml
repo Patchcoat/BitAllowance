@@ -51,4 +51,16 @@
     <string name="editEntityLblEmail">Email Address:</string>
     <string name="editEntityEmailHint">Optional</string>
     <string name="editEntityLblTransactions">Assigned Tasks/Rewards</string>
+
+    <!-- Edit/Add Transactions -->
+    <string name="editTransactionTitle">Add/Edit Task</string>
+    <string name="editTransactionLblName">Task Name:</string>
+    <string name="editTransactionLblValue">Task Value:</string>
+    <string name="editTransactionLblExpires">Expires:</string>
+    <string-array name="editTransactionSpinExpires">
+        <item>Does not Expire:</item>
+        <item>Expires:</item>
+    </string-array>
+
+
 </resources>
