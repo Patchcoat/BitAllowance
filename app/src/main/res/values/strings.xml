@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bit Allowence</string>
+    <string name="app_name">Bit Allowance</string>
     <string name="usernameInputMain">Enter Username/Email</string>
     <string name="passwordInputMain">Enter Password</string>
     <string name="loginButton">Login</string>
@@ -15,4 +15,55 @@
     <string name="entityTextView">Entity List</string>
     <string name="taskTextView">Task List</string>
     <string name="rewardTextView">Reward List</string>
+
+    <!-- Generic Button Text -->
+    <string name="SAVE"> Save </string>
+    <string name="CANCEL"> Cancel </string>
+    <string name="DONE"> Done </string>
+    <string name="PREVIOUS">Previous</string>
+    <string name="NEXT">Next</string>
+
+    <!-- Edit/Add Currency Strings -->
+    <string name="editCurrencyTitle"> Add/Edit Account Currency</string>
+    <string name="editCurrencyLblName">Currency Name:</string>
+    <string name="editCurrencyNameHint">Enter Currency Name</string>
+    <string name="editCurrencyLblSymbol">Select Currency Symbol:</string>
+    <string-array name="currencySymbol_Array">
+        <item>$</item>
+        <item>¤</item>
+        <item>¢</item>
+        <item>£</item>
+        <item>€</item>
+        <item>¥</item>
+        <item>"\u20BF"</item>
+        <item>"\u20BD"</item>
+        <item>"\u20AD"</item>
+        <item>"\u20A3"</item>
+        <item>"\u20A6"</item>
+        <item>"\u20BA"</item>
+        <item>"\u20B3"</item>
+    </string-array>
+
+    <!-- Edit/Add Entity -->
+    <string name="title_activity_edit_add_entity">EditAddEntity</string>
+    <string name="editEntityTitle"> Add/Edit Child</string>
+    <string name="editEntityLblName">Name:</string>
+    <string name="editEntityNameHint">Enter Child\'s Name</string>
+    <string name="editEntityLblBirthday">Birth Date:</string>
+    <string name="editEntityBirthdayHint">Enter Birth Date</string>
+    <string name="editEntityLblEmail">Email Address:</string>
+    <string name="editEntityEmailHint">Optional</string>
+    <string name="editEntityLblTransactions">Assigned Tasks/Rewards</string>
+
+    <!-- Edit/Add Transactions -->
+    <string name="editTransactionTitle">Add/Edit Task</string>
+    <string name="editTransactionLblName">Task Name:</string>
+    <string name="editTransactionLblValue">Task Value:</string>
+    <string name="editTransactionLblExpires">Expires:</string>
+    <string-array name="editTransactionSpinExpires">
+        <item>Does not Expire:</item>
+        <item>Expires:</item>
+    </string-array>
+
+
 </resources>

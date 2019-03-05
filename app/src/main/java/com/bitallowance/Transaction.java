@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
- * Parent class for Reward & Task
+ * Transaction Class
  * @author Doug Barlow
- * @version 1.0
+ * @version 1.2
+ * This version combines both tasks and rewards into a single class
  * @since 2/25/2019
  */
 
@@ -17,13 +19,16 @@ public class Transaction {
     String _id;
     BigDecimal _value;
     Operator _operator;
-    //Used Date instead of LocalDateTime because LocalDateTime requires API 28 and Android Pie OS
     Date _timeStamp;
     String _memo;
     boolean _linked;
     boolean _executed;
     TransactionType _transactionType;
-    //List<Entity> _affected;
+    List<Entity> _affected;
+    String _name;
+    Date _expirationDate;
+    Date _coolDown;
+    Map<Entity, Boolean> _assignments;
 
 
     Transaction(){
