@@ -32,9 +32,9 @@ public class ReserveHome extends AppCompatActivity {
     private RecyclerView.LayoutManager taskLayoutManager;
     private RecyclerView.LayoutManager rewardLayoutManager;
 
-    List entityList;
-    List taskList;
-    List rewardList;
+    private List entityList;
+    private List taskList;
+    private List rewardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
