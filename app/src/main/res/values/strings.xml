@@ -64,6 +64,6 @@
         <item>Does not Expire:</item>
         <item>Expires:</item>
     </string-array>
-
-
+    <string name="reserveHomePage">Reserve Home</string>
+    <string name="addEditSpinner">Add/Edit</string>
 </resources>
