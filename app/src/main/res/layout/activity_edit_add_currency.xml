@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/editCurrencyLblSymbol"
@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editCurrency_txtCurrency" />
+        app:layout_constraintTop_toBottomOf="@+id/editCurrency_txtName" />
 
     <TextView
         android:id="@+id/editCurrency_lblTitle"
@@ -41,26 +41,26 @@
     <TextView
         android:id="@+id/editCurrency_lblCurrency"
         android:layout_width="wrap_content"
-        android:layout_height="22dp"
+        android:layout_height="23dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"
         android:text="@string/editCurrencyLblName"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/editCurrency_txtCurrency"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCurrency_lblTitle" />
 
     <EditText
-        android:id="@+id/editCurrency_txtCurrency"
+        android:id="@+id/editCurrency_txtName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:ems="10"
@@ -69,7 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/editCurrency_lblCurrency" />
 
     <Spinner
         android:id="@+id/editCurrency_spinSymbol"

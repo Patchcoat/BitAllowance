@@ -16,6 +16,9 @@
     <!-- Generic Button Text -->
     <string name="SAVE"> Save </string>
     <string name="CANCEL"> Cancel </string>
+    <string name="DONE"> Done </string>
+    <string name="PREVIOUS">Previous</string>
+    <string name="NEXT">Next</string>
 
     <!-- Edit/Add Currency Strings -->
     <string name="editCurrencyTitle"> Add/Edit Account Currency</string>
@@ -38,6 +41,14 @@
         <item>"\u20B3"</item>
     </string-array>
 
-
-
+    <!-- Edit/Add Entity -->
+    <string name="title_activity_edit_add_entity">EditAddEntity</string>
+    <string name="editEntityTitle"> Add/Edit Child</string>
+    <string name="editEntityLblName">Name:</string>
+    <string name="editEntityNameHint">Enter Child\'s Name</string>
+    <string name="editEntityLblBirthday">Birth Date:</string>
+    <string name="editEntityBirthdayHint">Enter Birth Date</string>
+    <string name="editEntityLblEmail">Email Address:</string>
+    <string name="editEntityEmailHint">Optional</string>
+    <string name="editEntityLblTransactions">Assigned Tasks/Rewards</string>
 </resources>
