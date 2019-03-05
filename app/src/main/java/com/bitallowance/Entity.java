@@ -1,11 +1,6 @@
 package com.bitallowance;
 
-import android.icu.util.LocaleData;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +12,8 @@ public class Entity {
     private String displayName;
     private Date birthday;
     private String email;
-    private LocalDateTime timeSinceLastLoad;
+  
+    private Date timeSinceLastLoad;
     private List<Transaction> transactions;
     private BigDecimal cashBalance;
 
@@ -50,11 +46,11 @@ public class Entity {
         return this.email;
     }
 
-    public LocalDateTime getTimeSinceLastLoad () {
+    public Date getTimeSinceLastLoad () {
         return  this.timeSinceLastLoad;
     }
 
-    public List<Transaction> getTransations () {
+    public List<Transaction> getTransactions () {
         return this.transactions;
     }
 
@@ -79,11 +75,11 @@ public class Entity {
         this.email = email;
     }
 
-    public void setTimeSinceLastLoad(LocalDateTime timeSinceLastLoad) {
+    public void setTimeSinceLastLoad(Date timeSinceLastLoad) {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransations(List<Transaction> transactions) {
+    public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
 
@@ -92,7 +88,7 @@ public class Entity {
 
     }
 
-    public void updateTransations() {
+    public void updateTransacions() {
 
     }
 
@@ -101,7 +97,7 @@ public class Entity {
     }
 
     // Task methods
-    public void loadTasks(LocalDateTime time) {
+    public void loadTasks(Date time) {
 
     }
 
@@ -110,6 +106,7 @@ public class Entity {
     }
 
     public void confirmTask(Transaction task, boolean complete) {
+
 
     }
 
@@ -126,6 +123,4 @@ public class Entity {
     public void updateEntity() {
 
     }
-
-
 }
