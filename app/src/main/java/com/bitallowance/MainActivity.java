@@ -17,4 +17,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RemoteDatabaseTest.class);
         startActivity(intent);
     }
+
+    public void goToTestPage(View view){
+        Intent intent = new Intent(this, TestPage.class);
+        startActivity(intent);
+    }
 }
