@@ -1,6 +1,5 @@
 package com.bitallowance;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,7 +14,7 @@ public class EditAddCurrency extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_add_currency);
         if (Reserve.getCurrencyName() != ""){
-            EditText currency = (EditText)findViewById(R.id.editCurrency_txtCurrency);
+            EditText currency = (EditText)findViewById(R.id.editCurrency_txtName);
             Spinner symbol = (Spinner)findViewById(R.id.editCurrency_spinSymbol);
             currency.setText(Reserve.getCurrencyName());
             symbol.setSelection(getIndex(symbol, Reserve.get_currencySymbol()));
@@ -36,7 +35,7 @@ public class EditAddCurrency extends AppCompatActivity {
 
 
     public void updateCurrency(View view){
-        EditText currency = (EditText)findViewById(R.id.editCurrency_txtCurrency);
+        EditText currency = (EditText)findViewById(R.id.editCurrency_txtName);
         Spinner symbol = (Spinner)findViewById(R.id.editCurrency_spinSymbol);
 
         //Stop if currency name invalid

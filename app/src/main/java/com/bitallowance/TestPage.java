@@ -22,4 +22,10 @@ public class TestPage extends AppCompatActivity {
         Intent intent = new Intent(this, EditAddCurrency.class);
         startActivity(intent);
     }
+
+    public void EditEntity (View view){
+        Intent intent = new Intent(this, EditAddEntity.class);
+        intent.putExtra("ENTITY_INDEX", -1);
+        startActivity(intent);
+    }
 }
