@@ -132,15 +132,21 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
             String nul = "\0";
-            _out.println(_pub.toString());
+            _out.print(_pub.toString());
+            _out.print('\0');
+            _out.flush();
+            _in.read();
             Log.d("Create Reserve", _pub.toString());
             _out.println(username);
+            _in.read();
             Log.d("Create Reserve", username);
             _out.println(displayName);
+            _in.read();
             Log.d("Create Reserve", displayName);
             _out.println(email);
+            _in.read();
             Log.d("Create Reserve", email);
-            _out.flush();
+            //_out.flush();
             Log.d("Create Reserve", "Flushed");
 
             // rev up a different cipher
@@ -152,7 +158,6 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             _in.read(idBytes, 0, 100);
             String id = new String(idBytes);
             Log.d("Create Reserve", id);
-            Log.d("Create Reserve", String.valueOf(id.length()));
 
             Log.d("Create Reserve", "start closing things");
             _out.close();
