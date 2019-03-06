@@ -1,5 +1,7 @@
 package com.bitallowance;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -19,6 +21,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -51,6 +54,12 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
     private static final int SERVER_PORT = 3490;
     // the address of the server
     private static final String SERVER_IP = "107.174.13.151";
+
+    private Context _context;
+
+    public void SetContext(Context _context) {
+        this._context = _context;
+    }
 
     private void generateKeyPair() {
         // generate the public and private key pair
@@ -97,18 +106,18 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             // connects the socket to the remote server
             _socket.connect(sockaddr, timeout);
             // instantiates the reader/writer
-            PrintWriter _out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream())), true);
-            InputStreamReader _in = new InputStreamReader(_socket.getInputStream());
+            DataOutputStream _out = new DataOutputStream(_socket.getOutputStream());
+            DataInputStream _in = new DataInputStream(_socket.getInputStream());
 
             // write to the buffered writer, then sends the packet with flush
             // we're telling the server we want to 'c'reate an account
-            _out.print('c');
+            _out.write('c');
             _out.flush();
 
             // read the public key into a byte array
             Log.d("Create Reserve", "accepting new");
             ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
-            char[] serverKeyBytes = new char[426];
+            byte[] serverKeyBytes = new byte[426];
             int read = _in.read(serverKeyBytes, 0, 426);
             String serverPEMKey = new String(serverKeyBytes);
             Log.d("Read", Integer.toString(read));
@@ -131,20 +140,21 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //_out.write(encryptCipher.doFinal(userame.getBytes()));
             //_out.write(encryptCipher.doFinal(displayName.getBytes()));
             //_out.write(encryptCipher.doFinal(email.getBytes()));
-            String nul = "\0";
-            _out.print(_pub.toString());
-            _out.print('\0');
+            _out.write(_pub.toString().getBytes());
             _out.flush();
-            _in.read();
+            read = _in.read();
             Log.d("Create Reserve", _pub.toString());
-            _out.println(username);
-            _in.read();
+            _out.write((username + "\n").getBytes());
+            _out.flush();
+            read = _in.read();
             Log.d("Create Reserve", username);
-            _out.println(displayName);
-            _in.read();
+            _out.write((displayName + "\n").getBytes());
+            _out.flush();
+            read = _in.read();
             Log.d("Create Reserve", displayName);
-            _out.println(email);
-            _in.read();
+            _out.write((email + "\n").getBytes());
+            _out.flush();
+            read = _in.read();
             Log.d("Create Reserve", email);
             //_out.flush();
             Log.d("Create Reserve", "Flushed");
@@ -153,17 +163,27 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //Cipher decryptCipher = Cipher.getInstance("RSA");
             //decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
 
-            char[] idBytes = new char[100];
+            byte[] idBytes = new byte[4];
             Log.d("Create Reserve", "receiving id");
-            _in.read(idBytes, 0, 100);
-            String id = new String(idBytes);
-            Log.d("Create Reserve", id);
+            _in.read(idBytes, 0, 4);
+            // convert byte array to integer
+            int id = idBytes[3] & 0xFF |
+                    (idBytes[2] & 0xFF) << 8 |
+                    (idBytes[1] & 0xFF) << 16|
+                    (idBytes[0] & 0xFF) << 24;
+            Log.d("Create Reserve", String.valueOf(id));
 
             Log.d("Create Reserve", "start closing things");
             _out.close();
             _in.close();
             _socket.close();
             Log.d("Create Reserve", "closed everything");
+            SharedPreferences preferences = _context.getSharedPreferences("AccountID", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("AccountID", Integer.valueOf(id));
+            editor.apply();
+            Log.d("Create Reserve", "Saved ID");
+            _context = null;
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
