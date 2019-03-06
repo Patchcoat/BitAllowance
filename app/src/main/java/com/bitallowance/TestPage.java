@@ -52,7 +52,7 @@ public class TestPage extends AppCompatActivity {
 
     public void Connect(View view) {
         CreateReserve reserve = new CreateReserve();
-
+        reserve.SetContext(getApplicationContext());
         reserve.execute("Username", "Display Name", "user@website.com", "password");
     }
 
