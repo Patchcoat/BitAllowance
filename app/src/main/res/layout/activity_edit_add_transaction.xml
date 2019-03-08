@@ -14,6 +14,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:onClick="editNextTransaction"
         android:text="@string/NEXT"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintHorizontal_bias="0.0"
@@ -28,6 +29,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:onClick="editPrevTransaction"
         android:text="@string/PREVIOUS"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintHorizontal_bias="0.0"
@@ -42,6 +44,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:onClick="finish"
         android:text="@string/DONE"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintHorizontal_bias="0.0"
@@ -57,11 +60,11 @@
         android:isScrollContainer="false"
         android:spinnerMode="dropdown"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
-        app:layout_constraintStart_toEndOf="@+id/editTransaction_lblDescription2"
+        app:layout_constraintStart_toEndOf="@+id/editTransaction_lblAssigned"
         app:layout_constraintTop_toBottomOf="@+id/editTransaction_txtDesc" />
 
     <TextView
-        android:id="@+id/editTransaction_lblDescription2"
+        android:id="@+id/editTransaction_lblAssigned"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -271,7 +274,7 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toBottomOf="@+id/editTransaction_lblDescription2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTransaction_lblAssigned" />
 
     <Button
         android:id="@+id/editTransaction_btnSave"
@@ -281,6 +284,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:onClick="saveTransaction"
         android:text="@string/SAVE"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline9"

@@ -7,14 +7,14 @@ import java.util.List;
 
 public class Reserve {
     private static List<Entity> _entityList = new ArrayList<>();
-    private static List<Transaction> _transactionList;
+    private static List<Transaction> _transactionList = new ArrayList<>();
     private static String _currencyName;
     private static String _currencySymbol;
 
     public Reserve() {
     }
 
-    public static void addEntity(Entity newEntity){
+    public static void addEntity(Entity newEntity) {
         _entityList.add(newEntity);
     }
     public static void updateEntity(Entity newEntity, int index){
@@ -23,6 +23,9 @@ public class Reserve {
 
     public static void addTransaction(Transaction newTransaction){
         _transactionList.add(newTransaction);
+    }
+    public static void updateTransaction(Transaction newTransaction, int index) {
+        _transactionList.set(index, newTransaction);
     }
 
     public static List<Entity> get_entityList() {
