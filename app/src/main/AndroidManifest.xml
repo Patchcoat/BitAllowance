@@ -13,10 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ReserveHome"></activity>
-        <activity android:name=".EditAddTransaction"></activity>
-        <activity
-            android:name=".EditAddEntity"
-            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".EditAddTransaction"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".EditAddEntity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".TestPage" />
         <activity android:name=".EditAddCurrency" />
         <activity android:name=".CreateReserveAccount" />

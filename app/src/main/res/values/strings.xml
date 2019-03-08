@@ -59,11 +59,21 @@
     <string name="editTransactionTitle">Add/Edit Task</string>
     <string name="editTransactionLblName">Task Name:</string>
     <string name="editTransactionLblValue">Task Value:</string>
-    <string name="editTransactionLblExpires">Expires:</string>
-    <string-array name="editTransactionSpinExpires">
-        <item>Does not Expire:</item>
-        <item>Expires:</item>
+    <string name="editTransactionLblExpires">Expiration:</string>
+    <string name="editTransactionLblDescription">Description:</string>
+    <string name="editTransactionLblAssigned">Assigned to:</string>
+    <string-array name="editTransactionSpinRepeat">
+        <item>Repeatable</item>
+        <item>Not-Repeatable</item>
     </string-array>
+    <string-array name="editTransactionSpinCoolDown">
+        <item>Immediately</item>
+        <item>Hourly</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+    </string-array>
+
+    <!-- Reserve Home -->
     <string name="reserveHomePage">Reserve Home</string>
     <string name="addEditSpinner">Add/Edit</string>
     <string name="testEntityListButton">Test Entity</string>
