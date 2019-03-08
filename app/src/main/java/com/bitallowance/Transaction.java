@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 2/25/2019
  */
 
-public class Transaction {
+public class Transaction implements ListItem{
     String _id;
     BigDecimal _value;
     Operator _operator;
@@ -26,8 +26,11 @@ public class Transaction {
     TransactionType _transactionType;
     List<Entity> _affected;
     String _name;
-    Date _expirationDate;
-    Date _coolDown;
+    private boolean _expirable;
+    private Date _expirationDate;
+    //CoolDown in hours
+    private int _coolDown;
+    private boolean _repeatable;
     Map<Entity, Boolean> _assignments;
 
 
@@ -38,6 +41,32 @@ public class Transaction {
     void execute(Entity entity) {
     //I think this function should take a list of Entities
     }
+
+    int getCoolDown(){
+        return _coolDown;
+    }
+    void setCoolDown(int coolDown){
+        _coolDown = coolDown;
+    }
+    boolean isRepeatable() {
+        return _repeatable;
+    }
+    void setIsRepeatable(boolean isRepeatable){
+        _repeatable = isRepeatable;
+    }
+    boolean isExpirable(){
+        return _expirable;
+    }
+    void setIsExpirable(boolean isExpirable){
+        _expirable = isExpirable;
+    }
+    Date getExpirationDate(){
+        return _expirationDate;
+    }
+    void setExpirationDate(Date date){
+        _expirationDate = date;
+    }
+
 
     void executeUnlink() {
     }
@@ -71,6 +100,9 @@ public class Transaction {
     public TransactionType getTransactionType() {
         return _transactionType;
     }
+    public void setTransactionType(TransactionType transactionType){
+        _transactionType = transactionType;
+    }
     public String get_id() {
         return _id;
     }
@@ -81,6 +113,10 @@ public class Transaction {
 
     public BigDecimal get_value() {
         return _value;
+    }
+
+    public void setValue(String value){
+        _value = new BigDecimal(value);
     }
 
     public void set_value(BigDecimal _value) {
@@ -103,11 +139,11 @@ public class Transaction {
         this._timeStamp = _timeStamp;
     }
 
-    public String get_memo() {
+    public String getMemo() {
         return _memo;
     }
 
-    public void set_memo(String _memo) {
+    public void setMemo(String _memo) {
         this._memo = _memo;
     }
 
@@ -127,4 +163,11 @@ public class Transaction {
         this._executed = _executed;
     }
 
+    @Override
+    public String getName() {
+        return _name;
+    }
+    public void setName(String name) {
+        _name = name;
+    }
 }

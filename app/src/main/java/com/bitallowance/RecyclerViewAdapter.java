@@ -14,13 +14,14 @@ import com.bitallowance.R;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.widget.Toast.makeText;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter {
-    ArrayList personNames;
+    List<ListItem> personNames;
     Context context;
-    public RecyclerViewAdapter(Context context, ArrayList personNames) {
+    public RecyclerViewAdapter(Context context, List<ListItem> personNames) {
         this.context = context;
         this.personNames = personNames;
     }
@@ -37,13 +38,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         // set the data in items
         TextView textView = (TextView)holder.itemView.findViewById(R.id.recyclerView_txtName);
-        textView.setText(personNames.get(position).toString());
+        textView.setText(personNames.get(position).getName());
         // implement setOnClickListener event on item view.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // display a toast with person name on item click
-                Toast toast = makeText(context, personNames.get(position).toString(), Toast.LENGTH_SHORT);
+                Toast toast = makeText(context, personNames.get(position).getName(), Toast.LENGTH_SHORT);
             }
         });
     }
