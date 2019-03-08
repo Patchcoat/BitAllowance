@@ -135,11 +135,8 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             //Cipher encryptCipher = Cipher.getInstance("RSA");
             //encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublic);
 
-            // convert to bytes, encrypt, and send the packets all in one fell swoop
-            //_out.write(encryptCipher.doFinal(_pub.getEncoded()));
-            //_out.write(encryptCipher.doFinal(userame.getBytes()));
-            //_out.write(encryptCipher.doFinal(displayName.getBytes()));
-            //_out.write(encryptCipher.doFinal(email.getBytes()));
+            // Send the packets to the server, reading so it knows when the server says it's ready
+            // for the next packet
             _out.write(_pub.toString().getBytes());
             _out.flush();
             read = _in.read();
@@ -188,19 +185,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }/* catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }*/
+        }
         return null;
     }
 
