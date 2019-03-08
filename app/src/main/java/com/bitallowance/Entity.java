@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class Entity {
+public class Entity implements ListItem {
 
     // Variables for the Class
     private int id;
@@ -122,5 +122,10 @@ public class Entity {
     // Update Entity method
     public void updateEntity() {
 
+    }
+
+    @Override
+    public String getName() {
+        return displayName;
     }
 }

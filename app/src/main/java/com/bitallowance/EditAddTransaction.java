@@ -3,6 +3,8 @@ package com.bitallowance;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -19,6 +21,12 @@ import java.util.List;
 public class EditAddTransaction extends AppCompatActivity
         implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener {
 
+    private Transaction _currentTransaction;
+    private TransactionType _TransType;
+    //For the recycler View
+    List<ListItem> test = (List)Reserve.get_entityList();
+
+    //Declare Spinners to allow dynamic content
     private Spinner spinExpires;
     private Spinner spinRepeatable;
     private Spinner spinCoolDown;
@@ -29,6 +37,15 @@ public class EditAddTransaction extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_add_transaction);
+
+        /* * * * * SET UP RECYCLER-VIEW * * * * */
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.editTransaction_Recycler);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        RecyclerViewAdapter customAdapter = new RecyclerViewAdapter(this, test);
+        recyclerView.setAdapter(customAdapter);
+
+
         spinAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinExpiresOptions);
         spinExpires = (Spinner) findViewById(R.id.editTransaction_spinExpires);
         spinRepeatable = (Spinner) findViewById(R.id.editTransaction_spinRepeat);

@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener {
 
     int _entityIndex;
     Entity _currentEntity;
-    ArrayList test = new ArrayList<>(Arrays.asList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5"));
+    List<ListItem> test = (List)Reserve.get_entityList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

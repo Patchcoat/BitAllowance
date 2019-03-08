@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 2/25/2019
  */
 
-public class Transaction {
+public class Transaction implements ListItem{
     String _id;
     BigDecimal _value;
     Operator _operator;
@@ -127,4 +127,8 @@ public class Transaction {
         this._executed = _executed;
     }
 
+    @Override
+    public String getName() {
+        return _name;
+    }
 }
