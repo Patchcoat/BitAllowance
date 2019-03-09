@@ -3,6 +3,7 @@ package com.bitallowance;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.provider.SyncStateContract;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -12,16 +13,21 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -34,11 +40,21 @@ import java.security.SecureRandom;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.google.gson.Gson;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
@@ -61,7 +77,39 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
         this._context = _context;
     }
 
-    private void generateKeyPair() {
+    private static HashMap<String, byte[]> encrypt(String input, String password) {
+        SecureRandom random = new SecureRandom();
+        byte salt[] = new byte[256];
+        random.nextBytes(salt);
+        HashMap<String, byte[]> map = new HashMap<String, byte[]>();
+
+        try {
+            char[] passwordChar = password.toCharArray();
+            PBEKeySpec pbeKeySpec = new PBEKeySpec(passwordChar, salt, 1324, 256);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+            byte[] keyBytes = secretKeyFactory.generateSecret(pbeKeySpec).getEncoded();
+            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
+            SecureRandom ivRandom = new SecureRandom();
+
+            byte[] iv = new byte[16];
+            ivRandom.nextBytes(iv);
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+
+            byte[] encrypted = cipher.doFinal(input.getBytes());
+            map.put("salt", salt);
+            map.put("iv", iv);
+            map.put("encrypted", encrypted);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return map;
+    }
+
+    private void generateKeyPair(String password) {
         // generate the public and private key pair
         try {
             // prepare the key generator
@@ -75,7 +123,23 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             KeyPair pair = keyGen.generateKeyPair();
             _priv = pair.getPrivate();
             _pub = pair.getPublic();
+            FileOutputStream fosPub = _context.openFileOutput("publicKey.dat", Context.MODE_PRIVATE);
+            FileOutputStream fosPriv = _context.openFileOutput("privateKey.dat", Context.MODE_PRIVATE);
+
+            HashMap<String, byte[]> pubMap = encrypt(_pub.toString(), password);
+            HashMap<String, byte[]> privMap = encrypt(_pub.toString(), password);
+
+            ObjectOutputStream oosPub = new ObjectOutputStream(fosPub);
+            ObjectOutputStream oosPriv = new ObjectOutputStream(fosPriv);
+            oosPub.writeObject(pubMap);
+            oosPriv.writeObject(privMap);
+            oosPub.close();
+            oosPriv.close();
         } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -87,12 +151,11 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
     @Override
     protected Void doInBackground(String... strings) {
-        generateKeyPair();
-
         String username = strings[0];
         String displayName = strings[1];
         String email = strings[2];
         String password = strings[3]; // DO NOT SEND TO SERVER DO NOT WRITE TO DISK
+        generateKeyPair(password);
 
         // The server connection section
         try {
@@ -175,7 +238,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             _in.close();
             _socket.close();
             Log.d("Create Reserve", "closed everything");
-            SharedPreferences preferences = _context.getSharedPreferences("AccountID", Context.MODE_PRIVATE);
+            SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt("AccountID", Integer.valueOf(id));
             editor.apply();
