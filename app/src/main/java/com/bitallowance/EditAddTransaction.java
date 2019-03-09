@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Intent;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class EditAddTransaction extends AppCompatActivity
         implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener {
@@ -26,16 +28,22 @@ public class EditAddTransaction extends AppCompatActivity
     private Transaction _currentTransaction;
     private TransactionType _transType;
     private int _transIndex;
+    
     //For the recycler View
-    List<ListItem> test = (List)Reserve.get_entityList();
+    private List<ListItem> _entityListAssigned = new ArrayList<>();
+    private List<ListItem> _entityListUnassigned = new ArrayList<>();
 
     //Declare Spinners to allow dynamic content
     private Spinner _spinExpires;
     private Spinner _spinRepeatable;
     private Spinner _spinCoolDown;
     private Spinner _spinAddEntity;
-    List<String> spinExpiresOptions = new ArrayList<>(Arrays.asList("Does not expire.", "(Select Expiration Date)"));
-    ArrayAdapter<String> spinAdapter;
+    private List<String> _spinExpiresOptions = new ArrayList<>(Arrays.asList("Does not expire.", "(Select Expiration Date)"));
+    private List<String> _spinAddEntityOptions = new ArrayList<>(Arrays.asList("Add Assignment", "Assign All"));
+    private ArrayAdapter<String> _spinExpireAdapter;
+    private ArrayAdapter<String> _spinAddEntityAdapter;
+
+    private RecyclerViewAdapter _recycleViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +64,32 @@ public class EditAddTransaction extends AppCompatActivity
             //Display transaction values
             updateTextFields();
 
+
+            Log.e("DB_TEST", "onCreate: TRANSACTION DATA - " + _currentTransaction.getName() );
+            Log.e("DB_TEST", "onCreate: Display ENTITY LIST - " + Reserve.get_entityList().size());
             isExisting = true;
+            for (Entity entity : Reserve.get_entityList()){
+
+                Log.e("DB_TEST", "onCreate: ENTITY DATA - " + entity.getName() + " : ASSIGNED = " + _currentTransaction.getAssignments().get(entity));
+                if ((_currentTransaction.getAssignments().get(entity) != null) &&
+                        _currentTransaction.getAssignments().get(entity)){
+                    _entityListAssigned.add(entity);
+                }
+                else{
+                    _entityListUnassigned.add(entity);
+                    _spinAddEntityOptions.add(entity.getName());
+                }
+            }
+
         } else {
             _transIndex = Reserve.get_transactionList().size();
             _currentTransaction = new Transaction();
             _currentTransaction.setTransactionType(_transType);
             isExisting = false;
+            for (Entity entity : Reserve.get_entityList()){
+                _entityListUnassigned.add(entity);
+                _spinAddEntityOptions.add(entity.getName());
+            }
         }
 
         setUpSpinners(isExisting);
@@ -71,8 +99,8 @@ public class EditAddTransaction extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.editTransaction_Recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        RecyclerViewAdapter customAdapter = new RecyclerViewAdapter(this, test);
-        recyclerView.setAdapter(customAdapter);
+        _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned);
+        recyclerView.setAdapter(_recycleViewAdapter);
     }
 
     /**
@@ -133,6 +161,8 @@ public class EditAddTransaction extends AppCompatActivity
 
     /**
      * This class provides setup for Activity Spinners.
+     * Defines Spinners and Array Adapters for Spinner member variables
+     * Sets the adapters and listeners for various spinners.
      * @author Doug Barlow
      * @param existingTransaction - indicates whether is Adding or Editing
      */
@@ -143,12 +173,16 @@ public class EditAddTransaction extends AppCompatActivity
         _spinExpires      = (Spinner)  findViewById(R.id.editTransaction_spinExpires);
 
         /* * * * * BASIC SPINNER SETUP * * * * */
-        spinAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinExpiresOptions);
+        _spinExpireAdapter    = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, _spinExpiresOptions);
+        _spinAddEntityAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, _spinAddEntityOptions);
         _spinExpires.setOnItemSelectedListener(this);
         _spinRepeatable.setOnItemSelectedListener(this);
-        _spinExpires.setAdapter(spinAdapter);
+        _spinAddEntity.setOnItemSelectedListener(this);
+        _spinExpires.setAdapter(_spinExpireAdapter);
+        _spinAddEntity.setAdapter(_spinAddEntityAdapter);
 
 
+        //If loading an existing Transaction set spinners to their previous locations
         if (existingTransaction)
         {
             switch(_currentTransaction.getCoolDown()){
@@ -182,49 +216,112 @@ public class EditAddTransaction extends AppCompatActivity
     }
 
 
+    /**
+     * This creates a DatePickerFragment and displays it.
+     * @param v
+     */
     public void showDatePickerDialog(View v) {
         DatePickerFragment datePicker = DatePickerFragment.newInstance(this);
         datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * This is the listener for the DatePicker.
+     * I also use it manage the state of the spinExpires spinner when loading
+     * and existing Transaction because the functionality is already there.
+     * @param date
+     */
     @Override
     public void onDateSet(Date date) {
-        if (date == null && spinExpiresOptions.size() == 2) {
+        if (date == null && _spinExpiresOptions.size() == 2) {
             _spinExpires.setSelection(0);
             return;
         } else if (date != null){
-            if (spinExpiresOptions.size() == 2)
-                spinExpiresOptions.add(Reserve.dateToString(date));
+            if (_spinExpiresOptions.size() == 2)
+                _spinExpiresOptions.add(Reserve.dateToString(date));
             else
-                spinExpiresOptions.set(2, Reserve.dateToString(date));
-            spinAdapter.notifyDataSetChanged();
+                _spinExpiresOptions.set(2, Reserve.dateToString(date));
+            _spinExpireAdapter.notifyDataSetChanged();
             _currentTransaction.setExpirationDate(date);
         }
         _spinExpires.setSelection(2);
     }
 
+    /**
+     * This is the listener for the Spinner objects.
+     * Uses a switch to differentiate which Spinner call came from.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
         switch (parent.getId()) {
+            //Expiration Spinner
             case R.id.editTransaction_spinExpires:
                 if (position == 1) {
                     showDatePickerDialog(view);
                 }
                 break;
+            //Repeat Spinner
             case R.id.editTransaction_spinRepeat:
+                //Settings to make the spinner display better based on what is selected
                 ViewGroup.LayoutParams params = _spinRepeatable.getLayoutParams();
                 _spinRepeatable.setMinimumWidth(170);
+                //pixel density multiplier for converting pixels to dp
                 int dpMultiplier = (int) getApplicationContext().getResources().getDisplayMetrics().density;
+                //If repeatable show cool-down spinner.
                 if (position == 0) {
                     params.width = dpMultiplier * 160;
                     _spinCoolDown.setVisibility(View.VISIBLE);
+                //else hide cool-down spinner and increase width of repeatable spinner. (for aesthetics)
                 } else {
                     params.width = dpMultiplier * 200;
                     _spinCoolDown.setVisibility(View.INVISIBLE);
                 }
+                //activates the size changes of spinRepeatable
                 _spinRepeatable.setLayoutParams(params);
                 break;
+            //Add Entity Spinner
+            case R.id.editTransaction_spinAddEntity:
+                //If first option is selected - Do nothing.
+                if (position == 0) {
+                    return;
+                    //If position 1 selected assign transaction to ALL entities.
+                } else if (position == 1) {
+                    /* * * * FIRST CHECK IF UNASSIGNED LIST EMPTY * * * */
+                    //Otherwise we risk crashing
+                    if (_entityListUnassigned.size() == 0){
+                        _spinAddEntity.setSelection(0);
+                    }else {
+                        //copy each entity to the Assigned list and remove corresponding spinner option
+                        for (ListItem entity : _entityListUnassigned) {
+                            _entityListAssigned.add(entity);
+                            _spinAddEntityOptions.remove(2);
+                        }
+                        //clear unassigned list or effects won't be saved.
+                        _entityListUnassigned.clear();
+                        //Set selection back to 0 for ease of user.
+                        _spinAddEntity.setSelection(0);
+                    }
+                } else {//ELSE -when user selects a single Entity
+                    //Copy selected entity to Assigned list
+                    _entityListAssigned.add(_entityListUnassigned.get(position - 2));
+                    //Remove entity from Unassigned List
+                    _entityListUnassigned.remove(position - 2);
+                    //Remove option from option list.
+                    _spinAddEntityOptions.remove(position);
+                    //Set selection back to 0 for ease of user
+                    _spinAddEntity.setSelection(0);
+                }
+                //Let the adapter know to redraw Add-Entity spinner with updated options.
+                _spinAddEntityAdapter.notifyDataSetChanged();
+                for (int i = 0; i < _spinAddEntityAdapter.getCount(); i++);
+
+                //Let the adapter know to redraw the RecyclerView with the updated entity list.
+                _recycleViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -233,6 +330,12 @@ public class EditAddTransaction extends AppCompatActivity
 
     }
 
+    /**
+     * Saves the current  Transaction based on the current inputs.
+     * Basic Error checking for EditText items. Spinners are programmed
+     * in such a way it should be impossible for them to be in an invalid state.
+     * @param view
+     */
     public void saveTransaction(View view) {
         EditText txtName  = (EditText) findViewById(R.id.editTransaction_txtName);
         EditText txtValue = (EditText) findViewById(R.id.editTransaction_txtValue);
@@ -253,10 +356,14 @@ public class EditAddTransaction extends AppCompatActivity
             return;
         }
 
+        //Save Text Fields
         _currentTransaction.setName(txtName.getText().toString());
         _currentTransaction.setValue(txtValue.getText().toString());
         _currentTransaction.setMemo(txtDesc.getText().toString());
 
+        //Save ExpireSpinner State.
+        //Expiration Date tentatively saved in onDateSet()
+        //Expiration Date save locked when this object is saved in Reserve's master transaction list
         if (_spinExpires.getSelectedItemPosition() == 0) {
             _currentTransaction.setIsExpirable(false);
         }
@@ -270,6 +377,7 @@ public class EditAddTransaction extends AppCompatActivity
             _currentTransaction.setIsRepeatable(false);
         }
 
+        //Save cooldown selection in hours
         switch (_spinCoolDown.getSelectedItemPosition()){
             case 1:
                 _currentTransaction.setCoolDown(1); // 1 hour
@@ -284,6 +392,16 @@ public class EditAddTransaction extends AppCompatActivity
                 _currentTransaction.setCoolDown(0); // No cooldown
         }
 
+
+        /* * * * * UPDATE ASSIGNMENT MAP * * * * */
+        for (ListItem entity: _entityListAssigned) {
+            _currentTransaction.updateAssignment((Entity) entity, Boolean.TRUE);
+        }
+        for (ListItem entity: _entityListUnassigned) {
+            _currentTransaction.updateAssignment((Entity) entity, Boolean.FALSE);
+        }
+
+        /* * * * * FINALLY UPDATE TRANSACTION IN THE MASTER LIST * * * * */
         if (_transIndex >= Reserve.get_transactionList().size()){
             Reserve.addTransaction(_currentTransaction);
         }
@@ -291,45 +409,69 @@ public class EditAddTransaction extends AppCompatActivity
             Reserve.updateTransaction(_currentTransaction, _transIndex);
         }
 
+
         Toast toast = Toast.makeText(getApplicationContext(),"Record Saved.", Toast.LENGTH_SHORT);
         toast.show();
     }
 
+    /**
+     * This class allows the user to move to the Next Transaction (of the same Transaction Type)
+     * in the list.
+     * @param view
+     */
     public void editNextTransaction(View view) {
         Intent intent = new Intent(this, EditAddTransaction.class);
-
         int newIndex;
+
+        //Find the next transaction with a matching type.
         for(newIndex = _transIndex + 1; newIndex < Reserve.get_transactionList().size(); newIndex++){
             if (Reserve.get_transactionList().get(newIndex).getTransactionType() == _transType){
                 break;
             }
         }
 
+        //Pass the transaction type in case it's a new transaction
         intent.putExtra("TRANSACTION_TYPE", _transType);
+        //Pass the index (New transaction will be transactionList().size() + 1)
         intent.putExtra("TRANSACTION_INDEX", newIndex);
 
         startActivity(intent);
+
+        //When they finally click "Done" it will finish() regardless of how many transactions they've edited
         finish();
     }
 
-
+    /**
+     * This class allows the user to move to the Previous Transaction (of the same Transaction Type)
+     * in the list.
+     * @param view
+     */
     public void editPrevTransaction(View view) {
         Intent intent = new Intent(this, EditAddTransaction.class);
-
         int newIndex;
+
+        //Find the next transaction with a matching type.
         for(newIndex = _transIndex - 1; newIndex >= 0; newIndex--){
             if (Reserve.get_transactionList().get(newIndex).getTransactionType() == _transType){
                 break;
             }
         }
 
+        //Pass the transaction type in case it's a new transaction
         intent.putExtra("TRANSACTION_TYPE", _transType);
+        //Pass the index (New transaction will be -1)
         intent.putExtra("TRANSACTION_INDEX", newIndex);
 
         startActivity(intent);
+
+        //When they finally click "Done" it will finish() regardless of how many transactions they've edited
         finish();
     }
 
+    /**
+     * Send the user back to the calling Activity
+     * @param view
+     */
     public void finish(View view) {
         finish();
     }
