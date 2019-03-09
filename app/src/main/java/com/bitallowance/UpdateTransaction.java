@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -48,7 +50,7 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
     protected Void doInBackground(String... strings) {
         getKeyPair();
 
-        String username = strings[0];
+        String id = strings[0];
 
         // The server connection section
         try {
@@ -62,94 +64,156 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
             // connects the socket to the remote server
             _socket.connect(sockaddr, timeout);
             // instantiates the reader/writer
-            PrintWriter _out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream())), true);
-            InputStreamReader _in = new InputStreamReader(_socket.getInputStream());
+            DataOutputStream _out = new DataOutputStream(_socket.getOutputStream());
+            DataInputStream _in = new DataInputStream(_socket.getInputStream());
 
             // write to the buffered writer, then sends the packet with flush
             // we're telling the server we want to 'c'reate an account
-            _out.print('n');
+            _out.write('n');
             _out.flush();
 
             // read the public key into a byte array
-            Log.d("Create Reserve", "accepting new");
+            Log.d("Update Transaction", "accepting new");
             ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
-            char[] serverKeyBytes = new char[426];
+            byte[] serverKeyBytes = new byte[426];
             int read = _in.read(serverKeyBytes, 0, 426);
             String serverPEMKey = new String(serverKeyBytes);
             Log.d("Read", Integer.toString(read));
-            Log.d("Create Reserve", serverPEMKey);
+            Log.d("Update Transaction", serverPEMKey);
 
-            // encode the data into a usable format
-            //X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decode(serverPEMKey, Base64.DEFAULT));
-            // rev up the RSA algorithm for generating the public key
-            //KeyFactory fact = KeyFactory.getInstance("RSA");
-            // generate the public key from the encoded data
-            //RSAPublicKey serverPublic = (RSAPublicKey) fact.generatePublic(spec);
-            //Log.d("Create Reserve", serverPublic.toString());
-
-            // rev up the cipher
-            //Cipher encryptCipher = Cipher.getInstance("RSA");
-            //encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublic);
-
-            // convert to bytes, encrypt, and send the packets all in one fell swoop
-            //_out.write(encryptCipher.doFinal(_pub.getEncoded()));
-            //_out.write(encryptCipher.doFinal(userame.getBytes()));
-            //_out.write(encryptCipher.doFinal(displayName.getBytes()));
-            //_out.write(encryptCipher.doFinal(email.getBytes()));
             String nul = "\0";
-            _out.println(_pub.toString());
-            Log.d("Create Reserve", _pub.toString());
-            _out.print("ut");// 'u'pdate 't'ransaction
-            _out.println();// id
-            _out.println();// name
-            _out.println();// value
-            _out.println();// operator
-            _out.println();// timestamp
-            _out.println();// memo
-            _out.println();// linked
-            _out.println();// executed
-            _out.println();// expiration date
-            _out.println();// cool down
-            _out.println();// affected count
-            for (int i = 0; i < 0; i++) {// loop through each affected entity
-                _out.println();// affected
-                _out.println();// assignments
+            _out.write(_pub.toString().getBytes());
+            Log.d("Update Transaction", _pub.toString());
+            _out.write("ut\n".getBytes());// 'u'pdate 't'ransaction
+            read = _in.read();
+            int idNum = Integer.parseInt(id);
+            _out.write(idNum);
+            // if the transaction doesn't have a database id (-1) that means it was just created
+            // and it needs to get an ID, and the rest of the information is pushed to the server
+            // if it does have an ID then depending on the timestamp either the local transaction
+            // is updated or the transaction on the server is updated.
+            _out.write(id.getBytes()); // TODO convert id to uint32_t
+            byte[] updateType = new byte[1];
+            read = _in.read(updateType, 0, 1);
+            // update types
+            // l = local update of transaction
+            // r = remote update of transaction, or create the transaction on the server
+            switch ((char)updateType[0]) {
+                case 'l':
+                    byte[] buffer = new byte[100];
+                    _out.write("_".getBytes()); // this line and the next one say "I'm ready"
+                    _out.flush();
+                    byte[] idBytes = new byte[4];
+                    read = _in.read(buffer);// get ID
+                    idNum = idBytes[3] & 0xFF |
+                            (idBytes[2] & 0xFF) << 8 |
+                            (idBytes[1] & 0xFF) << 16|
+                            (idBytes[0] & 0xFF) << 24;
+                    // TODO get the local copy of the transaction from the ID
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get name
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get value
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get operator
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get timestamp
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get memo
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get linked
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get executed
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get expiration date
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// get cool down
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    byte[] affecCntBytes = new byte[4];
+                    read = _in.read(buffer);// get affected count
+                    _in.read(affecCntBytes, 0, 4);
+                    // convert byte array to integer
+                    int affectedCount = affecCntBytes[3] & 0xFF |
+                            (affecCntBytes[2] & 0xFF) << 8 |
+                            (affecCntBytes[1] & 0xFF) << 16|
+                            (affecCntBytes[0] & 0xFF) << 24;
+                    for (int i = 0; i < affectedCount; i++) {
+                        _out.write("_".getBytes());
+                        _out.flush();
+                        read = _in.read(buffer);
+                        /* TODO separate from the buffer into the two values, affected/and assignments */
+                    }
+                    break;
+                case 'r':
+                    // write
+                    _out.write("name\n".getBytes());// name
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("value\n".getBytes());// value
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("operator\n".getBytes());// operator
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("timestamp\n".getBytes());// timestamp
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("memo\n".getBytes());// memo
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("linked\n".getBytes());// linked
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("executed\n".getBytes());// executed
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("expiration\n".getBytes());// expiration date
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("cool down\n".getBytes());// cool down
+                    _out.flush();
+                    read = _in.read();
+                    _out.write("affected count\n".getBytes());// affected count
+                    _out.flush();
+                    read = _in.read();
+                    for (int i = 0; i < 0; i++) {// loop through each affected entity
+                        _out.write("affected\n".getBytes());// affected
+                        _out.write("assignment\n".getBytes());// assignments
+                        _out.flush();
+                        read = _in.read();
+                    }
+                    break;
             }
             _out.flush();
-            Log.d("Create Reserve", "Flushed");
+            Log.d("Update Transaction", "Flushed");
 
-            // rev up a different cipher
-            //Cipher decryptCipher = Cipher.getInstance("RSA");
-            //decryptCipher.init(Cipher.DECRYPT_MODE, serverPublic);
-
-            char[] confirmBytes = new char[100];
-            Log.d("Create Reserve", "receiving confirmation");
+            // confirm everything went well
+            byte[] confirmBytes = new byte[100];
+            Log.d("Update Transaction", "receiving confirmation");
             _in.read(confirmBytes, 0, 100);
             String confirm = new String(confirmBytes);
-            Log.d("Create Reserve", confirm);
+            Log.d("Update Transaction", confirm);
 
-            Log.d("Create Reserve", "start closing things");
+            Log.d("Update Transaction", "start closing things");
             _out.close();
             _in.close();
             _socket.close();
-            Log.d("Create Reserve", "closed everything");
+            Log.d("Update Transaction", "closed everything");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }/* catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }*/
+        }
         return null;
     }
 
