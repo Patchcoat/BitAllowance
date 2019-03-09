@@ -28,7 +28,7 @@ public class EditAddTransaction extends AppCompatActivity
     private Transaction _currentTransaction;
     private TransactionType _transType;
     private int _transIndex;
-    
+
     //For the recycler View
     private List<ListItem> _entityListAssigned = new ArrayList<>();
     private List<ListItem> _entityListUnassigned = new ArrayList<>();
