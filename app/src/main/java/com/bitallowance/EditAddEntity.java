@@ -68,6 +68,8 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
 
     @Override
     public void onDateSet(Date date) {
+        if (date == null)
+            return;
         Button button = (Button)findViewById(R.id.editEntity_btnDatePicker);
         button.setText(Reserve.dateToString(date));
         _currentEntity.setBirthday(date);

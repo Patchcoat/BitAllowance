@@ -1,5 +1,7 @@
 package com.bitallowance;
 
+import android.support.v4.util.ArrayMap;
+
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,6 +39,18 @@ public class Transaction implements ListItem{
     Transaction(){
         _timeStamp = Calendar.getInstance().getTime();
     }
+
+    Map <Entity, Boolean> getAssignments(){
+        return _assignments;
+    }
+    void setAssignments (Map<Entity, Boolean> newMap){
+        _assignments = new ArrayMap<>();
+        _assignments.putAll(newMap);
+    }
+    void updateAssignment (Entity entity, Boolean bool){
+        _assignments.put(entity, bool);
+    }
+
 
     void execute(Entity entity) {
     //I think this function should take a list of Entities
