@@ -9,6 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
 
+/**
+ * Entity Class
+ * @author Dustin Christensen
+ * @version 1.0
+ * This class is used to populate the RECYCLEREVIEW, originally for the
+ * RESERVEHOME, but can be used to populate any RECYCLERVIEW.
+ * @since 02/25/2019
+ */
+
 public class ViewList extends RecyclerView.Adapter <ViewList.MyViewHolder> {
     private List data;
     private Context context;

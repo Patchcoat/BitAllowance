@@ -4,6 +4,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Entity Class
+ * @author Dustin Christensen
+ * @version 1.0
+ * Entity class, the date that will be attached to the users,
+ * either as the teach/parent or as the student/child
+ * @since 02/25/2019
+ */
+
 public class Entity implements ListItem {
 
     // Variables for the Class
