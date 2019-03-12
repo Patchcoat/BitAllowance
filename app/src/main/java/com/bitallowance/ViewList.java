@@ -48,12 +48,6 @@ public class ViewList extends RecyclerView.Adapter <ViewList.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewList.MyViewHolder myViewHolder, int i) {
         myViewHolder.textView.setText(data.get(i).toString());
-        if (i % 3 == 0)
-            myViewHolder.textView.setBackgroundColor(ContextCompat.getColor(context, R.color.Blue));
-        else if ( i % 3 == 1)
-            myViewHolder.textView.setBackgroundColor(ContextCompat.getColor(context, R.color.Green));
-        else
-            myViewHolder.textView.setBackgroundColor(ContextCompat.getColor(context, R.color.Red));
     }
 
     @Override

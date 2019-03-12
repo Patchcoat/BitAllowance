@@ -17,6 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * ReserveHome Class
+ * @author Dustin Christensen
+ * @version 1.0
+ * This class will be used to populate the Recycler Views on the ReserveHome page.
+ * @since 02/25/2019
+ */
+
 public class ReserveHome extends AppCompatActivity {
 
     //RecyclerView variables
@@ -35,6 +43,8 @@ public class ReserveHome extends AppCompatActivity {
     private List entityList;
     private List taskList;
     private List rewardList;
+
+    private Filter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

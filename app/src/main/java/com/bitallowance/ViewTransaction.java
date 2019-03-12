@@ -59,7 +59,7 @@ public class ViewTransaction {
     }
 
     // Public methods
-    public void openEditTransaction(View view, Filter filter) {
+    public void openEditTransaction(View view) {
 
     }
 
