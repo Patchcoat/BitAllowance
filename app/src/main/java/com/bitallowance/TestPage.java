@@ -58,6 +58,13 @@ public class TestPage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void ShowList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
+        startActivity(intent);
+    }
+
     public void Connect(View view) {
         CreateReserve reserve = new CreateReserve();
         reserve.SetContext(getApplicationContext());
