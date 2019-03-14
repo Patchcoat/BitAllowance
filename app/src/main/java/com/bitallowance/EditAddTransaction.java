@@ -1,7 +1,6 @@
 package com.bitallowance;
 
 import android.content.Intent;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class EditAddTransaction extends AppCompatActivity
         implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener {
@@ -64,13 +62,9 @@ public class EditAddTransaction extends AppCompatActivity
             //Display transaction values
             updateTextFields();
 
-
-            Log.e("DB_TEST", "onCreate: TRANSACTION DATA - " + _currentTransaction.getName() );
-            Log.e("DB_TEST", "onCreate: Display ENTITY LIST - " + Reserve.get_entityList().size());
             isExisting = true;
             for (Entity entity : Reserve.get_entityList()){
 
-                Log.e("DB_TEST", "onCreate: ENTITY DATA - " + entity.getName() + " : ASSIGNED = " + _currentTransaction.getAssignments().get(entity));
                 if ((_currentTransaction.getAssignments().get(entity) != null) &&
                         _currentTransaction.getAssignments().get(entity)){
                     _entityListAssigned.add(entity);
@@ -99,7 +93,16 @@ public class EditAddTransaction extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.editTransaction_Recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned);
+        _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned, RecyclerViewAdapter.CardType.Simple);
+        if (_transType == TransactionType.FINE)
+        {
+            _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Detailed);
+        }
+        if (_transType == TransactionType.REWARD)
+        {
+            _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Normal);
+        }
+
         recyclerView.setAdapter(_recycleViewAdapter);
     }
 
@@ -156,7 +159,7 @@ public class EditAddTransaction extends AppCompatActivity
         EditText txtDesc  = (EditText) findViewById(R.id.editTransaction_txtDesc);
         txtName.setText(_currentTransaction.getName());
         txtDesc.setText(_currentTransaction.getMemo());
-        txtValue.setText(_currentTransaction.get_value().toString());
+        txtValue.setText(_currentTransaction.getValue().toString());
     }
 
     /**

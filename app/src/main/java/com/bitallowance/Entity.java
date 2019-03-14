@@ -28,6 +28,7 @@ public class Entity implements ListItem {
 
     // Constructors
     public Entity() {
+        cashBalance = new BigDecimal(0);
 
     }
 
@@ -137,4 +138,20 @@ public class Entity implements ListItem {
     public String getName() {
         return displayName;
     }
+    @Override
+    public String getCardPrimaryDetails()
+    {
+        String details = Reserve.get_currencySymbol();
+        details += " " + getCashBalance().toString();
+        return "Balance:  $123.00";
+    }
+    @Override
+    public String getCardSecondaryDetails() {
+        String details = Reserve.get_currencySymbol();
+        details += " " + getCashBalance().toString();
+        return "Other details....";
+    }
+
 }
+
+
