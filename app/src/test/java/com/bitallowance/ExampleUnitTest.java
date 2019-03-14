@@ -1,8 +1,5 @@
 package com.bitallowance;
 
-import android.os.AsyncTask;
-
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -53,7 +50,7 @@ public class ExampleUnitTest {
         int iEntity = random.nextInt(entityListSize);
         int iTransaction = random.nextInt(transactionListSize);
         BigDecimal prevBalance = Reserve.get_entityList().get(iEntity).getCashBalance();
-        BigDecimal transactionValue = Reserve.get_transactionList().get(iTransaction).get_value();
+        BigDecimal transactionValue = Reserve.get_transactionList().get(iTransaction).getValue();
         boolean isTask = false;
         if (Reserve.get_transactionList().get(iTransaction).getTransactionType() == TransactionType.TASK) {
             isTask = true;

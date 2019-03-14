@@ -56,7 +56,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //  call the constructor of CustomAdapter to send the reference and data to Adapter
-        RecyclerViewAdapter customAdapter = new RecyclerViewAdapter(this, test);
+        RecyclerViewAdapter customAdapter = new RecyclerViewAdapter(this, test, RecyclerViewAdapter.CardType.Simple);
         recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
 
     }

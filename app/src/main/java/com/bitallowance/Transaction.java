@@ -125,7 +125,7 @@ public class Transaction implements ListItem{
         this._id = _id;
     }
 
-    public BigDecimal get_value() {
+    public BigDecimal getValue() {
         return _value;
     }
 
@@ -177,11 +177,25 @@ public class Transaction implements ListItem{
         this._executed = _executed;
     }
 
+    public void setName(String name) {
+        _name = name;
+    }
+
     @Override
     public String getName() {
         return _name;
     }
-    public void setName(String name) {
-        _name = name;
+    @Override
+    public String getCardPrimaryDetails()
+    {
+        String details = Reserve.get_currencySymbol();
+        details += " " + getValue().toString();
+        return details;
+    }
+    @Override
+    public String getCardSecondaryDetails() {
+        String details = Reserve.get_currencySymbol();
+        details += " " + getValue().toString();
+        return details;
     }
 }
