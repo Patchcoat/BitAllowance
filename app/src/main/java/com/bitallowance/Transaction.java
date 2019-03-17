@@ -198,4 +198,8 @@ public class Transaction implements ListItem{
         details += " " + getValue().toString();
         return details;
     }
+    @Override
+    public float getSortableValue(){
+        return _value.floatValue();
+    }
 }

@@ -151,6 +151,10 @@ public class Entity implements ListItem {
         details += " " + getCashBalance().toString();
         return "Other details....";
     }
+    @Override
+    public float getSortableValue(){
+        return cashBalance.floatValue();
+    }
 
 }
 
