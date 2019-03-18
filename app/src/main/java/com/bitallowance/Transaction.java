@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -38,6 +39,7 @@ public class Transaction implements ListItem{
 
     Transaction(){
         _timeStamp = Calendar.getInstance().getTime();
+        _assignments = new ArrayMap<>();
     }
 
     Map <Entity, Boolean> getAssignments(){
@@ -48,6 +50,9 @@ public class Transaction implements ListItem{
         _assignments.putAll(newMap);
     }
     void updateAssignment (Entity entity, Boolean bool){
+        if (entity == null)
+            return;
+
         _assignments.put(entity, bool);
     }
 
