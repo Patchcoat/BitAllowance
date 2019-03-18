@@ -1,29 +1,21 @@
 package com.bitallowance;
 
-import android.app.AlertDialog;
-import android.app.Application;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
 
-public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener {
+import static android.widget.Toast.makeText;
+
+public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener, ListItemRecycleViewAdapter.OnItemClickListener {
 
     int _entityIndex;
     Entity _currentEntity;
@@ -56,7 +48,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //  call the constructor of CustomAdapter to send the reference and data to Adapter
-        RecyclerViewAdapter customAdapter = new RecyclerViewAdapter(this, test, RecyclerViewAdapter.CardType.Simple);
+        ListItemRecycleViewAdapter customAdapter = new ListItemRecycleViewAdapter(this, this, test, ListItemRecycleViewAdapter.CardType.Simple);
         recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
 
     }
@@ -115,6 +107,13 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
 
     public void finish(View view) {
         finish();
+    }
+
+    @Override
+    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+        Toast toast = makeText(getApplicationContext(), "Selected " + test.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
+
     }
 }
 

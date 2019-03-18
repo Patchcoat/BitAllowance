@@ -1,6 +1,5 @@
 package com.bitallowance;
 
-import android.graphics.BitmapRegionDecoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,17 +8,19 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class DisplayList extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+import static android.widget.Toast.makeText;
+
+public class DisplayList extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ListItemRecycleViewAdapter.OnItemClickListener {
 
     //Adapters and other Activity essential variables.
-    private RecyclerViewAdapter _recycleViewAdapter;
+    private ListItemRecycleViewAdapter _recycleViewAdapter;
     private List<ListItem> _listItems = new ArrayList<>();
     private ListItemType _type;
 
@@ -43,7 +44,7 @@ public class DisplayList extends AppCompatActivity implements AdapterView.OnItem
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //Select a Detailed adapter for this recycler view.
-        _recycleViewAdapter = new RecyclerViewAdapter(this, _listItems, RecyclerViewAdapter.CardType.Detailed);
+        _recycleViewAdapter = new ListItemRecycleViewAdapter(this, this, _listItems, ListItemRecycleViewAdapter.CardType.Detailed);
         recyclerView.setAdapter(_recycleViewAdapter);
 
         //Set up sort spinner
@@ -108,5 +109,11 @@ public class DisplayList extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+        Toast toast = makeText(getApplicationContext(), "Selected " + _listItems.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
