@@ -93,14 +93,7 @@ public class EditAddTransaction extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned, RecyclerViewAdapter.CardType.Simple);
-        if (_transType == ListItemType.FINE)
-        {
-            _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Detailed);
-        }
-        if (_transType == ListItemType.REWARD)
-        {
-            _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Normal);
-        }
+
 
         recyclerView.setAdapter(_recycleViewAdapter);
     }

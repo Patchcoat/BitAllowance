@@ -56,9 +56,8 @@ public class Reserve {
 
     /**
      * This function returns a complete list of all existing items of the specified type.
-     * @author Doug Barlow
-     * @param type
-     * @return Returns a list of the specified ListItem type.
+     * @param type Specifies type of List Item to be returned.
+     * @return List of the specified ListItem type.
      */
     public static List<ListItem> getListItems (ListItemType type){
         List<ListItem> returnList = new ArrayList<>();
@@ -78,6 +77,8 @@ public class Reserve {
         }
         return returnList;
     }
+
+
 
 
     /**

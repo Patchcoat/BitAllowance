@@ -32,9 +32,9 @@ public class ReserveHome extends AppCompatActivity {
     private RecyclerView.LayoutManager taskLayoutManager;
     private RecyclerView.LayoutManager rewardLayoutManager;
 
-    private List entityList;
-    private List taskList;
-    private List rewardList;
+    private List<ListItem> entityList;
+    private List<ListItem> taskList;
+    private List<ListItem> rewardList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,11 @@ public class ReserveHome extends AppCompatActivity {
         entityList = new ArrayList();
         taskList = new ArrayList();
         rewardList = new ArrayList();
+
+        entityList.addAll(Reserve.getListItems(ListItemType.ENTITY));
+        taskList.addAll(Reserve.getListItems(ListItemType.TASK));
+        rewardList.addAll(Reserve.getListItems(ListItemType.REWARD));
+
 
         //The RecyclerView
         entityView = findViewById(R.id.entityView);
@@ -58,12 +63,13 @@ public class ReserveHome extends AppCompatActivity {
         taskView.setLayoutManager(taskLayoutManager);
         rewardView.setLayoutManager(rewardLayoutManager);
 
+
         //Adapter
-        mEntityList = new ViewList(entityList);
+        mEntityList = new RecyclerViewAdapter(this, entityList, RecyclerViewAdapter.CardType.Normal);
         entityView.setAdapter(mEntityList);
-        mTaskList = new ViewList(taskList);
+        mTaskList = new RecyclerViewAdapter(this, taskList, RecyclerViewAdapter.CardType.Normal);
         taskView.setAdapter(mTaskList);
-        mRewardList = new ViewList(rewardList);
+        mRewardList = new RecyclerViewAdapter(this, rewardList, RecyclerViewAdapter.CardType.Normal);
         rewardView.setAdapter(mRewardList);
     }
 
@@ -87,91 +93,4 @@ public class ReserveHome extends AppCompatActivity {
 
     }
 
-    public void onClickCreate(View view) {
-        Context context = this.getApplicationContext();
-        MyTask myTask = new MyTask();
-        myTask.execute(true);
-    }
-
-    private class MyTask extends AsyncTask<Boolean, Integer, ArrayList> {
-
-        @Override
-        protected ArrayList doInBackground(Boolean... booleans) {
-
-            if (booleans[0])
-                saveFile();
-            else
-                loadFile();
-
-            return null;
-        }
-
-        private void saveFile()
-        {
-            FileOutputStream outStream;
-            Random random = new Random();
-            String fileContents = "";
-            int value;
-            try{
-                outStream = openFileOutput("testFile.txt", Context.MODE_PRIVATE);
-                for (int i = 1; i <= 10; i++)
-                {
-                    value = random.nextInt(1900000000);
-                    fileContents += value + "\n";
-                    publishProgress(i, value, 1);
-                    Thread.sleep(250);
-                }
-                outStream.write(fileContents.getBytes());
-                outStream.close();
-            }
-            catch (Exception e)
-            {
-                Log.d("DMB: saveFile()", "File save failed!");
-            }
-
-        }
-
-        private void loadFile()
-        {
-            FileInputStream inStream;
-            int value;
-            try{
-                inStream = openFileInput("testFile.txt");
-                InputStreamReader reader = new InputStreamReader(inStream);
-                BufferedReader buffer = new BufferedReader(reader);
-                for (int i = 1; i <= 10; i++)
-                {
-                    value = Integer.parseInt(buffer.readLine());
-                    publishProgress(i, value, 0);
-                    Thread.sleep(250);
-                }
-                inStream.close();
-            }
-            catch (Exception e)
-            {
-                Log.d("DMB: loadFile()", "File load failed!");
-            }
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            if (values[2] == 1) {
-                entityList.add("Here is a list" + values[0]);
-                taskList.add("Just for fun" + values[1]);
-                rewardList.add("Creating Key " + values[0] + ": x00" + values[1]);
-            }
-            else {
-                rewardList.add("Loading Key " + values[0] + ": x00" + values[1]);
-            }
-
-            mEntityList.notifyDataSetChanged();
-            mTaskList.notifyDataSetChanged();
-            mRewardList.notifyDataSetChanged();
-
-            entityView.smoothScrollToPosition(entityList.size()-1);
-            taskView.smoothScrollToPosition(taskList.size()-1);
-            rewardView.smoothScrollToPosition(rewardList.size()-1);
-        }
-    }
 }

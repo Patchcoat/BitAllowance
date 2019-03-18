@@ -49,10 +49,12 @@ public class DisplayList extends AppCompatActivity implements AdapterView.OnItem
         //Set up sort spinner
         setupSpinner();
 
+
+
     }
 
     /**
-     * setupSpinner() - Sets up the spinner and dynamically populates spinner options based on
+     * Sets up the spinner and dynamically populates spinner options based on
      * list-type.
      * @author Doug Barlow
      */
