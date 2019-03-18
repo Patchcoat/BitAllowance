@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -40,28 +39,47 @@ public class TestPage extends AppCompatActivity {
     public void EditReward (View view){
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
-        intent.putExtra("TRANSACTION_TYPE", TransactionType.REWARD);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.REWARD);
         startActivity(intent);
     }
 
     public void EditTask (View view){
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
-        intent.putExtra("TRANSACTION_TYPE", TransactionType.TASK);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
         startActivity(intent);
     }
 
     public void EditFine (View view){
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
-        intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.FINE);
         startActivity(intent);
     }
 
-    public void ShowList (View view){
+    public void ShowAllList (View view){
         Intent intent = new Intent(this, DisplayList.class);
-        intent.putExtra("TRANSACTION_INDEX", -1);
-        intent.putExtra("TRANSACTION_TYPE", TransactionType.FINE);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.ALL);
+        startActivity(intent);
+    }
+    public void ShowTaskList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.TASK);
+        startActivity(intent);
+    }
+    public void ShowRewardList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.REWARD);
+        startActivity(intent);
+    }
+    public void ShowFineList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.FINE);
+        startActivity(intent);
+    }
+    public void ShowEntityList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.ENTITY);
         startActivity(intent);
     }
 
@@ -159,9 +177,9 @@ public class TestPage extends AppCompatActivity {
             reward.setMemo("This is a randomly generated Reward. This is Transaction number: " + ((3 * i) + 2));
             fine.setMemo("This is a randomly generated Fine. This is Transaction number: " + ((3 * i) + 3));
 
-            task.setTransactionType(TransactionType.TASK);
-            reward.setTransactionType(TransactionType.REWARD);
-            fine.setTransactionType(TransactionType.FINE);
+            task.setTransactionType(ListItemType.TASK);
+            reward.setTransactionType(ListItemType.REWARD);
+            fine.setTransactionType(ListItemType.FINE);
 
             Map<Entity, Boolean> taskMap = new ArrayMap<>();
             Map<Entity, Boolean> rewardMap = new ArrayMap<>();

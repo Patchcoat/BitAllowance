@@ -52,7 +52,7 @@ public class ExampleUnitTest {
         BigDecimal prevBalance = Reserve.get_entityList().get(iEntity).getCashBalance();
         BigDecimal transactionValue = Reserve.get_transactionList().get(iTransaction).getValue();
         boolean isTask = false;
-        if (Reserve.get_transactionList().get(iTransaction).getTransactionType() == TransactionType.TASK) {
+        if (Reserve.get_transactionList().get(iTransaction).getTransactionType() == ListItemType.TASK) {
             isTask = true;
         }
         Reserve.get_transactionList().get(iTransaction).execute(Reserve.get_entityList().get(iEntity));

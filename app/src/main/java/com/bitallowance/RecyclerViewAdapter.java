@@ -64,10 +64,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
         });
     }
 
-    public void bindSimple(TextView txtName, final int position){
+    private void bindSimple(TextView txtName, final int position){
         txtName.setText(_listItems.get(position).getName());
     }
-    public void bindNormal(TextView txtDetails1, ImageView imgAvatar, final int position) {
+
+    private void bindNormal(TextView txtDetails1, ImageView imgAvatar, final int position) {
         int dpMultiplier = (int) _context.getResources().getDisplayMetrics().density;
         txtDetails1.getLayoutParams().height = (20 * dpMultiplier);
 
@@ -77,7 +78,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter {
         txtDetails1.setText(_listItems.get(position).getCardPrimaryDetails());
     }
 
-     public void bindDetailed(TextView txtDetails2, final int position){
+     private void bindDetailed(TextView txtDetails2, final int position){
         int dpMultiplier = (int) _context.getResources().getDisplayMetrics().density;
         txtDetails2.getLayoutParams().height = (20 * dpMultiplier);
         txtDetails2.setText(_listItems.get(position).getCardSecondaryDetails());
