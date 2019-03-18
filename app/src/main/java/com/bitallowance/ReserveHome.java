@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +26,10 @@ import java.util.Random;
  * @since 02/25/2019
  */
 
-public class ReserveHome extends AppCompatActivity {
+public abstract class ReserveHome extends AppCompatActivity {
+
+    // LOG debug characteristic
+    private static final String TAG = "BADGS-ReserveHome";
 
     //RecyclerView variables
     private RecyclerView entityView;
@@ -40,14 +44,20 @@ public class ReserveHome extends AppCompatActivity {
     private RecyclerView.LayoutManager taskLayoutManager;
     private RecyclerView.LayoutManager rewardLayoutManager;
 
+    // ReserverHome Private variables
     private List entityList;
     private List taskList;
     private List rewardList;
 
     private Filter filter;
+    private TransactionType _transType;
+    private int _index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Debug LOG
+        Log.d(TAG, "onCreate=" + savedInstanceState);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserve_home);
         entityList = new ArrayList();
@@ -75,105 +85,88 @@ public class ReserveHome extends AppCompatActivity {
         taskView.setAdapter(mTaskList);
         mRewardList = new ViewList(rewardList);
         rewardView.setAdapter(mRewardList);
+
+        Context context = this.getApplicationContext();
+        MyTask myTask = new MyTask();
+        myTask.execute(true);
+
     }
 
     public void openSettings(View view) {
+        // Debug LOG
+        Log.d(TAG, "openSettings=" + view);
 
     }
 
     public void openEntityList(View view) {
+        // Debug LOG
+        Log.d(TAG, "openEntityList=" + view);
 
     }
 
     public void openTaskList(View view) {
+        // Debug LOG
+        Log.d(TAG, "openTaskList=" + view);
 
     }
 
     public void openRewardList(View view) {
+        // Debug LOG
+        Log.d(TAG, "openRewardList=" + view);
 
     }
 
     public void openGiveReward(View view) {
+        // Debug LOG
+        Log.d(TAG, "openGiveReward=" + view);
 
     }
 
-    public void onClickCreate(View view) {
-        Context context = this.getApplicationContext();
-        MyTask myTask = new MyTask();
-        myTask.execute(true);
-    }
-
+    // AsyncTask that gathers the information to display the information
     private class MyTask extends AsyncTask<Boolean, Integer, ArrayList> {
 
         @Override
         protected ArrayList doInBackground(Boolean... booleans) {
-
-            if (booleans[0])
-                saveFile();
-            else
-                loadFile();
+            // Debug LOG
+            Log.d(TAG, "doInBackground=" + booleans);
 
             return null;
         }
 
-        private void saveFile()
-        {
-            FileOutputStream outStream;
-            Random random = new Random();
-            String fileContents = "";
-            int value;
-            try{
-                outStream = openFileOutput("testFile.txt", Context.MODE_PRIVATE);
-                for (int i = 1; i <= 10; i++)
-                {
-                    value = random.nextInt(1900000000);
-                    fileContents += value + "\n";
-                    publishProgress(i, value, 1);
-                    Thread.sleep(250);
+
+
+        public void CreateReserveList(View view) {
+            //Intent intent = new Intent(Reserve, ReserveHome.class);
+            int newIndex;
+
+            //Find the next transaction with a matching type.
+            for(newIndex = _index - 1; newIndex >= 0; newIndex--){
+                if (Reserve.get_transactionList().get(newIndex).getTransactionType() == _transType){
+                    break;
                 }
-                outStream.write(fileContents.getBytes());
-                outStream.close();
-            }
-            catch (Exception e)
-            {
-                Log.d("DMB: saveFile()", "File save failed!");
             }
 
-        }
+            //Pass the transaction type in case it's a new transaction
+            // intent.putExtra("TRANSACTION_TYPE", _transType);
+            //Pass the index (New transaction will be -1)
+            // intent.putExtra("TRANSACTION_INDEX", newIndex);
 
-        private void loadFile()
-        {
-            FileInputStream inStream;
-            int value;
-            try{
-                inStream = openFileInput("testFile.txt");
-                InputStreamReader reader = new InputStreamReader(inStream);
-                BufferedReader buffer = new BufferedReader(reader);
-                for (int i = 1; i <= 10; i++)
-                {
-                    value = Integer.parseInt(buffer.readLine());
-                    publishProgress(i, value, 0);
-                    Thread.sleep(250);
-                }
-                inStream.close();
-            }
-            catch (Exception e)
-            {
-                Log.d("DMB: loadFile()", "File load failed!");
-            }
+            // startActivity(intent);
+
+            //When they finally click "Done" it will finish() regardless of how many transactions they've edited
+            finish();
         }
 
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            if (values[2] == 1) {
-                entityList.add("Here is a list" + values[0]);
-                taskList.add("Just for fun" + values[1]);
-                rewardList.add("Creating Key " + values[0] + ": x00" + values[1]);
-            }
-            else {
-                rewardList.add("Loading Key " + values[0] + ": x00" + values[1]);
-            }
+            // Debug LOG
+            Log.d(TAG, "onProgressUpdate=" + values);
+
+            entityList.add(Reserve.get_entityList());
+            //if (Reserve.get_transactionList() == )
+            taskList.add(Reserve.get_transactionList());
+            rewardList.add("Creating Key " + values[0] + ": x00" + values[1]);
 
             mEntityList.notifyDataSetChanged();
             mTaskList.notifyDataSetChanged();
