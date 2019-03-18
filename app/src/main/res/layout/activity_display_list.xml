@@ -38,7 +38,7 @@
         app:srcCompat="@drawable/abc_ic_menu_overflow_material" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/displayList_spinSort"
         android:layout_width="129dp"
         android:layout_height="32dp"
         android:layout_marginTop="8dp"

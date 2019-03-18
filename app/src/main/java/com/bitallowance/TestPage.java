@@ -57,10 +57,29 @@ public class TestPage extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void ShowList (View view){
+    public void ShowAllList (View view){
         Intent intent = new Intent(this, DisplayList.class);
-        intent.putExtra("TRANSACTION_INDEX", -1);
-        intent.putExtra("TRANSACTION_TYPE", ListItemType.FINE);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.ALL);
+        startActivity(intent);
+    }
+    public void ShowTaskList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.TASK);
+        startActivity(intent);
+    }
+    public void ShowRewardList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.REWARD);
+        startActivity(intent);
+    }
+    public void ShowFineList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.FINE);
+        startActivity(intent);
+    }
+    public void ShowEntityList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.ENTITY);
         startActivity(intent);
     }
 
