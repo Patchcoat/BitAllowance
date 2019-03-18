@@ -25,7 +25,7 @@ public class Transaction implements ListItem{
     String _memo;
     boolean _linked;
     boolean _executed;
-    TransactionType _transactionType;
+    ListItemType _transactionType;
     List<Entity> _affected;
     String _name;
     private boolean _expirable;
@@ -111,10 +111,10 @@ public class Transaction implements ListItem{
     /**
      * Getters & Setters Below
      */
-    public TransactionType getTransactionType() {
+    public ListItemType getTransactionType() {
         return _transactionType;
     }
-    public void setTransactionType(TransactionType transactionType){
+    public void setTransactionType(ListItemType transactionType){
         _transactionType = transactionType;
     }
     public String get_id() {
@@ -194,12 +194,17 @@ public class Transaction implements ListItem{
     }
     @Override
     public String getCardSecondaryDetails() {
-        String details = Reserve.get_currencySymbol();
-        details += " " + getValue().toString();
-        return details;
+        if (_expirable)
+            return _expirationDate.toString();
+        else
+            return "Does not expire";
     }
     @Override
     public float getSortableValue(){
         return _value.floatValue();
+    }
+    @Override
+    public Date getSortableDate(){
+        return _expirationDate;
     }
 }

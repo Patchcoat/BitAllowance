@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +23,7 @@ public class EditAddTransaction extends AppCompatActivity
         implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener {
 
     private Transaction _currentTransaction;
-    private TransactionType _transType;
+    private ListItemType _transType;
     private int _transIndex;
 
     //For the recycler View
@@ -48,7 +47,7 @@ public class EditAddTransaction extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_add_transaction);
         _transIndex = getIntent().getIntExtra("TRANSACTION_INDEX", -1);
-        _transType = (TransactionType)getIntent().getSerializableExtra("TRANSACTION_TYPE");
+        _transType = (ListItemType)getIntent().getSerializableExtra("TRANSACTION_TYPE");
 
         boolean isExisting;
 
@@ -94,11 +93,11 @@ public class EditAddTransaction extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned, RecyclerViewAdapter.CardType.Simple);
-        if (_transType == TransactionType.FINE)
+        if (_transType == ListItemType.FINE)
         {
             _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Detailed);
         }
-        if (_transType == TransactionType.REWARD)
+        if (_transType == ListItemType.REWARD)
         {
             _recycleViewAdapter.setCardType(RecyclerViewAdapter.CardType.Normal);
         }

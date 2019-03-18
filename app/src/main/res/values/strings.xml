@@ -79,4 +79,7 @@
     <string name="testEntityListButton">Test Entity</string>
     <string name="testTaskButton">Test Task</string>
     <string name="testRewardButton">Test Reward</string>
+
+    <!-- Display List -->
+    <string name="displayListLblSort">Sort By:</string>
 </resources>
