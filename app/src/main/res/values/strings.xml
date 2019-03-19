@@ -82,4 +82,23 @@
 
     <!-- Display List -->
     <string name="displayListLblSort">Sort By:</string>
+
+    <!-- Display Details -->
+    <string name="displayDetailsTitle">Display Details</string>
+    <string name="displayDetailsLblName">Task Name:</string>
+    <string name="displayDetailsLblValue">Task Value:</string>
+    <string name="displayDetailsLblExpires">Expiration:</string>
+    <string name="displayDetailsLblDescription">Description:</string>
+    <string name="displayDetailsLblAssigned">Assigned to:</string>
+    <string-array name="displayDetailsSpinRepeat">
+        <item>Repeatable</item>
+        <item>Not-Repeatable</item>
+    </string-array>
+    <string-array name="displayDetailsSpinCoolDown">
+        <item>Immediately</item>
+        <item>Hourly</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+    </string-array>
+
 </resources>

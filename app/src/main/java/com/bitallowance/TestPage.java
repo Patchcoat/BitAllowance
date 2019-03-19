@@ -94,6 +94,13 @@ public class TestPage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void DisplayDetails (View view) {
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
+        startActivity(intent);
+    }
+
     /**
      * Generates 10 of each Entity, Task, Reward, Fine
      * @param view

@@ -58,7 +58,6 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         taskView.setLayoutManager(taskLayoutManager);
         rewardView.setLayoutManager(rewardLayoutManager);
 
-
         //Adapter
         mEntityList = new ListItemRecycleViewAdapter(this, this, entityList, ListItemRecycleViewAdapter.CardType.Normal);
         entityView.setAdapter(mEntityList);
