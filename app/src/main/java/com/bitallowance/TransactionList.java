@@ -49,11 +49,11 @@ public class TransactionList {
 
     }
 
-    public void openAddTransaction(View view, Filter filter) {
+    public void openAddTransaction(View view) {
 
     }
 
-    public void openEditTransaction(View view, Filter filter) {
+    public void openEditTransaction(View view) {
 
     }
 
