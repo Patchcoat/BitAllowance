@@ -147,9 +147,15 @@ public class Entity implements ListItem {
     }
     @Override
     public String getCardSecondaryDetails() {
-        String details = Reserve.get_currencySymbol();
-        details += " " + getCashBalance().toString();
-        return "Other details....";
+        return birthday.toString();
+    }
+    @Override
+    public float getSortableValue(){
+        return cashBalance.floatValue();
+    }
+    @Override
+    public Date getSortableDate(){
+        return birthday;
     }
 
 }

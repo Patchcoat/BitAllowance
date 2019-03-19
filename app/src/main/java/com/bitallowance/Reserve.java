@@ -54,6 +54,32 @@ public class Reserve {
         return true;
     }
 
+    /**
+     * This function returns a complete list of all existing items of the specified type.
+     * @param type Specifies type of List Item to be returned.
+     * @return List of the specified ListItem type.
+     */
+    public static List<ListItem> getListItems (ListItemType type){
+        List<ListItem> returnList = new ArrayList<>();
+        //If type == ALL we want all transactions
+        if (type == ListItemType.ALL){
+            returnList.addAll(_transactionList);
+            //If type == Entity return all entities
+        } else if (type == ListItemType.ENTITY) {
+            returnList.addAll(_entityList);
+            //Else create a list with only items of the specified type.
+        } else {
+            for (Transaction transaction: _transactionList) {
+                if(transaction.getTransactionType() == type){
+                    returnList.add(transaction);
+                }
+            }
+        }
+        return returnList;
+    }
+
+
+
 
     /**
      * A class I made to format Date objects to MM/DD/YYYY strings
