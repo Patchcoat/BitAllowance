@@ -19,8 +19,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static android.widget.Toast.makeText;
+
 public class EditAddTransaction extends AppCompatActivity
-        implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener {
+        implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener, ListItemRecycleViewAdapter.OnItemClickListener {
 
     private Transaction _currentTransaction;
     private ListItemType _transType;
@@ -40,7 +42,7 @@ public class EditAddTransaction extends AppCompatActivity
     private ArrayAdapter<String> _spinExpireAdapter;
     private ArrayAdapter<String> _spinAddEntityAdapter;
 
-    private RecyclerViewAdapter _recycleViewAdapter;
+    private ListItemRecycleViewAdapter _recycleViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +94,7 @@ public class EditAddTransaction extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.editTransaction_Recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        _recycleViewAdapter = new RecyclerViewAdapter(this, _entityListAssigned, RecyclerViewAdapter.CardType.Simple);
+        _recycleViewAdapter = new ListItemRecycleViewAdapter(this, this, _entityListAssigned, ListItemRecycleViewAdapter.CardType.Simple);
 
 
         recyclerView.setAdapter(_recycleViewAdapter);
@@ -469,6 +471,12 @@ public class EditAddTransaction extends AppCompatActivity
      */
     public void finish(View view) {
         finish();
+    }
+
+    @Override
+    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+        Toast toast = makeText(getApplicationContext(), "Selected " + _entityListAssigned.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
 

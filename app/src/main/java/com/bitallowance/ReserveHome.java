@@ -1,23 +1,18 @@
 package com.bitallowance;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class ReserveHome extends AppCompatActivity {
+import static android.widget.Toast.makeText;
+
+public class ReserveHome extends AppCompatActivity implements ListItemRecycleViewAdapter.OnItemClickListener {
 
     //RecyclerView variables
     private RecyclerView entityView;
@@ -64,11 +59,11 @@ public class ReserveHome extends AppCompatActivity {
         rewardView.setLayoutManager(rewardLayoutManager);
 
         //Adapter
-        mEntityList = new RecyclerViewAdapter(this, entityList, RecyclerViewAdapter.CardType.Normal);
+        mEntityList = new ListItemRecycleViewAdapter(this, this, entityList, ListItemRecycleViewAdapter.CardType.Normal);
         entityView.setAdapter(mEntityList);
-        mTaskList = new RecyclerViewAdapter(this, taskList, RecyclerViewAdapter.CardType.Normal);
+        mTaskList = new ListItemRecycleViewAdapter(this, this, taskList, ListItemRecycleViewAdapter.CardType.Normal);
         taskView.setAdapter(mTaskList);
-        mRewardList = new RecyclerViewAdapter(this, rewardList, RecyclerViewAdapter.CardType.Normal);
+        mRewardList = new ListItemRecycleViewAdapter(this, this, rewardList, ListItemRecycleViewAdapter.CardType.Normal);
         rewardView.setAdapter(mRewardList);
     }
 
@@ -90,6 +85,18 @@ public class ReserveHome extends AppCompatActivity {
 
     public void openGiveReward(View view) {
 
+    }
+
+    @Override
+    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+        Toast toast;
+        if (adapter == mEntityList)
+            toast = makeText(getApplicationContext(), "Selected " + entityList.get(position).getName(), Toast.LENGTH_SHORT);
+        else if (adapter == mRewardList)
+            toast = makeText(getApplicationContext(), "Selected " + rewardList.get(position).getName(), Toast.LENGTH_SHORT);
+        else
+            toast = makeText(getApplicationContext(), "Selected " + taskList.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }
