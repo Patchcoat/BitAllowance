@@ -22,7 +22,7 @@ import java.util.List;
 import static android.widget.Toast.makeText;
 
 public class EditAddTransaction extends AppCompatActivity
-        implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener, ListItemRecycleViewAdapter.OnItemClickListener {
+        implements DatePickerFragment.DatePickerFragmentListener, AdapterView.OnItemSelectedListener, ListItemClickListener {
 
     private Transaction _currentTransaction;
     private ListItemType _transType;
@@ -474,8 +474,14 @@ public class EditAddTransaction extends AppCompatActivity
     }
 
     @Override
-    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+    public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
         Toast toast = makeText(getApplicationContext(), "Selected " + _entityListAssigned.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void onListItemDialogClick(int position, ListItem item) {
+        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
         toast.show();
     }
 }

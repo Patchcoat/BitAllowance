@@ -12,7 +12,7 @@ import java.util.List;
 
 import static android.widget.Toast.makeText;
 
-public class ReserveHome extends AppCompatActivity implements ListItemRecycleViewAdapter.OnItemClickListener {
+public class ReserveHome extends AppCompatActivity implements ListItemClickListener {
 
     //RecyclerView variables
     private RecyclerView entityView;
@@ -88,7 +88,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemRecycleVie
     }
 
     @Override
-    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+    public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
         Toast toast;
         if (adapter == mEntityList)
             toast = makeText(getApplicationContext(), "Selected " + entityList.get(position).getName(), Toast.LENGTH_SHORT);
@@ -96,6 +96,12 @@ public class ReserveHome extends AppCompatActivity implements ListItemRecycleVie
             toast = makeText(getApplicationContext(), "Selected " + rewardList.get(position).getName(), Toast.LENGTH_SHORT);
         else
             toast = makeText(getApplicationContext(), "Selected " + taskList.get(position).getName(), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void onListItemDialogClick(int position, ListItem item) {
+        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
         toast.show();
     }
 

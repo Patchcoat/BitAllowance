@@ -15,29 +15,29 @@ import static android.widget.Toast.makeText;
 
 /**
  * This class is a custom RecycleView Adapter made for displaying ListItems
- * NOTE - Parent activity should implement ListItemRecycleViewAdapter.OnItemClickListener if using
+ * NOTE - Parent activity should implement ListItemRecycleViewAdapter.ListItemClickListener if using
  * this adapter.
  */
 public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
     private static final String TAG = "BADDS-ListItemRecycle";
-    List<ListItem> _listItems;
-    Context _context;
-    CardType _type;
-    private OnItemClickListener _onItemClickListener;
+    private List<ListItem> _listItems;
+    private Context _context;
+    private CardType _type;
+    private ListItemClickListener _listItemClickListener;
 
     /**
      * Constructor for ListItemRecycleViewAdapter. Allows for the binding of ListItems to a recycleView
-     * NOTE - Parent activity should implement OnItemClickListener if using this adapter.
+     * NOTE - Parent activity should implement ListItemClickListener if using this adapter.
      * @param context Context of parent activity. Usually (this)
-     * @param onItemClickListener Interface used to pass onClick events back to parent. Usually (this)
+     * @param listItemClickListener Interface used to pass onClick events back to parent. Usually (this)
      * @param listItems A list of ListItems to be displayed on the RecycleView (List<ListItem>)
      * @param type The amount of details that should be displayed on each card. (SIMPLE, NORMAL or DETAILED)
      */
-    public ListItemRecycleViewAdapter(Context context, OnItemClickListener onItemClickListener, List<ListItem> listItems, CardType type) {
+    public ListItemRecycleViewAdapter(Context context, ListItemClickListener listItemClickListener, List<ListItem> listItems, CardType type) {
         this._context = context;
         this._listItems = listItems;
         this._type = type;
-        this._onItemClickListener = onItemClickListener;
+        this._listItemClickListener = listItemClickListener;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_list_item, parent, false);
         //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_simple_row_layout, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        RecyclerView.ViewHolder vh = new ListItemViewHolder(v, _onItemClickListener, this); // pass the view to View Holder
+        RecyclerView.ViewHolder vh = new ListItemViewHolder(v, _listItemClickListener, this); // pass the view to View Holder
         Log.d(TAG, "onCreateViewHolder: RecycleView Created");
         return vh;
     }
@@ -118,7 +118,7 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
      * Custom ViewHolder for ListItemRecycleView
      */
     public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private OnItemClickListener onClickListener;
+        private ListItemClickListener onClickListener;
         private ListItemRecycleViewAdapter adapter;
 
         /**
@@ -128,7 +128,7 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
          * @param adapter Parent adapter so that onclick events can be distinguished on activities with
          *                multiple ListItemRecycleViews
          */
-        public ListItemViewHolder(View itemView, OnItemClickListener onClickListener, ListItemRecycleViewAdapter adapter) {
+        public ListItemViewHolder(View itemView, ListItemClickListener onClickListener, ListItemRecycleViewAdapter adapter) {
             super(itemView);
             this.onClickListener = onClickListener;
             this.adapter = adapter;
@@ -141,7 +141,7 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
          */
         @Override
         public void onClick(View v) {
-            onClickListener.onItemClick(getAdapterPosition(), adapter);
+            onClickListener.onRecyclerViewItemClick(getAdapterPosition(), adapter);
         }
     }
 
@@ -155,11 +155,5 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
         Simple, Normal, Detailed
     }
 
-    /**
-     * Interface for passing onClick event back to parent Activity.
-     * Parent activity must implement this interface.
-     */
-    public interface OnItemClickListener{
-        void onItemClick(int position, ListItemRecycleViewAdapter adapter);
-    }
+
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 import static android.widget.Toast.makeText;
 
-public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener, ListItemRecycleViewAdapter.OnItemClickListener {
+public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener, ListItemClickListener {
 
     int _entityIndex;
     Entity _currentEntity;
@@ -110,10 +110,16 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
     }
 
     @Override
-    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+    public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
         Toast toast = makeText(getApplicationContext(), "Selected " + test.get(position).getName(), Toast.LENGTH_SHORT);
         toast.show();
 
+    }
+
+    @Override
+    public void onListItemDialogClick(int position, ListItem item) {
+        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }
 

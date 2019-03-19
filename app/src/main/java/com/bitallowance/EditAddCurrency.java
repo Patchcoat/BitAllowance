@@ -52,4 +52,5 @@ public class EditAddCurrency extends AppCompatActivity {
     public void finish(View view){
         finish();
     }
+
 }

@@ -30,7 +30,7 @@ import static android.widget.Toast.makeText;
 public class DisplayDetails extends AppCompatActivity
         implements DatePickerFragment.DatePickerFragmentListener,
         AdapterView.OnItemSelectedListener,
-        ListItemRecycleViewAdapter.OnItemClickListener {
+        ListItemClickListener {
 
     private Transaction _currentTransaction;
     private ListItemType _transType;
@@ -493,9 +493,14 @@ public class DisplayDetails extends AppCompatActivity
     }
 
     @Override
-    public void onItemClick(int position, ListItemRecycleViewAdapter adapter) {
+    public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
         Toast toast = makeText(getApplicationContext(),
                 "Selected " + _entityListAssigned.get(position).getName(), Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    @Override
+    public void onListItemDialogClick(int position, ListItem item) {
+        
     }
 }
