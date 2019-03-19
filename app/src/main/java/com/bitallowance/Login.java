@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class Login extends AsyncTask<String, Integer, Void> {
     // the address of the server
     private static final String SERVER_IP = "107.174.13.151";
     // if the login was a success
-    boolean _loginSuccessfull;
+    boolean _loginSuccessful;
 
     private Context _context;
 
@@ -153,13 +154,22 @@ public class Login extends AsyncTask<String, Integer, Void> {
 
             byte[] worked = new byte[1];
             read = _in.read(worked, 0, 1);
-            switch(worked.toString()) {
+            String workedString = new String(worked);
+            Log.d("Login", workedString);
+            switch(workedString) {
                 case "n":
-                    _loginSuccessfull = false;
+                    _loginSuccessful = false;
                     return null;
                 case "y":
-                    _loginSuccessfull = true;
+                    _loginSuccessful = true;
                     break;
+            }
+            Log.d("Login", "Login " + _loginSuccessful);
+            if (!_loginSuccessful) {
+                _out.close();
+                _in.close();
+                _socket.close();
+                return null;
             }
 
             _out.write("_".getBytes());
@@ -167,7 +177,6 @@ public class Login extends AsyncTask<String, Integer, Void> {
             byte[] usernameBytes = new byte[100];
             read = _in.read(usernameBytes, 0, 100);
             String username = new String(usernameBytes);
-            username = username.split("\n")[0];
             Log.d("Login", username);
 
 
@@ -184,15 +193,21 @@ public class Login extends AsyncTask<String, Integer, Void> {
 
     @Override
     protected void onProgressUpdate(Integer... data) {
-        if (_loginSuccessfull){
-            // go to a new activity
-        } else {
-            // display "wrong password" or something
-        }
+
     }
 
     @Override
     protected void onPostExecute(Void result) {
+        Log.d("Login", "login " + _loginSuccessful);
+        if (_loginSuccessful){
+            // get the data from the server and fill the lists
 
+            // go to a new activity
+            Intent intent = new Intent(_context, ReserveHome.class);
+            _context.startActivity(intent);
+        } else {
+            // display "wrong password" or something
+
+        }
     }
 }
