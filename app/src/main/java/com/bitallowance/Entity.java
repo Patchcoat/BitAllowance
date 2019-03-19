@@ -158,6 +158,11 @@ public class Entity implements ListItem {
         return birthday;
     }
 
+    @Override
+    public ListItemType getType() {
+        return ListItemType.ENTITY;
+    }
+
 }
 
 

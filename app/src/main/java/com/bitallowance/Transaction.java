@@ -212,4 +212,9 @@ public class Transaction implements ListItem{
     public Date getSortableDate(){
         return _expirationDate;
     }
+
+    @Override
+    public ListItemType getType() {
+        return _transactionType;
+    }
 }
