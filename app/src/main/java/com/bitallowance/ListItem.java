@@ -9,4 +9,6 @@ public interface ListItem {
 
     float getSortableValue();
     Date getSortableDate();
+
+    ListItemType getType();
 }
