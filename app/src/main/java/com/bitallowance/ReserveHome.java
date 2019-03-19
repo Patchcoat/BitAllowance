@@ -63,7 +63,6 @@ public class ReserveHome extends AppCompatActivity {
         taskView.setLayoutManager(taskLayoutManager);
         rewardView.setLayoutManager(rewardLayoutManager);
 
-
         //Adapter
         mEntityList = new RecyclerViewAdapter(this, entityList, RecyclerViewAdapter.CardType.Normal);
         entityView.setAdapter(mEntityList);
