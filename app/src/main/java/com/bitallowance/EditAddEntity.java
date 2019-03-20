@@ -117,7 +117,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
     }
 
     @Override
-    public void onListItemDialogClick(int position, ListItem item) {
+    public void onListItemDialogClick(int position, ListItem selectedItems) {
         Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
         toast.show();
     }

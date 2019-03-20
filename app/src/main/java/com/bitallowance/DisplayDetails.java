@@ -500,7 +500,7 @@ public class DisplayDetails extends AppCompatActivity
     }
 
     @Override
-    public void onListItemDialogClick(int position, ListItem item) {
+    public void onListItemDialogClick(int position, ListItem selectedItem) {
 
     }
 }
