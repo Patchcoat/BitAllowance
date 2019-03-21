@@ -95,7 +95,7 @@ public class TestPage extends AppCompatActivity {
     }
 
     public void DisplayDetails (View view) {
-        Intent intent = new Intent(this, EditAddTransaction.class);
+        Intent intent = new Intent(this, DisplayDetails.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
         intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
         startActivity(intent);

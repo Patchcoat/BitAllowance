@@ -24,7 +24,8 @@ import static android.widget.Toast.makeText;
  * @version 1.0
  * @since 03/18/2019
  */
-public class DisplayDetails extends AppCompatActivity implements ListItemClickListener {
+public class DisplayDetails extends AppCompatActivity
+        implements ListItemClickListener {
 
 
     private Transaction _currentTransaction;
@@ -36,17 +37,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     private List<ListItem> _entityListUnassigned = new ArrayList<>();
 
     // Delare TEXTVIEWs to allow for content to be displayed
-    private TextView _textExpires;
-    private TextView _textRepeatable;
-    private TextView _textCoolDown;
-    // private TextView _textDisplayDetails;
-
-    private List<String> _spinExpiresOptions =
-            new ArrayList<>(Arrays.asList("Does not expire.", "(Select Expiration Date)"));
-    private List<String> _spinDisplayDetailsOptions=
-            new ArrayList<>(Arrays.asList("Add Assignment", "Assign All"));
-    private ArrayAdapter<String> _spinExpireAdapter;
-    private ArrayAdapter<String> _spinDisplayDetailsAdapter;
+    //private TextView _textExpires;
+    //private TextView _textRepeatable;
+    //private TextView _textCoolDown;
 
     private ListItemRecycleViewAdapter _recycleViewAdapter;
 
@@ -78,7 +71,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
                 }
                 else{
                     _entityListUnassigned.add(entity);
-                    _spinDisplayDetailsOptions.add(entity.getName());
                 }
             }
 
@@ -89,7 +81,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
             isExisting = false;
             for (Entity entity : Reserve.get_entityList()){
                 _entityListUnassigned.add(entity);
-                _spinDisplayDetailsOptions.add(entity.getName());
             }
         }
 
@@ -103,7 +94,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         _recycleViewAdapter = new ListItemRecycleViewAdapter
                 (this, this, _entityListAssigned,
                         ListItemRecycleViewAdapter.CardType.Simple);
-
 
         recyclerView.setAdapter(_recycleViewAdapter);
     }
@@ -156,9 +146,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         TextView txtDesc  = (TextView) findViewById(R.id.displayDetails_txtDesc);
 
         // _textDisplayDetails = (TextView)  findViewById(R.id.displayDetails_textDisplayDetails);
-        _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
-        _textRepeatable     = (TextView)  findViewById(R.id.displayDetails_textRepeat);
-        _textExpires        = (TextView)  findViewById(R.id.displayDetails_textExpires);
+        TextView _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
+        TextView _textRepeatable     = (TextView)  findViewById(R.id.displayDetails_textRepeat);
+        TextView _textExpires        = (TextView)  findViewById(R.id.displayDetails_textExpires);
 
         txtName.setText(_currentTransaction.getName());
         txtDesc.setText(_currentTransaction.getMemo());
