@@ -20,7 +20,9 @@ public class ListItemSelectDialog extends DialogFragment {
     private static final String TAG = "BADDS-ListItemDialog";
     private List<String> _options = new ArrayList<>();
     private ListItemClickListener _listener;
-    private ListItem _item;
+    private NestedListItemClickListener _nestedListener;
+    private ListItem _selectedItem;
+    private ListItemType _optionType = null;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -86,25 +88,20 @@ public class ListItemSelectDialog extends DialogFragment {
                 {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // Get the alert dialog selected item's text
-                        String selectedItem = _options.get(i);
 
-                        try{
-                            _listener.onListItemDialogClick(i, _item);
-                        } catch (Exception e){
-                            Log.e(TAG, "onClick: onClickListener not set for ListItemDialog.");
+                        if (_nestedListener != null){
+                            _nestedListener.onNestedListItemDialogClick(i, _selectedItem, _optionType);
+                        }else {
+
+                            try {
+                                _listener.onListItemDialogClick(i, _selectedItem);
+                            } catch (Exception e) {
+                                Log.e(TAG, "onClick: onClickListener not set for ListItemDialog.");
+                            }
                         }
-
-                        // Display the selected item's text on toast
-                        //        Toast.makeText(getActivity(),"Checked : " + selectedItem,Toast.LENGTH_LONG).show();
                         dialogInterface.dismiss();
                     }
                 });
-
-        // Create the alert dialog
-        AlertDialog dialog = builder.create();
-
-
 
         return builder.create();
     }
@@ -125,9 +122,19 @@ public class ListItemSelectDialog extends DialogFragment {
         // ... other stuff you want to do in your onStart() method
     }
 
-    public void initialize(ListItem item, ListItemClickListener listener){
-        _item = item;
+    public void initializeNested(ListItem selectedItem, NestedListItemClickListener nestedListener, ListItemType optionType){
+        _selectedItem = selectedItem;
+        _nestedListener = nestedListener;
+        _optionType = optionType;
+    }
+
+    public void initialize(ListItem selectedItem, ListItemClickListener listener){
+        _selectedItem = selectedItem;
         _listener = listener;
 
+    }
+
+    public interface NestedListItemClickListener{
+        void onNestedListItemDialogClick(int position, ListItem selectedItem, ListItemType selectionType);
     }
 }

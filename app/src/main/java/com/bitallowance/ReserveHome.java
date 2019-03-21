@@ -100,7 +100,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     }
 
     @Override
-    public void onListItemDialogClick(int position, ListItem item) {
+    public void onListItemDialogClick(int position, ListItem selectedItem) {
         Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
         toast.show();
     }

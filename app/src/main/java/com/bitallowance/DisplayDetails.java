@@ -298,7 +298,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     }
 
     @Override
-    public void onListItemDialogClick(int position, ListItem item) {
+    public void onListItemDialogClick(int position, ListItem selectedItem) {
 
     }
 }

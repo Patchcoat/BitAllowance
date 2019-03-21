@@ -19,11 +19,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static android.widget.Toast.makeText;
+import static com.bitallowance.ListItemType.ALL;
+import static com.bitallowance.ListItemType.ENTITY;
 import static com.bitallowance.ListItemType.FINE;
 import static com.bitallowance.ListItemType.REWARD;
+import static com.bitallowance.ListItemType.TASK;
 
 public class DisplayList extends AppCompatActivity implements
-        AdapterView.OnItemSelectedListener, ListItemClickListener {
+        AdapterView.OnItemSelectedListener, ListItemClickListener, ListItemSelectDialog.NestedListItemClickListener {
 
     //Adapters and other Activity essential variables.
     private ListItemRecycleViewAdapter _recycleViewAdapter;
@@ -90,6 +93,13 @@ public class DisplayList extends AppCompatActivity implements
         spinSort.setAdapter(spinSortAdapter);
     }
 
+    /**
+     * This class handles the onItemSelected event for the Sort Spinner. It contains basic sorting logic.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (position){
@@ -108,8 +118,8 @@ public class DisplayList extends AppCompatActivity implements
                 break;
         }
 
+        //Need to update recycleViewAdapter.
         _recycleViewAdapter.notifyDataSetChanged();
-
     }
 
     @Override
@@ -118,9 +128,17 @@ public class DisplayList extends AppCompatActivity implements
     }
 
 
+    /**
+     * Callback function for ListItemClickListener. Handles onclick events for recycler view items.
+     * @param position The index of the selected item.
+     * @param adapter The recycleView adapter that registered the onClick event. Useful for activities with
+     *                multiple recycleViews.
+     */
     @Override
     public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
 
+        /* * * * * EXAMPLE OF HOW TO IMPLEMENT A LIST_ITEM_SELECT_DIALOG * * * * */
+        //Declare new Fragment Manager & ListItemSelectDialog
         FragmentManager fragmentManager = getSupportFragmentManager();
         ListItemSelectDialog selectDialog = new ListItemSelectDialog();
 
@@ -128,9 +146,11 @@ public class DisplayList extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         bundle.putString("TITLE", _listItems.get(position).getName());
 
+        //get selected item type to display different options depending on type.
         ListItemType clickType = _listItems.get(position).getType();
 
         //Dynamically add display options to bundle
+        //*Note* Options must be added as a String ArrayList
         switch (clickType){
             case ENTITY:
                 bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Payment",
@@ -153,31 +173,41 @@ public class DisplayList extends AppCompatActivity implements
 
         }
 
-        //THIS MUST BE CALLED
+        //This is required
+        /* * * * INITIALIZE & SET DIALOG ARGUMENTS DIALOG (2 - STEPS) * * * */
+        //Step 1 - INITIALIZE - pass selected item and a listener. - This is required for onClick event to work.
         selectDialog.initialize(_listItems.get(position), this);
-
-        // set MyFragment Arguments
+        //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
         selectDialog.setArguments(bundle);
 
-        selectDialog.show(fragmentManager, "Display Options");
-
+        //Show the dialog
+        selectDialog.show(fragmentManager, "");
     }
 
+    /**
+     * Handles onClick events for ListItem Dialogs
+     * @param position Designates option selected (See "OPTIONS" array passed to dialog)
+     * @param selectedItem Item to be affected.
+     */
     @Override
-    public void onListItemDialogClick(int position, ListItem item) {
+    public void onListItemDialogClick(int position, ListItem selectedItem) {
 
-        if (item != null){
+        if (selectedItem != null){
 
-            if (item.getType() == ListItemType.ENTITY){
+            if (selectedItem.getType() == ListItemType.ENTITY){
                 switch (position){
                     case 0:
+                        getItemsToApply(selectedItem, TASK);
+                        break;
                     case 1:
+                        getItemsToApply(selectedItem, REWARD);
+                        break;
                     case 2:
-                        getTransactionToApply(item);
+                        getItemsToApply(selectedItem, FINE);
                         break;
                     case 3:
                         Intent intent = new Intent(this, EditAddEntity.class);
-                        intent.putExtra("ENTITY_INDEX", _listItems.indexOf(item));
+                        intent.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
                         startActivity(intent);
                         break;
                 }
@@ -185,11 +215,12 @@ public class DisplayList extends AppCompatActivity implements
             else{
                 switch (position) {
                     case 0:
+                        getItemsToApply(selectedItem, ENTITY);
                         break;
                     case 1:
                         Intent intent = new Intent(this, EditAddTransaction.class);
-                        intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(item));
-                        intent.putExtra("TRANSACTION_TYPE", item.getType());
+                        intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+                        intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
                         startActivity(intent);
                 }
             }
@@ -198,7 +229,66 @@ public class DisplayList extends AppCompatActivity implements
         toast.show();
     }
 
-    private void getTransactionToApply(ListItem item){
+    private void getItemsToApply(ListItem item, ListItemType typeToApply){
+        //Declare new Fragment Manager & ListItemSelectDialog
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ListItemSelectDialog selectDialog = new ListItemSelectDialog();
 
+        //Create a bundle to hold title & menu options
+        Bundle bundle = new Bundle();
+
+        //Dynamically add display options to bundle
+        //*Note* Options must be added as a String ArrayList
+
+        switch (typeToApply){
+            case ENTITY:
+                bundle.putString("TITLE", "Who do you want to apply " + item.getName() + "to?");
+                break;
+            case TASK:
+                bundle.putString("TITLE", "Which task would you like to apply to " + item.getName() + "?");
+                break;
+            case REWARD:
+                bundle.putString("TITLE", "Which reward would you like to apply to " + item.getName() + "?");
+                break;
+            case FINE:
+                bundle.putString("TITLE", "Which fine would you like to apply to " + item.getName() + "?");
+                break;
+
+        }
+
+        ArrayList options = new ArrayList<>();
+        for (ListItem listItem : Reserve.getListItems(typeToApply)) {
+            options.add(listItem.getName());
+        }
+        bundle.putStringArrayList("OPTIONS", options);
+
+        //This is required
+        /* * * * INITIALIZE & SET DIALOG ARGUMENTS DIALOG (2 - STEPS) * * * */
+        //Step 1 - INITIALIZE - pass selected item and a listener. - This is required for onClick event to work.
+        selectDialog.initializeNested(item, this, typeToApply);
+        //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
+        selectDialog.setArguments(bundle);
+
+        //Show the dialog
+        selectDialog.show(fragmentManager, "");
+
+    }
+
+    @Override
+    public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
+        Toast toast;
+
+        if (applyType == null || applyType == ALL) {
+            toast = makeText(getApplicationContext(), "An Error Occurred...", Toast.LENGTH_SHORT);
+        }else {
+            if (applyType == ENTITY){
+                toast = makeText(getApplicationContext(), "Applying " + selectedItem.getName() +
+                        " to " + Reserve.getListItems(applyType).get(position).getName(), Toast.LENGTH_SHORT);
+            } else {
+                toast = makeText(getApplicationContext(), "Applying " + Reserve.getListItems(applyType).get(position).getName() +
+                        " to " + selectedItem.getName(), Toast.LENGTH_SHORT);
+            }
+        }
+        toast.show();
     }
 }
