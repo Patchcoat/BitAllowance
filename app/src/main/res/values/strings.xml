@@ -21,12 +21,15 @@
     <string name="DONE"> Done </string>
     <string name="PREVIOUS">Previous</string>
     <string name="NEXT">Next</string>
+    <string name="EDIT">Edit</string>
 
     <!-- Edit/Add Currency Strings -->
     <string name="editCurrencyTitle"> Add/Edit Account Currency</string>
     <string name="editCurrencyLblName">Currency Name:</string>
     <string name="editCurrencyNameHint">Enter Currency Name</string>
     <string name="editCurrencyLblSymbol">Select Currency Symbol:</string>
+
+    <!-- Array for Edit/Add Currency Strings -->
     <string-array name="currencySymbol_Array">
         <item>$</item>
         <item>¤</item>
@@ -61,6 +64,8 @@
     <string name="editTransactionLblExpires">Expiration:</string>
     <string name="editTransactionLblDescription">Description:</string>
     <string name="editTransactionLblAssigned">Assigned to:</string>
+
+    <!-- Arrays of Edit/Add Transactions -->
     <string-array name="editTransactionSpinRepeat">
         <item>Repeatable</item>
         <item>Not-Repeatable</item>
@@ -89,6 +94,11 @@
     <string name="displayDetailsLblExpires">Expiration:</string>
     <string name="displayDetailsLblDescription">Description:</string>
     <string name="displayDetailsLblAssigned">Assigned to:</string>
+    <string name="displayDetailsTextCoolDown">Cool Down</string>
+    <string name="displayDetailsTextExpires">Date of Expiration</string>
+    <string name="displayDetailsTextRepeat">Repeat</string>
+
+    <!-- Arrays of Details -->
     <string-array name="displayDetailsSpinRepeat">
         <item>Repeatable</item>
         <item>Not-Repeatable</item>
