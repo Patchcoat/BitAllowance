@@ -36,7 +36,8 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
     private static final int SERVER_PORT = 3490;
     // the address of the server
     private static final String SERVER_IP = "107.174.13.151";
-
+    // the item to update
+    ListItem _item;
     private void getKeyPair() {
         //  get the public and private key pair
     }
@@ -44,6 +45,10 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
     @Override
     protected void onPreExecute() {
 
+    }
+
+    protected void itemToUpdate(ListItem item) {
+        _item = item;
     }
 
     @Override
@@ -68,7 +73,7 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
             DataInputStream _in = new DataInputStream(_socket.getInputStream());
 
             // write to the buffered writer, then sends the packet with flush
-            // we're telling the server we want to 'c'reate an account
+            // we're telling the server we want to do some 'n'ormal communication
             _out.write('n');
             _out.flush();
 
@@ -87,12 +92,16 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
             _out.write("ut\n".getBytes());// 'u'pdate 't'ransaction
             read = _in.read();
             int idNum = Integer.parseInt(id);
-            _out.write(idNum);
-            // if the transaction doesn't have a database id (-1) that means it was just created
+            byte[] idByte = new byte[] {(byte) idNum,
+                    (byte) (idNum >> 8),
+                    (byte) (idNum >> 16),
+                    (byte) (idNum >> 24)};
+            _out.write(idByte);
+            Log.d("Login", String.valueOf(id));
+            // if the transaction doesn't have a database id (0) that means it was just created
             // and it needs to get an ID, and the rest of the information is pushed to the server
             // if it does have an ID then depending on the timestamp either the local transaction
             // is updated or the transaction on the server is updated.
-            _out.write(id.getBytes()); // TODO convert id to uint32_t
             byte[] updateType = new byte[1];
             read = _in.read(updateType, 0, 1);
             // update types
