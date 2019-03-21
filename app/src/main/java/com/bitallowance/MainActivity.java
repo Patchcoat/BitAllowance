@@ -22,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
         login.execute(password);
     }
 
+    public void onClickCreateAccount(View view) {
+        Intent intent = new Intent(this, CreateReserveAccount.class);
+        startActivity(intent);
+    }
+
     public void goToTestPage(View view){
         Intent intent = new Intent(this, TestPage.class);
         startActivity(intent);

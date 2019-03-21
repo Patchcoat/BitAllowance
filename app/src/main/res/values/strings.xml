@@ -5,10 +5,9 @@
     <string name="loginButton">Login</string>
     <string name="recoverUsernamePassword">Forgot your username or password</string>
     <string name="createAccount">Create an Account</string>
-    <string name="createFirstName">First Name</string>
-    <string name="createLastName">Last Name</string>
-    <string name="createUsername">Enter in your username</string>
-    <string name="createEmail">Enter your email</string>
+    <string name="createDisplayName">Display Name</string>
+    <string name="createUsername">Username</string>
+    <string name="createEmail">Email</string>
     <string name="createPasswordInitial">Enter Password</string>
     <string name="createPasswordReEnter">Re-Enter Password</string>
     <string name="submitNewReserveAccount">Submit</string>
