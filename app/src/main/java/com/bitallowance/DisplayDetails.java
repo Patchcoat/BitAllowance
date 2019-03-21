@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +24,8 @@ import static android.widget.Toast.makeText;
  * @version 1.0
  * @since 03/18/2019
  */
-public class DisplayDetails extends AppCompatActivity
-        implements DatePickerFragment.DatePickerFragmentListener,
-        AdapterView.OnItemSelectedListener,
-        ListItemClickListener {
+public class DisplayDetails extends AppCompatActivity implements ListItemClickListener {
+
 
     private Transaction _currentTransaction;
     private ListItemType _transType;
@@ -40,14 +35,15 @@ public class DisplayDetails extends AppCompatActivity
     private List<ListItem> _entityListAssigned = new ArrayList<>();
     private List<ListItem> _entityListUnassigned = new ArrayList<>();
 
-    //Declare Spinners to allow dynamic content
-    private Spinner _spinExpires;
-    private Spinner _spinRepeatable;
-    private Spinner _spinCoolDown;
-    private Spinner _spinDisplayDetails;
+    // Delare TEXTVIEWs to allow for content to be displayed
+    private TextView _textExpires;
+    private TextView _textRepeatable;
+    private TextView _textCoolDown;
+    // private TextView _textDisplayDetails;
+
     private List<String> _spinExpiresOptions =
             new ArrayList<>(Arrays.asList("Does not expire.", "(Select Expiration Date)"));
-    private List<String> _spinDisplayDetailsOptions =
+    private List<String> _spinDisplayDetailsOptions=
             new ArrayList<>(Arrays.asList("Add Assignment", "Assign All"));
     private ArrayAdapter<String> _spinExpireAdapter;
     private ArrayAdapter<String> _spinDisplayDetailsAdapter;
@@ -97,8 +93,8 @@ public class DisplayDetails extends AppCompatActivity
             }
         }
 
-        setUpSpinners(isExisting);
-        updateLabels(isExisting);
+        // setUpSpinners(isExisting);
+        // updateLabels(isExisting);
 
         /* * * * * SET UP RECYCLER-VIEW * * * * */
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.displayDetails_Recycler);
@@ -119,30 +115,23 @@ public class DisplayDetails extends AppCompatActivity
      */
     private void updateLabels(boolean isEditing){
 
-        String strLblTitle = "Display Details";
+        String strLblTitle = "Display Details ";
         String strLblName;
         String strLblValue;
 
-        /**
-        if (isEditing)
-            strLblTitle = "Edit ";
-        else
-            strLblTitle = "Add New ";
-         */
-
         switch (_transType){
             case FINE:
-                // strLblTitle += "Fine";
+                strLblTitle += "Fine";
                 strLblName = "Fine Name: ";
                 strLblValue = "Fine Cost: ";
                 break;
             case REWARD:
-                // strLblTitle += "Reward";
+                strLblTitle += "Reward";
                 strLblName = "Reward Name";
                 strLblValue = "Reward Cost";
                 break;
             default:
-                // strLblTitle += "Task";
+                strLblTitle += "Task";
                 strLblName = "Task Name:";
                 strLblValue = "Task Value: ";
                 break;
@@ -162,12 +151,51 @@ public class DisplayDetails extends AppCompatActivity
      */
     private void updateTextFields(){
         //SET VALUES OF TEXT FIELDS
-        EditText txtName  = (EditText) findViewById(R.id.displayDetails_txtName);
-        EditText txtValue = (EditText) findViewById(R.id.displayDetails_txtValue);
-        EditText txtDesc  = (EditText) findViewById(R.id.displayDetails_txtDesc);
+        TextView txtName  = (TextView) findViewById(R.id.displayDetails_txtName);
+        TextView txtValue = (TextView) findViewById(R.id.displayDetails_txtValue);
+        TextView txtDesc  = (TextView) findViewById(R.id.displayDetails_txtDesc);
+
+        // _textDisplayDetails = (TextView)  findViewById(R.id.displayDetails_textDisplayDetails);
+        _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
+        _textRepeatable     = (TextView)  findViewById(R.id.displayDetails_textRepeat);
+        _textExpires        = (TextView)  findViewById(R.id.displayDetails_textExpires);
+
         txtName.setText(_currentTransaction.getName());
         txtDesc.setText(_currentTransaction.getMemo());
         txtValue.setText(_currentTransaction.getValue().toString());
+
+        // Populates the coolDown data
+        switch (_currentTransaction.getCoolDown()) {
+            case 0:
+                _textCoolDown.setText("Immediately");
+                break;
+            case 1:
+                _textCoolDown.setText("Hourly");
+                break;
+            case 24:
+                _textCoolDown.setText("Daily");
+                break;
+            case 168:
+                _textCoolDown.setText("Weekly");
+                break;
+            default:
+                _textCoolDown.setText("Not specified");
+                break;
+        }
+
+        // Populates whether is repeatable
+        if (_currentTransaction.isRepeatable()){
+            _textRepeatable.setText("Not-Repeatable");
+        } else {
+            _textRepeatable.setText("Repeatable");
+        }
+
+        // Populates Expiration Data
+        if (!_currentTransaction.isExpirable()){
+            _textExpires.setText("Does Not Expire");
+        } else {
+            _textExpires.setText(_currentTransaction.getExpirationDate().toString());
+        }
     }
 
     /**
@@ -178,54 +206,7 @@ public class DisplayDetails extends AppCompatActivity
      * @param existingTransaction - indicates whether is Adding or Editing
      */
     private void setUpSpinners(boolean existingTransaction){
-        _spinDisplayDetails = (Spinner)  findViewById(R.id.displayDetails_spinDisplayDetails);
-        _spinCoolDown       = (Spinner)  findViewById(R.id.displayDetails_spinCoolDown);
-        _spinRepeatable     = (Spinner)  findViewById(R.id.displayDetails_spinRepeat);
-        _spinExpires        = (Spinner)  findViewById(R.id.displayDetails_spinExpires);
 
-        /* * * * * BASIC SPINNER SETUP * * * * */
-        _spinExpireAdapter    = new ArrayAdapter<String>
-                (this, android.R.layout.simple_spinner_dropdown_item, _spinExpiresOptions);
-        _spinDisplayDetailsAdapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_spinner_dropdown_item, _spinDisplayDetailsOptions);
-        _spinExpires.setOnItemSelectedListener(this);
-        _spinRepeatable.setOnItemSelectedListener(this);
-        _spinDisplayDetails.setOnItemSelectedListener(this);
-        _spinExpires.setAdapter(_spinExpireAdapter);
-        _spinDisplayDetails.setAdapter(_spinDisplayDetailsAdapter);
-
-
-        //If loading an existing Transaction set spinners to their previous locations
-        if (existingTransaction)
-        {
-            switch(_currentTransaction.getCoolDown()){
-                case 0: // 0 hour cool down
-                    _spinCoolDown.setSelection(0);
-                    break;
-                case 1: // 1 hour cool down
-                    _spinCoolDown.setSelection(1);
-                    break;
-                case 24: // 24 hour or 1 day cool down
-                    _spinCoolDown.setSelection(2);
-                    break;
-                case 168: // 168 hours or 1 week
-                    _spinCoolDown.setSelection(3);
-                    break;
-            }
-
-            if (_currentTransaction.isRepeatable()){
-                _spinRepeatable.setSelection(0);
-            } else {
-                _spinRepeatable.setSelection(1);
-            }
-
-            if (!_currentTransaction.isExpirable()){
-                _spinExpires.setSelection(0);
-            } else {
-                //Reuse onDateSet code
-                onDateSet(_currentTransaction.getExpirationDate());
-            }
-        }
     }
 
 
@@ -234,112 +215,6 @@ public class DisplayDetails extends AppCompatActivity
      * @param v
      */
     public void showDatePickerDialog(View v) {
-        DatePickerFragment datePicker = DatePickerFragment.newInstance(this);
-        datePicker.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    /**
-     * This is the listener for the DatePicker.
-     * I also use it manage the state of the spinExpires spinner when loading
-     * and existing Transaction because the functionality is already there.
-     * @param date
-     */
-    @Override
-    public void onDateSet(Date date) {
-        if (date == null && _spinExpiresOptions.size() == 2) {
-            _spinExpires.setSelection(0);
-            return;
-        } else if (date != null){
-            if (_spinExpiresOptions.size() == 2)
-                _spinExpiresOptions.add(Reserve.dateToString(date));
-            else
-                _spinExpiresOptions.set(2, Reserve.dateToString(date));
-            _spinExpireAdapter.notifyDataSetChanged();
-            _currentTransaction.setExpirationDate(date);
-        }
-        _spinExpires.setSelection(2);
-    }
-
-    /**
-     * This is the listener for the Spinner objects.
-     * Uses a switch to differentiate which Spinner call came from.
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
-     */
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-        switch (parent.getId()) {
-            //Expiration Spinner
-            case R.id.displayDetails_spinExpires:
-                if (position == 1) {
-                    showDatePickerDialog(view);
-                }
-                break;
-            //Repeat Spinner
-            case R.id.displayDetails_spinRepeat:
-                //Settings to make the spinner display better based on what is selected
-                ViewGroup.LayoutParams params = _spinRepeatable.getLayoutParams();
-                _spinRepeatable.setMinimumWidth(170);
-                //pixel density multiplier for converting pixels to dp
-                int dpMultiplier = (int) getApplicationContext().getResources().getDisplayMetrics().density;
-                //If repeatable show cool-down spinner.
-                if (position == 0) {
-                    params.width = dpMultiplier * 160;
-                    _spinCoolDown.setVisibility(View.VISIBLE);
-                    //else hide cool-down spinner and increase width of repeatable spinner. (for aesthetics)
-                } else {
-                    params.width = dpMultiplier * 200;
-                    _spinCoolDown.setVisibility(View.INVISIBLE);
-                }
-                //activates the size changes of spinRepeatable
-                _spinRepeatable.setLayoutParams(params);
-                break;
-            //Add Entity Spinner
-            case R.id.displayDetails_spinDisplayDetails:
-                //If first option is selected - Do nothing.
-                if (position == 0) {
-                    return;
-                    //If position 1 selected assign transaction to ALL entities.
-                } else if (position == 1) {
-                    /* * * * FIRST CHECK IF UNASSIGNED LIST EMPTY * * * */
-                    //Otherwise we risk crashing
-                    if (_entityListUnassigned.size() == 0){
-                        _spinDisplayDetails.setSelection(0);
-                    }else {
-                        //copy each entity to the Assigned list and remove corresponding spinner option
-                        for (ListItem entity : _entityListUnassigned) {
-                            _entityListAssigned.add(entity);
-                            _spinDisplayDetailsOptions.remove(2);
-                        }
-                        //clear unassigned list or effects won't be saved.
-                        _entityListUnassigned.clear();
-                        //Set selection back to 0 for ease of user.
-                        _spinDisplayDetails.setSelection(0);
-                    }
-                } else {//ELSE -when user selects a single Entity
-                    //Copy selected entity to Assigned list
-                    _entityListAssigned.add(_entityListUnassigned.get(position - 2));
-                    //Remove entity from Unassigned List
-                    _entityListUnassigned.remove(position - 2);
-                    //Remove option from option list.
-                    _spinDisplayDetailsOptions.remove(position);
-                    //Set selection back to 0 for ease of user
-                    _spinDisplayDetails.setSelection(0);
-                }
-                //Let the adapter know to redraw Add-Entity spinner with updated options.
-                _spinDisplayDetailsAdapter.notifyDataSetChanged();
-                for (int i = 0; i < _spinDisplayDetailsAdapter.getCount(); i++);
-
-                //Let the adapter know to redraw the RecyclerView with the updated entity list.
-                _recycleViewAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
@@ -349,85 +224,8 @@ public class DisplayDetails extends AppCompatActivity
      * in such a way it should be impossible for them to be in an invalid state.
      * @param view
      */
-    public void saveTransaction(View view) {
-        EditText txtName  = (EditText) findViewById(R.id.displayDetails_txtName);
-        EditText txtValue = (EditText) findViewById(R.id.displayDetails_txtValue);
-        EditText txtDesc  = (EditText) findViewById(R.id.displayDetails_txtDesc);
+    public void editTransaction(View view) {
 
-        /* * * * * CHECK FOR EMPTY FIELDS * * * * */
-        if (txtName.getText().toString().isEmpty()) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "A transaction name is required.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        } else if (txtValue.getText().toString().isEmpty()){
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "You must specify a value for this transaction!", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        } else if (txtDesc.getText().toString().isEmpty()) {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "You must add a description.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-
-        //Save Text Fields
-        _currentTransaction.setName(txtName.getText().toString());
-        _currentTransaction.setValue(txtValue.getText().toString());
-        _currentTransaction.setMemo(txtDesc.getText().toString());
-
-        //Save ExpireSpinner State.
-        //Expiration Date tentatively saved in onDateSet()
-        //Expiration Date save locked when this object is saved in Reserve's master transaction list
-        if (_spinExpires.getSelectedItemPosition() == 0) {
-            _currentTransaction.setIsExpirable(false);
-        }
-        else {
-            _currentTransaction.setIsExpirable(true);
-        }
-
-        if (_spinRepeatable.getSelectedItemPosition() == 0) {
-            _currentTransaction.setIsRepeatable(true);
-        } else {
-            _currentTransaction.setIsRepeatable(false);
-        }
-
-        //Save cooldown selection in hours
-        switch (_spinCoolDown.getSelectedItemPosition()){
-            case 1:
-                _currentTransaction.setCoolDown(1); // 1 hour
-                break;
-            case 2:
-                _currentTransaction.setCoolDown(24); // 1 day
-                break;
-            case 3:
-                _currentTransaction.setCoolDown(168); // 1 Week
-                break;
-            default:
-                _currentTransaction.setCoolDown(0); // No cooldown
-        }
-
-
-        /* * * * * UPDATE ASSIGNMENT MAP * * * * */
-        for (ListItem entity: _entityListAssigned) {
-            _currentTransaction.updateAssignment((Entity) entity, Boolean.TRUE);
-        }
-        for (ListItem entity: _entityListUnassigned) {
-            _currentTransaction.updateAssignment((Entity) entity, Boolean.FALSE);
-        }
-
-        /* * * * * FINALLY UPDATE TRANSACTION IN THE MASTER LIST * * * * */
-        if (_transIndex >= Reserve.get_transactionList().size()){
-            Reserve.addTransaction(_currentTransaction);
-        }
-        else {
-            Reserve.updateTransaction(_currentTransaction, _transIndex);
-        }
-
-
-        Toast toast = Toast.makeText(getApplicationContext(),"Record Saved.", Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     /**
@@ -504,3 +302,4 @@ public class DisplayDetails extends AppCompatActivity
 
     }
 }
+
