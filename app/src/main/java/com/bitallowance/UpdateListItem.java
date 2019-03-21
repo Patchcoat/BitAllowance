@@ -23,7 +23,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
-public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
+public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     // the socket is the connection to the server
     private Socket _socket;
     // the reader and writer are both connected to the socket and used to read from/write to the
@@ -108,7 +108,7 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
             // l = local update of transaction
             // r = remote update of transaction, or create the transaction on the server
             switch ((char)updateType[0]) {
-                case 'l':
+                case 'l': //local update
                     byte[] buffer = new byte[100];
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
@@ -163,7 +163,7 @@ public class UpdateTransaction extends AsyncTask<String, Integer, Void> {
                         /* TODO separate from the buffer into the two values, affected/and assignments */
                     }
                     break;
-                case 'r':
+                case 'r': // remote update
                     // write
                     _out.write("name\n".getBytes());// name
                     _out.flush();
