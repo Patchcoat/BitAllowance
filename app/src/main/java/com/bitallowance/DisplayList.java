@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -153,21 +152,21 @@ public class DisplayList extends AppCompatActivity implements
         //*Note* Options must be added as a String ArrayList
         switch (clickType){
             case ENTITY:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Payment",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
                         "Apply Reward", "Apply Fine", "Edit " + _listItems.get(position).getName(),
                         "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
             case TASK:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Payment",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
             case REWARD:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Reward",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Reward",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
 
             case FINE:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Fine",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Fine",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
 
@@ -197,31 +196,43 @@ public class DisplayList extends AppCompatActivity implements
             if (selectedItem.getType() == ListItemType.ENTITY){
                 switch (position){
                     case 0:
-                        getItemsToApply(selectedItem, TASK);
+                        Intent intent = new Intent(this, DisplayDetails.class);
+                        intent.putExtra("TRANSACTION_INDEX",Reserve.getListItems(ENTITY).indexOf(selectedItem));
+                        intent.putExtra("TRANSACTION_TYPE", ListItemType.ENTITY);
+                        startActivity(intent);
                         break;
                     case 1:
-                        getItemsToApply(selectedItem, REWARD);
+                        getItemsToApply(selectedItem, TASK);
                         break;
                     case 2:
-                        getItemsToApply(selectedItem, FINE);
+                        getItemsToApply(selectedItem, REWARD);
                         break;
                     case 3:
-                        Intent intent = new Intent(this, EditAddEntity.class);
-                        intent.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
-                        startActivity(intent);
+                        getItemsToApply(selectedItem, FINE);
+                        break;
+                    case 4:
+                        Intent intent1 = new Intent(this, EditAddEntity.class);
+                        intent1.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
+                        startActivity(intent1);
                         break;
                 }
             }
             else{
                 switch (position) {
                     case 0:
-                        getItemsToApply(selectedItem, ENTITY);
-                        break;
-                    case 1:
-                        Intent intent = new Intent(this, EditAddTransaction.class);
-                        intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+                        Intent intent = new Intent(this, DisplayDetails.class);
+                        intent.putExtra("TRANSACTION_INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
                         intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
                         startActivity(intent);
+                        break;
+                    case 1:
+                        getItemsToApply(selectedItem, ENTITY);
+                        break;
+                    case 2:
+                        Intent intent1 = new Intent(this, EditAddTransaction.class);
+                        intent1.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+                        intent1.putExtra("TRANSACTION_TYPE", selectedItem.getType());
+                        startActivity(intent1);
                 }
             }
         }
@@ -263,9 +274,38 @@ public class DisplayList extends AppCompatActivity implements
 
         //Get a dynamic list of items that can be applied
         ArrayList options = new ArrayList<>();
-        for (ListItem listItem : Reserve.getListItems(typeToApply)) {
-            options.add(listItem.getName());
+
+        if (typeToApply == ENTITY){
+            Transaction tempTransaction = (Transaction) item;
+            for (Entity entity : Reserve.get_entityList()){
+
+                //Only add assigned entities to the options list.
+                if (tempTransaction.isAssigned(entity)) {
+                    options.add(entity.getName());
+                }
+                //Make sure the number of options is greater than 0
+                if(options.size() == 0){
+                    Toast toast = makeText(this, "Uh-oh. There is no-one assigned to that transaction.", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+            }
+        } else {
+            //Only add assigned transactions to the options list.
+            Entity tempEntity = (Entity)item;
+            for (Transaction transaction : tempEntity.getAssignedTransactions(typeToApply)) {
+                options.add(transaction.getName());
+            }
+            //Make sure the number of options is greater than 0
+            if(options.size() == 0){
+                Toast toast = makeText(this, "Uh-oh. This person has no " + typeToApply + "s assigned to them.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
         }
+
+
+        options.add("Cancel");
         bundle.putStringArrayList("OPTIONS", options);
 
         //Initialize a NestedDialogue
@@ -288,26 +328,41 @@ public class DisplayList extends AppCompatActivity implements
     @Override
     public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
         Toast toast;
+        List<ListItem> options = new ArrayList<>();
         //applyType must list a specific type.
         if (applyType == null || applyType == ALL) {
-            toast = makeText(getApplicationContext(), "An Error Occurred...", Toast.LENGTH_SHORT);
+            toast = makeText(this, "An Error Occurred...", Toast.LENGTH_SHORT);
         }else {
             try {
-                if (selectedItem.applyTransaction(Reserve.getListItems(applyType).get(position))) {
-                    toast = makeText(getApplicationContext(), "Transaction Applied", Toast.LENGTH_SHORT);
+                //Get the current options list
+                if (applyType == ENTITY){
+                    Transaction tempTransaction = (Transaction) selectedItem;
+                    for (Entity entity : Reserve.get_entityList()){
+                        if (tempTransaction.isAssigned(entity)) {
+                            options.add(entity);
+                        }
+                    }
+                } else {
+                    Entity tempEntity = (Entity) selectedItem;
+                    options.addAll(tempEntity.getAssignedTransactions(applyType));
+                }
+                if (position == options.size()){
+                    return;
+                } else if (selectedItem.applyTransaction(options.get(position))) {
+                    toast = makeText(this, "Transaction Applied", Toast.LENGTH_SHORT);
                     _recycleViewAdapter.notifyDataSetChanged();
                 } else {
                     if (applyType == ENTITY) {
-                        toast = makeText(getApplicationContext(), Reserve.getListItems(applyType).get(position).getName() +
+                        toast = makeText(this, Reserve.getListItems(applyType).get(position).getName() +
                                 " does not have enough " + Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
                     } else {
-                        toast = makeText(getApplicationContext(), selectedItem.getName() + " does not have enough " +
+                        toast = makeText(this, selectedItem.getName() + " does not have enough " +
                                 Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
                     }
                 }
             } catch (IllegalArgumentException e)
             {
-                toast = makeText(getApplicationContext(), "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
+                toast = makeText(this, "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
             }
         }
         toast.show();
