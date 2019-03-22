@@ -48,11 +48,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
                 Log.e(TAG, "onCreate: _currentEntity is null.");
             } else {
                 //populate _assignedTransactions for recyclerView
-                for (Transaction transaction : Reserve.get_transactionList()) {
-                    if (transaction.isAssigned(_currentEntity)) {
-                        _assignedTransactions.add(transaction);
-                    }
-                }
+                _assignedTransactions.addAll(_currentEntity.getAssignedTransactions());
             }
 
 
