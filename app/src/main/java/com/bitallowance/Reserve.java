@@ -36,9 +36,17 @@ public class Reserve {
         return _transactionList;
     }
 
+    /**
+     * Gets the saved currency symbol or "$" if the current currency symbol is null
+     * @return a string containing the Reserve currency symbol.
+     */
     public static String get_currencySymbol(){
-        return _currencySymbol;
+        if (_currencySymbol != null)
+            return _currencySymbol;
+        else
+            return "$";
     }
+
     public static void set_currencySymbol(String newSymbol){
         _currencySymbol = newSymbol;
     }

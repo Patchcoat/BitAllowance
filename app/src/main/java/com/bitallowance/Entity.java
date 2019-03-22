@@ -1,5 +1,7 @@
 package com.bitallowance;
 
+import android.util.Log;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 public class Entity implements ListItem {
 
     // Variables for the Class
+    private static final String TAG = "BADDS-Entity";
     private int id;
     private String userName;
     private String displayName;
@@ -35,6 +38,14 @@ public class Entity implements ListItem {
     // Getters
     public  BigDecimal getCashBalance() {
         return cashBalance;
+    }
+    public void updateBalance(BigDecimal amount, boolean add){
+        if (add){
+            cashBalance = cashBalance.add(amount);
+        } else {
+            cashBalance = cashBalance.subtract(amount);
+        }
+
     }
     public int getId() {
         return  this.id;
@@ -142,8 +153,8 @@ public class Entity implements ListItem {
     public String getCardPrimaryDetails()
     {
         String details = Reserve.get_currencySymbol();
-        details += " " + getCashBalance().toString();
-        return "Balance:  $123.00";
+        details += " " + cashBalance.setScale(2);
+        return details;
     }
     @Override
     public String getCardSecondaryDetails() {
@@ -161,6 +172,20 @@ public class Entity implements ListItem {
     @Override
     public ListItemType getType() {
         return ListItemType.ENTITY;
+    }
+
+    /**
+     * Uses the applyTransaction method of the passed listItem to apply the transaction
+     * @param item - ListItem of type REWARD, FINE or TASK
+     * @return
+     * @throws IllegalArgumentException ListItem CANNOT be of type ENTITY
+     */
+    @Override
+    public boolean applyTransaction(ListItem item) {
+        if (item.getType() == ListItemType.ENTITY)
+            Log.e(TAG, "applyTransaction: ListItem item type is not REWARD, FINE or TASK", new IllegalArgumentException());
+        //We can use the transaction logic for this.
+        return item.applyTransaction(this);
     }
 
 }

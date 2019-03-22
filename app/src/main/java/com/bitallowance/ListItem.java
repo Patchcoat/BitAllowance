@@ -11,4 +11,5 @@ public interface ListItem {
     Date getSortableDate();
 
     ListItemType getType();
+    boolean applyTransaction(ListItem item);
 }
