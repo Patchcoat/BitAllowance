@@ -1,7 +1,9 @@
 package com.bitallowance;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -189,17 +191,14 @@ public class DisplayList extends AppCompatActivity implements
      * @param selectedItem Item to be affected.
      */
     @Override
-    public void onListItemDialogClick(int position, ListItem selectedItem) {
+    public void onListItemDialogClick(int position, final ListItem selectedItem) {
 
         if (selectedItem != null){
 
             if (selectedItem.getType() == ListItemType.ENTITY){
-                switch (position){
+                switch (position) {
                     case 0:
-                        Intent intent = new Intent(this, DisplayDetails.class);
-                        intent.putExtra("INDEX",Reserve.getListItems(ENTITY).indexOf(selectedItem));
-                        intent.putExtra("TYPE", ListItemType.ENTITY);
-                        startActivity(intent);
+                        displayDetails(selectedItem);
                         break;
                     case 1:
                         getItemsToApply(selectedItem, TASK);
@@ -211,33 +210,82 @@ public class DisplayList extends AppCompatActivity implements
                         getItemsToApply(selectedItem, FINE);
                         break;
                     case 4:
-                        Intent intent1 = new Intent(this, EditAddEntity.class);
-                        intent1.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
-                        startActivity(intent1);
+                        editItem(selectedItem);
+                    case 5:
+                        confirmDelete(selectedItem);
                         break;
                 }
             }
             else{
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(this, DisplayDetails.class);
-                        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
-                        intent.putExtra("TYPE", selectedItem.getType());
-                        startActivity(intent);
+                        displayDetails(selectedItem);
                         break;
                     case 1:
                         getItemsToApply(selectedItem, ENTITY);
                         break;
                     case 2:
-                        Intent intent1 = new Intent(this, EditAddTransaction.class);
-                        intent1.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
-                        intent1.putExtra("TRANSACTION_TYPE", selectedItem.getType());
-                        startActivity(intent1);
+                        editItem(selectedItem);
+                        break;
+                    case 3:
+                        confirmDelete(selectedItem);
+                        break;
                 }
             }
         }
-        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
-        toast.show();
+    }
+
+    /**
+     * Opens a new activity to allow the selected item to be edited
+     * @param selectedItem the item to be edited
+     */
+    private void editItem(ListItem selectedItem){
+        Intent intent;
+        if (selectedItem.getType() == ENTITY) {
+            intent = new Intent(this, EditAddEntity.class);
+            intent.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
+        } else {
+            intent = new Intent(this, EditAddTransaction.class);
+            intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+            intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * Opens a new activity that displays the details of the passed item.
+     * @param selectedItem the item to be displayed
+     */
+    private void displayDetails(ListItem selectedItem){
+        Intent intent = new Intent(this, DisplayDetails.class);
+        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
+        intent.putExtra("TYPE", selectedItem.getType());
+        startActivity(intent);
+    }
+
+    /**
+     * Prompts the user to confirm they want to delete the selected item. If the user confirms,
+     * it deletes the object and updates the recyclerView
+     * @param selectedItem the object to be deleted.
+     */
+    private void  confirmDelete(final ListItem selectedItem){
+        //Confirm the user wants to delete the record
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Delete " + selectedItem.getName() + "?").setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedItem.delete();
+                _listItems.remove(selectedItem);
+                _recycleViewAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.show();
     }
 
     /**
@@ -346,6 +394,7 @@ public class DisplayList extends AppCompatActivity implements
                     Entity tempEntity = (Entity) selectedItem;
                     options.addAll(tempEntity.getAssignedTransactions(applyType));
                 }
+                //This indicates that CANCEL was selected
                 if (position == options.size()){
                     return;
                 } else if (selectedItem.applyTransaction(options.get(position))) {

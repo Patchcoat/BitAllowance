@@ -59,6 +59,17 @@ public class Transaction implements ListItem{
     }
 
     /**
+     * Deletes entity from the assignment map.
+     * **NOTE** this is not the same removing the assignment
+     * @param entity the Entity to be deleted
+     */
+    void deleteEntity (Entity entity) {
+        //Remove entity if exists
+        if (_assignments.containsValue(entity))
+            _assignments.remove(entity);
+    }
+
+    /**
      * Checks to see if a transaction has been assigned to a particular entity
      * @param entity the entity object being checked
      * @return boolean indicating whether or not the transaction is assigned.
@@ -114,9 +125,6 @@ public class Transaction implements ListItem{
 
     }
 
-    void delete() {
-
-    }
 
     void reverse() {
 
@@ -278,5 +286,10 @@ public class Transaction implements ListItem{
                 assignmentList.add(entity);
         }
         return assignmentList;
+    }
+
+    @Override
+    public void delete() {
+        Reserve.get_transactionList().remove(this);
     }
 }
