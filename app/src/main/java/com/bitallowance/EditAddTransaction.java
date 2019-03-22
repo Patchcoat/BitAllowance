@@ -66,8 +66,7 @@ public class EditAddTransaction extends AppCompatActivity
             isExisting = true;
             for (Entity entity : Reserve.get_entityList()){
 
-                if ((_currentTransaction.getAssignments().get(entity) != null) &&
-                        _currentTransaction.getAssignments().get(entity)){
+                if ((_currentTransaction.isAssigned(entity))) {
                     _entityListAssigned.add(entity);
                 }
                 else{

@@ -1,8 +1,10 @@
 package com.bitallowance;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.TreeMap;
  */
 
 public class Transaction implements ListItem{
+    private static final String TAG = "BADDS-Transaction";
     String _id;
     BigDecimal _value;
     Operator _operator;
@@ -52,9 +55,34 @@ public class Transaction implements ListItem{
     void updateAssignment (Entity entity, Boolean bool){
         if (entity == null)
             return;
-
         _assignments.put(entity, bool);
     }
+
+    /**
+     * Deletes entity from the assignment map.
+     * **NOTE** this is not the same removing the assignment
+     * @param entity the Entity to be deleted
+     */
+    void deleteEntity (Entity entity) {
+        //Remove entity if exists
+        if (_assignments.containsValue(entity))
+            _assignments.remove(entity);
+    }
+
+    /**
+     * Checks to see if a transaction has been assigned to a particular entity
+     * @param entity the entity object being checked
+     * @return boolean indicating whether or not the transaction is assigned.
+     */
+    boolean isAssigned(Entity entity){
+        //Make sure key exists to avoid nullptr exception
+        if (_assignments.containsKey(entity)) {
+            return _assignments.get(entity);
+        } else {
+            return false;
+        }
+    }
+
 
 
     void execute(Entity entity) {
@@ -96,9 +124,6 @@ public class Transaction implements ListItem{
 
     }
 
-    void delete() {
-
-    }
 
     void reverse() {
 
@@ -215,5 +240,55 @@ public class Transaction implements ListItem{
     @Override
     public ListItemType getType() {
         return _transactionType;
+    }
+
+    /**
+     * Applies the current transaction to the specified ENTITY
+     * @param item ListItem (Needs to be of type ENTITY)
+     * @return Whether  or not transaction was successful
+     * @throws IllegalArgumentException ListItem MUST be type ENTITY
+     */
+    @Override
+    public boolean applyTransaction(ListItem item) {
+        //You can't apply a transaction to another transaction.
+        if(item.getType() != ListItemType.ENTITY){
+            Log.e(TAG, "applyTransaction: ListItem item not of type ENTITY", new IllegalArgumentException());
+        }
+
+        //Work with a temporary entity
+        Entity entity = (Entity)item;
+
+        switch (_transactionType){
+            case REWARD:
+                //Can't go into the negatives for a Reward
+                if (entity.getCashBalance().floatValue() < _value.floatValue())
+                    return false;
+            case FINE:
+                //Fines can be applied even if balance is not high enough
+                entity.updateBalance(_value, false);
+                break;
+            default: //default is Task
+                entity.updateBalance(_value, true);
+        }
+
+        //Apply changes to Reserve Entity List.
+        int index = Reserve.get_entityList().indexOf(item);
+        Reserve.get_entityList().set(index, entity);
+        return true;
+    }
+
+    @Override
+    public List<ListItem> getAssignmentList() {
+        List<ListItem> assignmentList = new ArrayList<>();
+        for (Entity entity: Reserve.get_entityList()) {
+            if(isAssigned(entity))
+                assignmentList.add(entity);
+        }
+        return assignmentList;
+    }
+
+    @Override
+    public void delete() {
+        Reserve.get_transactionList().remove(this);
     }
 }

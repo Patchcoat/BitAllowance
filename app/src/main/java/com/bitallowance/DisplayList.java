@@ -1,7 +1,9 @@
 package com.bitallowance;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -153,21 +154,21 @@ public class DisplayList extends AppCompatActivity implements
         //*Note* Options must be added as a String ArrayList
         switch (clickType){
             case ENTITY:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Payment",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
                         "Apply Reward", "Apply Fine", "Edit " + _listItems.get(position).getName(),
                         "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
             case TASK:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Payment",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
             case REWARD:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Reward",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Reward",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
 
             case FINE:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("Apply Fine",
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Fine",
                         "Edit " + _listItems.get(position).getName(), "Delete "+ _listItems.get(position).getName(), "Cancel")));
                 break;
 
@@ -190,45 +191,109 @@ public class DisplayList extends AppCompatActivity implements
      * @param selectedItem Item to be affected.
      */
     @Override
-    public void onListItemDialogClick(int position, ListItem selectedItem) {
+    public void onListItemDialogClick(int position, final ListItem selectedItem) {
 
         if (selectedItem != null){
 
             if (selectedItem.getType() == ListItemType.ENTITY){
-                switch (position){
+                switch (position) {
                     case 0:
-                        getItemsToApply(selectedItem, TASK);
+                        displayDetails(selectedItem);
                         break;
                     case 1:
-                        getItemsToApply(selectedItem, REWARD);
+                        getItemsToApply(selectedItem, TASK);
                         break;
                     case 2:
-                        getItemsToApply(selectedItem, FINE);
+                        getItemsToApply(selectedItem, REWARD);
                         break;
                     case 3:
-                        Intent intent = new Intent(this, EditAddEntity.class);
-                        intent.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
-                        startActivity(intent);
+                        getItemsToApply(selectedItem, FINE);
+                        break;
+                    case 4:
+                        editItem(selectedItem);
+                    case 5:
+                        confirmDelete(selectedItem);
                         break;
                 }
             }
             else{
                 switch (position) {
                     case 0:
-                        getItemsToApply(selectedItem, ENTITY);
+                        displayDetails(selectedItem);
                         break;
                     case 1:
-                        Intent intent = new Intent(this, EditAddTransaction.class);
-                        intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
-                        intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
-                        startActivity(intent);
+                        getItemsToApply(selectedItem, ENTITY);
+                        break;
+                    case 2:
+                        editItem(selectedItem);
+                        break;
+                    case 3:
+                        confirmDelete(selectedItem);
+                        break;
                 }
             }
         }
-        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
-        toast.show();
     }
 
+    /**
+     * Opens a new activity to allow the selected item to be edited
+     * @param selectedItem the item to be edited
+     */
+    private void editItem(ListItem selectedItem){
+        Intent intent;
+        if (selectedItem.getType() == ENTITY) {
+            intent = new Intent(this, EditAddEntity.class);
+            intent.putExtra("ENTITY_INDEX", _listItems.indexOf(selectedItem));
+        } else {
+            intent = new Intent(this, EditAddTransaction.class);
+            intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+            intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
+        }
+        startActivity(intent);
+    }
+
+    /**
+     * Opens a new activity that displays the details of the passed item.
+     * @param selectedItem the item to be displayed
+     */
+    private void displayDetails(ListItem selectedItem){
+        Intent intent = new Intent(this, DisplayDetails.class);
+        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
+        intent.putExtra("TYPE", selectedItem.getType());
+        startActivity(intent);
+    }
+
+    /**
+     * Prompts the user to confirm they want to delete the selected item. If the user confirms,
+     * it deletes the object and updates the recyclerView
+     * @param selectedItem the object to be deleted.
+     */
+    private void  confirmDelete(final ListItem selectedItem){
+        //Confirm the user wants to delete the record
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Delete " + selectedItem.getName() + "?").setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedItem.delete();
+                _listItems.remove(selectedItem);
+                _recycleViewAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * Opens another dialogue fragment with a list of ListItems that can be applied to the
+     * current selection.
+     * @param item Currently selected item
+     * @param typeToApply 
+     */
     private void getItemsToApply(ListItem item, ListItemType typeToApply){
         //Declare new Fragment Manager & ListItemSelectDialog
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -253,18 +318,45 @@ public class DisplayList extends AppCompatActivity implements
             case FINE:
                 bundle.putString("TITLE", "Which fine would you like to apply to " + item.getName() + "?");
                 break;
-
         }
 
+        //Get a dynamic list of items that can be applied
         ArrayList options = new ArrayList<>();
-        for (ListItem listItem : Reserve.getListItems(typeToApply)) {
-            options.add(listItem.getName());
+
+        if (typeToApply == ENTITY){
+            Transaction tempTransaction = (Transaction) item;
+            for (Entity entity : Reserve.get_entityList()){
+
+                //Only add assigned entities to the options list.
+                if (tempTransaction.isAssigned(entity)) {
+                    options.add(entity.getName());
+                }
+                //Make sure the number of options is greater than 0
+                if(options.size() == 0){
+                    Toast toast = makeText(this, "Uh-oh. There is no-one assigned to that transaction.", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+            }
+        } else {
+            //Only add assigned transactions to the options list.
+            Entity tempEntity = (Entity)item;
+            for (Transaction transaction : tempEntity.getAssignedTransactions(typeToApply)) {
+                options.add(transaction.getName());
+            }
+            //Make sure the number of options is greater than 0
+            if(options.size() == 0){
+                Toast toast = makeText(this, "Uh-oh. This person has no " + typeToApply + "s assigned to them.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
         }
+
+
+        options.add("Cancel");
         bundle.putStringArrayList("OPTIONS", options);
 
-        //This is required
-        /* * * * INITIALIZE & SET DIALOG ARGUMENTS DIALOG (2 - STEPS) * * * */
-        //Step 1 - INITIALIZE - pass selected item and a listener. - This is required for onClick event to work.
+        //Initialize a NestedDialogue
         selectDialog.initializeNested(item, this, typeToApply);
         //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
         selectDialog.setArguments(bundle);
@@ -274,19 +366,52 @@ public class DisplayList extends AppCompatActivity implements
 
     }
 
+    /**
+     * The callback function for nested ListItem dialogs. This handles onclick events for the nested
+     * dialog fragments
+     * @param position index of the option selected by the user.
+     * @param selectedItem item to be affected
+     * @param applyType type of item to be applied to selectedItem.
+     */
     @Override
     public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
         Toast toast;
-
+        List<ListItem> options = new ArrayList<>();
+        //applyType must list a specific type.
         if (applyType == null || applyType == ALL) {
-            toast = makeText(getApplicationContext(), "An Error Occurred...", Toast.LENGTH_SHORT);
+            toast = makeText(this, "An Error Occurred...", Toast.LENGTH_SHORT);
         }else {
-            if (applyType == ENTITY){
-                toast = makeText(getApplicationContext(), "Applying " + selectedItem.getName() +
-                        " to " + Reserve.getListItems(applyType).get(position).getName(), Toast.LENGTH_SHORT);
-            } else {
-                toast = makeText(getApplicationContext(), "Applying " + Reserve.getListItems(applyType).get(position).getName() +
-                        " to " + selectedItem.getName(), Toast.LENGTH_SHORT);
+            try {
+                //Get the current options list
+                if (applyType == ENTITY){
+                    Transaction tempTransaction = (Transaction) selectedItem;
+                    for (Entity entity : Reserve.get_entityList()){
+                        if (tempTransaction.isAssigned(entity)) {
+                            options.add(entity);
+                        }
+                    }
+                } else {
+                    Entity tempEntity = (Entity) selectedItem;
+                    options.addAll(tempEntity.getAssignedTransactions(applyType));
+                }
+                //This indicates that CANCEL was selected
+                if (position == options.size()){
+                    return;
+                } else if (selectedItem.applyTransaction(options.get(position))) {
+                    toast = makeText(this, "Transaction Applied", Toast.LENGTH_SHORT);
+                    _recycleViewAdapter.notifyDataSetChanged();
+                } else {
+                    if (applyType == ENTITY) {
+                        toast = makeText(this, Reserve.getListItems(applyType).get(position).getName() +
+                                " does not have enough " + Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                    } else {
+                        toast = makeText(this, selectedItem.getName() + " does not have enough " +
+                                Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                    }
+                }
+            } catch (IllegalArgumentException e)
+            {
+                toast = makeText(this, "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
             }
         }
         toast.show();
