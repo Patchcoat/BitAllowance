@@ -197,8 +197,8 @@ public class DisplayList extends AppCompatActivity implements
                 switch (position){
                     case 0:
                         Intent intent = new Intent(this, DisplayDetails.class);
-                        intent.putExtra("TRANSACTION_INDEX",Reserve.getListItems(ENTITY).indexOf(selectedItem));
-                        intent.putExtra("TRANSACTION_TYPE", ListItemType.ENTITY);
+                        intent.putExtra("INDEX",Reserve.getListItems(ENTITY).indexOf(selectedItem));
+                        intent.putExtra("TYPE", ListItemType.ENTITY);
                         startActivity(intent);
                         break;
                     case 1:
@@ -221,8 +221,8 @@ public class DisplayList extends AppCompatActivity implements
                 switch (position) {
                     case 0:
                         Intent intent = new Intent(this, DisplayDetails.class);
-                        intent.putExtra("TRANSACTION_INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
-                        intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
+                        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
+                        intent.putExtra("TYPE", selectedItem.getType());
                         startActivity(intent);
                         break;
                     case 1:

@@ -5,17 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static android.widget.Toast.makeText;
@@ -30,13 +25,15 @@ public class DisplayDetails extends AppCompatActivity
         implements ListItemClickListener {
 
 
-    private Transaction _currentTransaction;
-    private ListItemType _transType;
-    private int _transIndex;
+    private static final String TAG = "BADDS-DisplayDetails";
+    private ListItem _currentItem;
+    private ListItemType _itemType;
+    private int _index;
 
     //For the recycler View
-    private List<ListItem> _entityListAssigned = new ArrayList<>();
+    private List<ListItem> _assignedItems = new ArrayList<>();
     private List<ListItem> _entityListUnassigned = new ArrayList<>();
+
 
     private ListItemRecycleViewAdapter _recycleViewAdapter;
 
@@ -44,41 +41,37 @@ public class DisplayDetails extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_details);
-        _transIndex = getIntent().getIntExtra("TRANSACTION_INDEX", -1);
-        _transType = (ListItemType)getIntent().getSerializableExtra("TRANSACTION_TYPE");
+        _index = getIntent().getIntExtra("INDEX", 0);
+        _itemType = (ListItemType)getIntent().getSerializableExtra("TYPE");
 
-        boolean isExisting;
+        //Account for possible null values
+        if (_itemType == null)
+            _itemType = ListItemType.ENTITY;
 
         /* * * * * IF EXISTING TRANSACTION * * * * */
-        if ((_transIndex >= 0 && _transIndex < Reserve.get_transactionList().size()) &&
-                Reserve.get_transactionList().get(_transIndex).getTransactionType() == _transType){
+        if ((_index >= 0 && _index < Reserve.getListItems(_itemType).size())){
 
             //Load current transaction with existing Transaction
-            _currentTransaction = Reserve.get_transactionList().get(_transIndex);
+            _currentItem = Reserve.getListItems(_itemType).get(_index);
 
             //Display transaction values
-            updateTextFields();
-
-            isExisting = true;
-            for (Entity entity : Reserve.get_entityList()){
-
-                if ((_currentTransaction.getAssignments().get(entity) != null) &&
-                        _currentTransaction.getAssignments().get(entity)){
-                    _entityListAssigned.add(entity);
-                }
-                else{
-                    _entityListUnassigned.add(entity);
-                }
+            if (_itemType != ListItemType.ENTITY) {
+                updateTextFieldsTransaction();
             }
+            else {
+                updateTextFieldsEntity();
+
+            }
+
+            _assignedItems.addAll(_currentItem.getAssignmentList());
+
 
         } else {
-            _transIndex = Reserve.get_transactionList().size();
-            _currentTransaction = new Transaction();
-            _currentTransaction.setTransactionType(_transType);
-            isExisting = false;
-            for (Entity entity : Reserve.get_entityList()){
-                _entityListUnassigned.add(entity);
-            }
+            Log.e(TAG, "onCreate: Non-Existent object received");
+            Toast toast = makeText(this, "There was an error...", Toast.LENGTH_SHORT);
+            toast.show();
+            //If item doesn't exist, return.
+            finish();
         }
 
         // setUpSpinners(isExisting);
@@ -89,7 +82,7 @@ public class DisplayDetails extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         _recycleViewAdapter = new ListItemRecycleViewAdapter
-                (this, this, _entityListAssigned,
+                (this, this, _assignedItems,
                         ListItemRecycleViewAdapter.CardType.Simple);
 
         recyclerView.setAdapter(_recycleViewAdapter);
@@ -106,7 +99,7 @@ public class DisplayDetails extends AppCompatActivity
         String strLblName;
         String strLblValue;
 
-        switch (_transType){
+        switch (_itemType){
             case FINE:
                 strLblTitle += "Fine";
                 strLblName = "Fine Name: ";
@@ -134,9 +127,10 @@ public class DisplayDetails extends AppCompatActivity
 
     }
     /**
-     * This class updates text values for EditText items when the Activity is Editing a transaction
+     * This class updates the labels for displaying Transaction details.
      */
-    private void updateTextFields(){
+    private void updateTextFieldsTransaction(){
+        Transaction transaction = (Transaction) _currentItem;
         //SET VALUES OF TEXT FIELDS
         TextView txtName  = (TextView) findViewById(R.id.displayDetails_txtName);
         TextView txtValue = (TextView) findViewById(R.id.displayDetails_txtValue);
@@ -147,12 +141,12 @@ public class DisplayDetails extends AppCompatActivity
         TextView _textRepeatable     = (TextView)  findViewById(R.id.displayDetails_textRepeat);
         TextView _textExpires        = (TextView)  findViewById(R.id.displayDetails_textExpires);
 
-        txtName.setText(_currentTransaction.getName());
-        txtDesc.setText(_currentTransaction.getMemo());
-        txtValue.setText(_currentTransaction.getValue().toString());
+        txtName.setText(transaction.getName());
+        txtDesc.setText(transaction.getMemo());
+        txtValue.setText(transaction.getValue().toString());
 
         // Populates the coolDown data
-        switch (_currentTransaction.getCoolDown()) {
+        switch (transaction.getCoolDown()) {
             case 0:
                 _textCoolDown.setText("Immediately");
                 break;
@@ -171,18 +165,42 @@ public class DisplayDetails extends AppCompatActivity
         }
 
         // Populates whether is repeatable
-        if (_currentTransaction.isRepeatable()){
+        if (transaction.isRepeatable()){
             _textRepeatable.setText("Not-Repeatable");
         } else {
             _textRepeatable.setText("Repeatable");
         }
 
         // Populates Expiration Data
-        if (!_currentTransaction.isExpirable()){
+        if (!transaction.isExpirable()){
             _textExpires.setText("Does Not Expire");
         } else {
-            _textExpires.setText(_currentTransaction.getExpirationDate().toString());
+            _textExpires.setText(transaction.getExpirationDate().toString());
         }
+    }
+
+    /**
+     * This class updates the labels for displaying Entity details.
+     */
+    private void updateTextFieldsEntity(){
+        Entity entity = (Entity) _currentItem;
+        //SET VALUES OF TEXT FIELDS
+        TextView txtName  = (TextView) findViewById(R.id.displayDetails_txtName);
+        TextView txtValue = (TextView) findViewById(R.id.displayDetails_txtValue);
+        TextView txtDesc  = (TextView) findViewById(R.id.displayDetails_txtDesc);
+
+        // _textDisplayDetails = (TextView)  findViewById(R.id.displayDetails_textDisplayDetails);
+        TextView _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
+        TextView _textRepeatable     = (TextView)  findViewById(R.id.displayDetails_textRepeat);
+        TextView _textExpires        = (TextView)  findViewById(R.id.displayDetails_textExpires);
+
+        txtName.setText(entity.getName());
+        txtDesc.setText(entity.getEmail());
+        txtValue.setText(entity.getCardPrimaryDetails());
+
+
+        _textExpires.setText(entity.getBirthday().toString());
+
     }
 
     /**
@@ -224,17 +242,15 @@ public class DisplayDetails extends AppCompatActivity
         Intent intent = new Intent(this, DisplayDetails.class);
         int newIndex;
 
-        //Find the next transaction with a matching type.
-        for(newIndex = _transIndex + 1; newIndex < Reserve.get_transactionList().size(); newIndex++){
-            if (Reserve.get_transactionList().get(newIndex).getTransactionType() == _transType){
-                break;
-            }
-        }
+        if (_index == (Reserve.getListItems(_itemType).size() - 1))
+            newIndex = 0;
+        else
+            newIndex = _index + 1;
 
         //Pass the transaction type in case it's a new transaction
-        intent.putExtra("TRANSACTION_TYPE", _transType);
+        intent.putExtra("TYPE", _itemType);
         //Pass the index (New transaction will be transactionList().size() + 1)
-        intent.putExtra("TRANSACTION_INDEX", newIndex);
+        intent.putExtra("INDEX", newIndex);
 
         startActivity(intent);
 
@@ -251,17 +267,15 @@ public class DisplayDetails extends AppCompatActivity
         Intent intent = new Intent(this, DisplayDetails.class);
         int newIndex;
 
-        //Find the next transaction with a matching type.
-        for(newIndex = _transIndex - 1; newIndex >= 0; newIndex--){
-            if (Reserve.get_transactionList().get(newIndex).getTransactionType() == _transType){
-                break;
-            }
-        }
+        if (_index == 0)
+            newIndex = Reserve.getListItems(_itemType).size() -1;
+        else
+            newIndex = _index - 1;
 
         //Pass the transaction type in case it's a new transaction
-        intent.putExtra("TRANSACTION_TYPE", _transType);
+        intent.putExtra("TYPE", _itemType);
         //Pass the index (New transaction will be -1)
-        intent.putExtra("TRANSACTION_INDEX", newIndex);
+        intent.putExtra("INDEX", newIndex);
 
         startActivity(intent);
 
@@ -280,7 +294,7 @@ public class DisplayDetails extends AppCompatActivity
     @Override
     public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
         Toast toast = makeText(getApplicationContext(),
-                "Selected " + _entityListAssigned.get(position).getName(), Toast.LENGTH_SHORT);
+                "Selected " + _assignedItems.get(position).getName(), Toast.LENGTH_SHORT);
         toast.show();
     }
 
