@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import java.util.TreeMap;
  */
 
 public class Transaction implements ListItem{
+    private static final String TAG = "BADDS-Transaction";
     String _id;
     BigDecimal _value;
     Operator _operator;
@@ -216,5 +218,40 @@ public class Transaction implements ListItem{
     @Override
     public ListItemType getType() {
         return _transactionType;
+    }
+
+    /**
+     * Applies the current transaction to the specified ENTITY
+     * @param item ListItem (Needs to be of type ENTITY)
+     * @return Whether  or not transaction was successful
+     * @throws IllegalArgumentException ListItem MUST be type ENTITY
+     */
+    @Override
+    public boolean applyTransaction(ListItem item) {
+        //You can't apply a transaction to another transaction.
+        if(item.getType() != ListItemType.ENTITY){
+            Log.e(TAG, "applyTransaction: ListItem item not of type ENTITY", new IllegalArgumentException());
+        }
+
+        //Work with a temporary entity
+        Entity entity = (Entity)item;
+
+        switch (_transactionType){
+            case REWARD:
+                //Can't go into the negatives for a Reward
+                if (entity.getCashBalance().floatValue() < _value.floatValue())
+                    return false;
+            case FINE:
+                //Fines can be applied even if balance is not high enough
+                entity.updateBalance(_value, false);
+                break;
+            default: //default is Task
+                entity.updateBalance(_value, true);
+        }
+
+        //Apply changes to Reserve Entity List.
+        int index = Reserve.get_entityList().indexOf(item);
+        Reserve.get_entityList().set(index, entity);
+        return true;
     }
 }

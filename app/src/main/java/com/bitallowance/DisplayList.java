@@ -229,6 +229,12 @@ public class DisplayList extends AppCompatActivity implements
         toast.show();
     }
 
+    /**
+     * Opens another dialogue fragment with a list of ListItems that can be applied to the
+     * current selection.
+     * @param item Currently selected item
+     * @param typeToApply 
+     */
     private void getItemsToApply(ListItem item, ListItemType typeToApply){
         //Declare new Fragment Manager & ListItemSelectDialog
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -253,18 +259,16 @@ public class DisplayList extends AppCompatActivity implements
             case FINE:
                 bundle.putString("TITLE", "Which fine would you like to apply to " + item.getName() + "?");
                 break;
-
         }
 
+        //Get a dynamic list of items that can be applied
         ArrayList options = new ArrayList<>();
         for (ListItem listItem : Reserve.getListItems(typeToApply)) {
             options.add(listItem.getName());
         }
         bundle.putStringArrayList("OPTIONS", options);
 
-        //This is required
-        /* * * * INITIALIZE & SET DIALOG ARGUMENTS DIALOG (2 - STEPS) * * * */
-        //Step 1 - INITIALIZE - pass selected item and a listener. - This is required for onClick event to work.
+        //Initialize a NestedDialogue
         selectDialog.initializeNested(item, this, typeToApply);
         //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
         selectDialog.setArguments(bundle);
@@ -274,19 +278,36 @@ public class DisplayList extends AppCompatActivity implements
 
     }
 
+    /**
+     * The callback function for nested ListItem dialogs. This handles onclick events for the nested
+     * dialog fragments
+     * @param position index of the option selected by the user.
+     * @param selectedItem item to be affected
+     * @param applyType type of item to be applied to selectedItem.
+     */
     @Override
     public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
         Toast toast;
-
+        //applyType must list a specific type.
         if (applyType == null || applyType == ALL) {
             toast = makeText(getApplicationContext(), "An Error Occurred...", Toast.LENGTH_SHORT);
         }else {
-            if (applyType == ENTITY){
-                toast = makeText(getApplicationContext(), "Applying " + selectedItem.getName() +
-                        " to " + Reserve.getListItems(applyType).get(position).getName(), Toast.LENGTH_SHORT);
-            } else {
-                toast = makeText(getApplicationContext(), "Applying " + Reserve.getListItems(applyType).get(position).getName() +
-                        " to " + selectedItem.getName(), Toast.LENGTH_SHORT);
+            try {
+                if (selectedItem.applyTransaction(Reserve.getListItems(applyType).get(position))) {
+                    toast = makeText(getApplicationContext(), "Transaction Applied", Toast.LENGTH_SHORT);
+                    _recycleViewAdapter.notifyDataSetChanged();
+                } else {
+                    if (applyType == ENTITY) {
+                        toast = makeText(getApplicationContext(), Reserve.getListItems(applyType).get(position).getName() +
+                                " does not have enough " + Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                    } else {
+                        toast = makeText(getApplicationContext(), selectedItem.getName() + " does not have enough " +
+                                Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                    }
+                }
+            } catch (IllegalArgumentException e)
+            {
+                toast = makeText(getApplicationContext(), "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
             }
         }
         toast.show();
