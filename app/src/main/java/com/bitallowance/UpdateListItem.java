@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -38,6 +39,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     private static final String SERVER_IP = "107.174.13.151";
     // the item to update
     ListItem _item;
+    DataOutputStream _out;
+    DataInputStream _in;
     private void getKeyPair() {
         //  get the public and private key pair
     }
@@ -51,72 +54,27 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
         _item = item;
     }
 
-    @Override
-    protected Void doInBackground(String... strings) {
-        getKeyPair();
-
-        String id = strings[0];
-
-        // The server connection section
+    protected void updateTransaction(int id) {
         try {
-            // the address has to be in the correct format for the socket to use it
-            InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
-            SocketAddress sockaddr = new InetSocketAddress(serverAddr, SERVER_PORT);
-            _socket = new Socket();
-
-            // if there's a problem with the server this makes sure the thread doesn't hang
-            int timeout = 2000;
-            // connects the socket to the remote server
-            _socket.connect(sockaddr, timeout);
-            // instantiates the reader/writer
-            DataOutputStream _out = new DataOutputStream(_socket.getOutputStream());
-            DataInputStream _in = new DataInputStream(_socket.getInputStream());
-
-            // write to the buffered writer, then sends the packet with flush
-            // we're telling the server we want to do some 'n'ormal communication
-            _out.write('n');
-            _out.flush();
-
-            // read the public key into a byte array
-            Log.d("Update Transaction", "accepting new");
-            ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
-            byte[] serverKeyBytes = new byte[426];
-            int read = _in.read(serverKeyBytes, 0, 426);
-            String serverPEMKey = new String(serverKeyBytes);
-            Log.d("Read", Integer.toString(read));
-            Log.d("Update Transaction", serverPEMKey);
-
-            String nul = "\0";
-            _out.write(_pub.toString().getBytes());
-            Log.d("Update Transaction", _pub.toString());
-            _out.write("ut\n".getBytes());// 'u'pdate 't'ransaction
-            read = _in.read();
-            int idNum = Integer.parseInt(id);
-            byte[] idByte = new byte[] {(byte) idNum,
-                    (byte) (idNum >> 8),
-                    (byte) (idNum >> 16),
-                    (byte) (idNum >> 24)};
-            _out.write(idByte);
-            Log.d("Login", String.valueOf(id));
             // if the transaction doesn't have a database id (0) that means it was just created
             // and it needs to get an ID, and the rest of the information is pushed to the server
             // if it does have an ID then depending on the timestamp either the local transaction
             // is updated or the transaction on the server is updated.
             byte[] updateType = new byte[1];
-            read = _in.read(updateType, 0, 1);
+            int read = _in.read(updateType, 0, 1);
             // update types
             // l = local update of transaction
             // r = remote update of transaction, or create the transaction on the server
-            switch ((char)updateType[0]) {
+            switch ((char) updateType[0]) {
                 case 'l': //local update
                     byte[] buffer = new byte[100];
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
                     byte[] idBytes = new byte[4];
                     read = _in.read(buffer);// get ID
-                    idNum = idBytes[3] & 0xFF |
+                    int idNum = idBytes[3] & 0xFF |
                             (idBytes[2] & 0xFF) << 8 |
-                            (idBytes[1] & 0xFF) << 16|
+                            (idBytes[1] & 0xFF) << 16 |
                             (idBytes[0] & 0xFF) << 24;
                     // TODO get the local copy of the transaction from the ID
                     _out.write("_".getBytes());
@@ -154,7 +112,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     // convert byte array to integer
                     int affectedCount = affecCntBytes[3] & 0xFF |
                             (affecCntBytes[2] & 0xFF) << 8 |
-                            (affecCntBytes[1] & 0xFF) << 16|
+                            (affecCntBytes[1] & 0xFF) << 16 |
                             (affecCntBytes[0] & 0xFF) << 24;
                     for (int i = 0; i < affectedCount; i++) {
                         _out.write("_".getBytes());
@@ -165,39 +123,78 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     break;
                 case 'r': // remote update
                     // write
-                    _out.write("name\n".getBytes());// name
+                    Transaction transaction = (Transaction)_item;
+                    id = Integer.parseInt(transaction._id);
+                    byte[] idByte = new byte[] {(byte) id,
+                            (byte) (id >> 8),
+                            (byte) (id >> 16),
+                            (byte) (id >> 24)};
+                    _out.write(idByte);// name
                     _out.flush();
                     read = _in.read();
-                    _out.write("value\n".getBytes());// value
+                    String value = transaction._value.toPlainString();
+                    _out.write(value.getBytes());// value
                     _out.flush();
                     read = _in.read();
-                    _out.write("operator\n".getBytes());// operator
+                    char operator = '+';
+                    switch (transaction._operator) {
+                        case ADD:
+                            operator = '+';
+                            break;
+                        case DIVIDE:
+                            operator = '/';
+                            break;
+                        case MULTIPLY:
+                            operator = '*';
+                            break;
+                        case SUBTRACT:
+                            operator = '-';
+                            break;
+                    }
+                    _out.write(operator);// operator
                     _out.flush();
                     read = _in.read();
-                    _out.write("timestamp\n".getBytes());// timestamp
+                    String timestamp = transaction._operator.toString();
+                    _out.write((timestamp + "\n").getBytes());// timestamp
                     _out.flush();
                     read = _in.read();
-                    _out.write("memo\n".getBytes());// memo
+                    String memo = transaction._memo;
+                    _out.write((memo + "\n").getBytes());// memo
                     _out.flush();
                     read = _in.read();
-                    _out.write("linked\n".getBytes());// linked
+                    boolean linked = transaction._linked;
+                    _out.write(linked ? 0 : 1);// linked
                     _out.flush();
                     read = _in.read();
-                    _out.write("executed\n".getBytes());// executed
+                    boolean executed = transaction._executed;
+                    _out.write(executed ? 0 : 1);// executed
                     _out.flush();
                     read = _in.read();
-                    _out.write("expiration\n".getBytes());// expiration date
+                    String expiration = transaction.getExpirationDate().toString();
+                    _out.write((expiration + "\n").getBytes());// expiration date
                     _out.flush();
                     read = _in.read();
-                    _out.write("cool down\n".getBytes());// cool down
+                    int cool = transaction.getCoolDown();
+                    _out.write(cool);// cool down
                     _out.flush();
-                    read = _in.read();
-                    _out.write("affected count\n".getBytes());// affected count
+                    idBytes = new byte[4];
+                    read = _in.read(idBytes);// get ID
+                    idNum = idBytes[3] & 0xFF |
+                            (idBytes[2] & 0xFF) << 8 |
+                            (idBytes[1] & 0xFF) << 16 |
+                            (idBytes[0] & 0xFF) << 24;
+                    transaction._id = Integer.toString(idNum);
+                    int count = transaction._affected.size();
+                    _out.write(count);// affected count
                     _out.flush();
                     read = _in.read();
                     for (int i = 0; i < 0; i++) {// loop through each affected entity
-                        _out.write("affected\n".getBytes());// affected
-                        _out.write("assignment\n".getBytes());// assignments
+                        int affected = transaction._affected.get(i).getId();
+                        byte[] affectedidByte = new byte[] {(byte) affected,
+                                (byte) (affected >> 8),
+                                (byte) (affected >> 16),
+                                (byte) (affected >> 24)};
+                        _out.write(affectedidByte);// assignments
                         _out.flush();
                         read = _in.read();
                     }
@@ -212,6 +209,68 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             _in.read(confirmBytes, 0, 100);
             String confirm = new String(confirmBytes);
             Log.d("Update Transaction", confirm);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void updateEntity(int id) {
+
+    }
+
+    @Override
+    protected Void doInBackground(String... strings) {
+        getKeyPair();
+
+        String id = strings[0];
+
+        // The server connection section
+        try {
+            // the address has to be in the correct format for the socket to use it
+            InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+            SocketAddress sockaddr = new InetSocketAddress(serverAddr, SERVER_PORT);
+            _socket = new Socket();
+
+            // if there's a problem with the server this makes sure the thread doesn't hang
+            int timeout = 2000;
+            // connects the socket to the remote server
+            _socket.connect(sockaddr, timeout);
+            // instantiates the reader/writer
+            _out = new DataOutputStream(_socket.getOutputStream());
+            _in = new DataInputStream(_socket.getInputStream());
+
+            // write to the buffered writer, then sends the packet with flush
+            // we're telling the server we want to do some 'n'ormal communication
+            _out.write('n');
+            _out.flush();
+
+            // read the public key into a byte array
+            Log.d("Update Transaction", "accepting new");
+            ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
+            byte[] serverKeyBytes = new byte[426];
+            int read = _in.read(serverKeyBytes, 0, 426);
+            String serverPEMKey = new String(serverKeyBytes);
+            Log.d("Read", Integer.toString(read));
+            Log.d("Update Transaction", serverPEMKey);
+
+            String nul = "\0";
+            _out.write(_pub.toString().getBytes());
+            Log.d("Update Transaction", _pub.toString());
+            _out.write("ut\n".getBytes());// 'u'pdate 't'ransaction
+            read = _in.read();
+            int idNum = Integer.parseInt(id);
+            byte[] idByte = new byte[] {(byte) idNum,
+                    (byte) (idNum >> 8),
+                    (byte) (idNum >> 16),
+                    (byte) (idNum >> 24)};
+            _out.write(idByte);
+            Log.d("Login", String.valueOf(id));
+
+            if (_item instanceof Transaction) {
+                updateTransaction(idNum);
+            } else if (_item instanceof Entity) {
+                updateEntity(idNum);
+            }
 
             Log.d("Update Transaction", "start closing things");
             _out.close();
