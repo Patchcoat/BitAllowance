@@ -224,6 +224,13 @@ public class Entity implements ListItem {
     }
 
     @Override
+    public void update() {
+        UpdateListItem update = new UpdateListItem();
+        update.itemToUpdate(this);
+        update.execute(String.valueOf(id));
+    }
+
+    @Override
     public void delete() {
         for (Transaction transaction: Reserve.get_transactionList()){
             transaction.deleteEntity(this);

@@ -15,5 +15,7 @@ public interface ListItem {
     boolean applyTransaction(ListItem item);
     List<ListItem> getAssignmentList();
 
+    void update();
+
     void delete();
 }
