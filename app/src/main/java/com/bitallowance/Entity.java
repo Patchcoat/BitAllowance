@@ -216,6 +216,13 @@ public class Entity implements ListItem {
         return item.applyTransaction(this);
     }
 
+    @Override
+    public List<ListItem> getAssignmentList() {
+        List<ListItem> assignmentList = new ArrayList<>();
+        assignmentList.addAll(getAssignedTransactions());
+        return assignmentList;
+    }
+
 }
 
 

@@ -4,6 +4,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -267,5 +268,15 @@ public class Transaction implements ListItem{
         int index = Reserve.get_entityList().indexOf(item);
         Reserve.get_entityList().set(index, entity);
         return true;
+    }
+
+    @Override
+    public List<ListItem> getAssignmentList() {
+        List<ListItem> assignmentList = new ArrayList<>();
+        for (Entity entity: Reserve.get_entityList()) {
+            if(isAssigned(entity))
+                assignmentList.add(entity);
+        }
+        return assignmentList;
     }
 }
