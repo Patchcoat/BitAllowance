@@ -183,6 +183,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             (idBytes[2] & 0xFF) << 8 |
                             (idBytes[1] & 0xFF) << 16 |
                             (idBytes[0] & 0xFF) << 24;
+                    transaction._id = Integer.toString(idNum);
                     int count = transaction._affected.size();
                     _out.write(count);// affected count
                     _out.flush();
