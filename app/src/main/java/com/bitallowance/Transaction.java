@@ -60,7 +60,6 @@ public class Transaction implements ListItem{
     void execute(Entity entity) {
     //I think this function should take a list of Entities
     }
-
     int getCoolDown(){
         return _coolDown;
     }
