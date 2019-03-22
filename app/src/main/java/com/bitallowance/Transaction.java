@@ -129,10 +129,6 @@ public class Transaction implements ListItem{
 
     }
 
-    void update() {
-
-    }
-
     void updateOnlyUnexecute() {
 
     }
@@ -285,6 +281,13 @@ public class Transaction implements ListItem{
                 assignmentList.add(entity);
         }
         return assignmentList;
+    }
+
+    @Override
+    public void update() {
+        UpdateListItem update = new UpdateListItem();
+        update.itemToUpdate(this);
+        update.execute(_id);
     }
 
     @Override
