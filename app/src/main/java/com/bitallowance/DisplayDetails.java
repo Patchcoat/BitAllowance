@@ -38,11 +38,6 @@ public class DisplayDetails extends AppCompatActivity
     private List<ListItem> _entityListAssigned = new ArrayList<>();
     private List<ListItem> _entityListUnassigned = new ArrayList<>();
 
-    // Delare TEXTVIEWs to allow for content to be displayed
-    //private TextView _textExpires;
-    //private TextView _textRepeatable;
-    //private TextView _textCoolDown;
-
     private ListItemRecycleViewAdapter _recycleViewAdapter;
 
     @Override
