@@ -223,6 +223,14 @@ public class Entity implements ListItem {
         return assignmentList;
     }
 
+    @Override
+    public void delete() {
+        for (Transaction transaction: Reserve.get_transactionList()){
+            transaction.deleteEntity(this);
+        }
+        Reserve.get_entityList().remove(this);
+    }
+
 }
 
 
