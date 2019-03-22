@@ -26,7 +26,7 @@ public class Entity implements ListItem {
     private String email;
   
     private Date timeSinceLastLoad;
-    private List<Transaction> transactions;
+    private List<Transaction> _transactionHistory;
     private BigDecimal cashBalance;
 
     // Constructors
@@ -71,8 +71,8 @@ public class Entity implements ListItem {
         return  this.timeSinceLastLoad;
     }
 
-    public List<Transaction> getTransactions () {
-        return this.transactions;
+    public List<Transaction> getTransactionHistory() {
+        return this._transactionHistory;
     }
 
     // Setters
@@ -100,8 +100,8 @@ public class Entity implements ListItem {
         this.timeSinceLastLoad = timeSinceLastLoad;
     }
 
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
+    public void set_transactionHistory(List<Transaction> _transactionHistory) {
+        this._transactionHistory = _transactionHistory;
     }
 
     // Transaction Methods

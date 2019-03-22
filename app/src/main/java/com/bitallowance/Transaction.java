@@ -54,9 +54,23 @@ public class Transaction implements ListItem{
     void updateAssignment (Entity entity, Boolean bool){
         if (entity == null)
             return;
-
         _assignments.put(entity, bool);
     }
+
+    /**
+     * Checks to see if a transaction has been assigned to a particular entity
+     * @param entity the entity object being checked
+     * @return boolean indicating whether or not the transaction is assigned.
+     */
+    boolean isAssigned(Entity entity){
+        //Make sure key exists to avoid nullptr exception
+        if (_assignments.containsKey(entity)) {
+            return _assignments.get(entity);
+        } else {
+            return false;
+        }
+    }
+
 
 
     void execute(Entity entity) {

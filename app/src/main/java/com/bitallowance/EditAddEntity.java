@@ -5,41 +5,66 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static android.widget.Toast.makeText;
 
+/**
+ * Allows users to add a new entity object or edit an existing one.
+ * *NOTE* ENTITY_INDEX must be passed in to edit an existing entity
+ */
 public class EditAddEntity extends AppCompatActivity implements DatePickerFragment.DatePickerFragmentListener, ListItemClickListener {
 
-    int _entityIndex;
-    Entity _currentEntity;
-    List<ListItem> test = (List)Reserve.get_entityList();
+    private static final String TAG = "BADDS-EditAddEntity";
+    private int _entityIndex;
+    private Entity _currentEntity;
+    private List<ListItem> _assignedTransactions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_add_entity);
+
+        //Get Entity Index
         _entityIndex = getIntent().getIntExtra("ENTITY_INDEX", -1);
+
+        //If entity index is not valid, create new Entity and set index to size of Reserve.getEntityList()
         if(_entityIndex >= Reserve.get_entityList().size() || _entityIndex < 0) {
             _currentEntity = new Entity();
             _entityIndex = Reserve.get_entityList().size();
         } else {
-          _currentEntity = Reserve.get_entityList().get(_entityIndex);
-          EditText name = (EditText)findViewById(R.id.editEntity_txtName);
-          EditText email = (EditText)findViewById(R.id.editEntity_txtEmail);
-          Button birthday = (Button)findViewById(R.id.editEntity_btnDatePicker);
+            //If entity exists, get the existing entity
+            _currentEntity = Reserve.get_entityList().get(_entityIndex);
 
-          name.setText(_currentEntity.getDisplayName());
-          if (!_currentEntity.getEmail().isEmpty()){
-              email.setText(_currentEntity.getEmail());
-          }
-          birthday.setText(Reserve.dateToString(_currentEntity.getBirthday()));
+            if (_currentEntity == null) {
+                Log.e(TAG, "onCreate: _currentEntity is null.");
+            } else {
+                //populate _assignedTransactions for recyclerView
+                for (Transaction transaction : Reserve.get_transactionList()) {
+                    if (transaction.isAssigned(_currentEntity)) {
+                        _assignedTransactions.add(transaction);
+                    }
+                }
+            }
+
+
+            EditText name = (EditText) findViewById(R.id.editEntity_txtName);
+            EditText email = (EditText) findViewById(R.id.editEntity_txtEmail);
+            Button birthday = (Button) findViewById(R.id.editEntity_btnDatePicker);
+
+            name.setText(_currentEntity.getDisplayName());
+            if (!_currentEntity.getEmail().isEmpty()) {
+                email.setText(_currentEntity.getEmail());
+            }
+            birthday.setText(Reserve.dateToString(_currentEntity.getBirthday()));
         }
 
         // get the reference of RecyclerView
@@ -48,7 +73,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         //  call the constructor of CustomAdapter to send the reference and data to Adapter
-        ListItemRecycleViewAdapter customAdapter = new ListItemRecycleViewAdapter(this, this, test, ListItemRecycleViewAdapter.CardType.Simple);
+        ListItemRecycleViewAdapter customAdapter = new ListItemRecycleViewAdapter(this, this, _assignedTransactions, ListItemRecycleViewAdapter.CardType.Simple);
         recyclerView.setAdapter(customAdapter); // set the Adapter to RecyclerView
 
     }
@@ -111,7 +136,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
 
     @Override
     public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
-        Toast toast = makeText(getApplicationContext(), "Selected " + test.get(position).getName(), Toast.LENGTH_SHORT);
+        Toast toast = makeText(getApplicationContext(), "Selected " + _assignedTransactions.get(position).getName(), Toast.LENGTH_SHORT);
         toast.show();
 
     }
