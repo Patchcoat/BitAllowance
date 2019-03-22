@@ -14,4 +14,6 @@ public interface ListItem {
     ListItemType getType();
     boolean applyTransaction(ListItem item);
     List<ListItem> getAssignmentList();
+
+    void delete();
 }
