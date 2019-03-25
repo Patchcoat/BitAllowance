@@ -78,7 +78,7 @@ public class CreateReserveAccount extends AppCompatActivity {
         String email = editTextEM.getText().toString();
         String password = editTextPW.getText().toString();
         String passwordVerify = editTextPWV.getText().toString();
-        if (checkPassword(password) && password == passwordVerify) {
+        if (password.equals(passwordVerify)) {
             createReserve.execute(username, displayName, email, password);
         }
     }

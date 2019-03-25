@@ -88,7 +88,6 @@ public class Transaction implements ListItem{
     void execute(Entity entity) {
     //I think this function should take a list of Entities
     }
-
     int getCoolDown(){
         return _coolDown;
     }
@@ -127,10 +126,6 @@ public class Transaction implements ListItem{
 
 
     void reverse() {
-
-    }
-
-    void update() {
 
     }
 
@@ -286,6 +281,13 @@ public class Transaction implements ListItem{
                 assignmentList.add(entity);
         }
         return assignmentList;
+    }
+
+    @Override
+    public void update() {
+        UpdateListItem update = new UpdateListItem();
+        update.itemToUpdate(this);
+        update.execute(_id);
     }
 
     @Override
