@@ -63,6 +63,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/displayDetailsLblAssigned"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -77,7 +78,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="start|center_vertical"
-        android:text="@string/displayDetailsTextCoolDown"
+
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
@@ -92,7 +93,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="start|center_vertical"
-        android:text="@string/displayDetailsTextRepeat"
+
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -109,6 +110,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/displayDetailsLblExpires"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/displayDetails_lblValue" />
@@ -138,7 +140,6 @@
         android:layout_marginRight="8dp"
         android:gravity="start|center_vertical"
         android:inputType="number"
-        android:text="Value"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
@@ -155,6 +156,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/displayDetailsLblValue"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/displayDetails_lblName" />
@@ -170,6 +172,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/displayDetailsLblDescription"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/displayDetails_textRepeat" />
@@ -185,6 +188,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/displayDetailsLblName"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/displayDetails_lblTitle" />
