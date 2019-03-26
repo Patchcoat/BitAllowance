@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/editTransaction_btnNext"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -24,7 +24,7 @@
     <Button
         android:id="@+id/editTransaction_btnPrevious"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -39,7 +39,7 @@
     <Button
         android:id="@+id/editTransaction_btnDone"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -66,7 +66,7 @@
     <TextView
         android:id="@+id/editTransaction_lblAssigned"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -74,6 +74,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/editTransactionLblAssigned"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
@@ -82,7 +83,7 @@
     <Spinner
         android:id="@+id/editTransaction_spinCoolDown"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:entries="@array/editTransactionSpinCoolDown"
@@ -103,7 +104,7 @@
     <TextView
         android:id="@+id/editTransaction_lblExpires"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -111,6 +112,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/editTransactionLblExpires"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/editTransaction_lblValue" />
@@ -118,7 +120,7 @@
     <EditText
         android:id="@+id/editTransaction_txtDesc"
         android:layout_width="0dp"
-        android:layout_height="120dp"
+        android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -133,7 +135,7 @@
     <EditText
         android:id="@+id/editTransaction_txtValue"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -147,7 +149,7 @@
     <TextView
         android:id="@+id/editTransaction_lblValue"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -155,6 +157,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/editTransactionLblValue"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/editTransaction_lblName" />
@@ -162,7 +165,7 @@
     <TextView
         android:id="@+id/editTransaction_lblDescription"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -170,6 +173,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/editTransactionLblDescription"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/editTransaction_spinRepeat" />
@@ -177,7 +181,7 @@
     <TextView
         android:id="@+id/editTransaction_lblName"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -185,6 +189,7 @@
         android:gravity="start|center_vertical"
         android:text="@string/editTransactionLblName"
         android:textSize="18sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toBottomOf="@+id/editTransaction_lblTitle" />
@@ -192,7 +197,7 @@
     <EditText
         android:id="@+id/editTransaction_txtName"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -214,6 +219,7 @@
         android:layout_marginRight="8dp"
         android:text="@string/editTransactionTitle"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -281,7 +287,7 @@
     <Button
         android:id="@+id/editTransaction_btnSave"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
