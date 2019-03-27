@@ -631,7 +631,5 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-
 }
 
