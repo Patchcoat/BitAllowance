@@ -12,9 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DisplayList" />
-        <activity android:name=".ReserveHome" />
-        <activity android:name=".DisplayDetails" />
+        <activity android:name=".DisplayList"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ReserveHome"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".DisplayDetails"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".EditAddTransaction"
             android:theme="@style/AppTheme.NoActionBar"
@@ -23,11 +26,16 @@
             android:name=".EditAddEntity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".TestPage" />
-        <activity android:name=".EditAddCurrency" />
-        <activity android:name=".CreateReserveAccount" />
-        <activity android:name=".DisplayDetails" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".TestPage"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".EditAddCurrency"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".CreateReserveAccount"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".DisplayDetails"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
