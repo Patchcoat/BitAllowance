@@ -85,9 +85,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
             finish();
         }
 
-        // setUpSpinners(isExisting);
-        // updateLabels(isExisting);
-
         /* * * * * SET UP RECYCLER-VIEW * * * * */
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.displayDetails_Recycler);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -303,25 +300,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     }
 
     /**
-     * Original Code before Onclick modifications
-    @Override
-    public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
-        Toast toast = makeText(getApplicationContext(),
-                "Selected " + _assignedItems.get(position).getName(), Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    @Override
-    public void onListItemDialogClick(int position, ListItem selectedItem) {
-
-    }
-    */
-
-    /**
-     * End of file before changes implemented 3.25.2019 for on item select
-     */
-
-    /**
      * Callback function for ListItemClickListener. Handles onclick events for recycler view items.
      * @param position The index of the selected item.
      * @param adapter The recycleView adapter that registered the onClick event. Useful for activities with
@@ -349,22 +327,21 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         //*Note* Options must be added as a String ArrayList
         switch (clickType){
             case ENTITY:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
-                        "Apply Reward", "Apply Fine", "Edit " + currentList.get(position).getName(),
-                        "Delete "+ currentList.get(position).getName(), "Cancel")));
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
+                        "Apply Payment", "Apply Reward", "Apply Fine", "Cancel")));
                 break;
             case TASK:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Payment",
-                        "Edit " + currentList.get(position).getName(), "Delete "+ currentList.get(position).getName(), "Cancel")));
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
+                        "Apply Payment", "Cancel")));
                 break;
             case REWARD:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Reward",
-                        "Edit " + currentList.get(position).getName(), "Delete "+ currentList.get(position).getName(), "Cancel")));
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
+                        "Apply Reward", "Cancel")));
                 break;
 
             case FINE:
-                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details", "Apply Fine",
-                        "Edit " + currentList.get(position).getName(), "Delete "+ currentList.get(position).getName(), "Cancel")));
+                bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
+                        "Apply Fine", "Cancel")));
                 break;
 
         }
@@ -404,12 +381,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
                     case 3:
                         getItemsToApply(selectedItem, FINE);
                         break;
-                    case 4:
-                        editItem(selectedItem);
-                        break;
-                    case 5:
-                        confirmDelete(selectedItem);
-                        break;
                 }
             }
             else{
@@ -420,32 +391,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
                     case 1:
                         getItemsToApply(selectedItem, ENTITY);
                         break;
-                    case 2:
-                        editItem(selectedItem);
-                        break;
-                    case 3:
-                        confirmDelete(selectedItem);
-                        break;
                 }
             }
         }
-    }
-
-    /**
-     * Opens a new activity to allow the selected item to be edited
-     * @param selectedItem the item to be edited
-     */
-    private void editItem(ListItem selectedItem){
-        Intent intent;
-        if (selectedItem.getType() == ENTITY) {
-            intent = new Intent(this, EditAddEntity.class);
-            intent.putExtra("ENTITY_INDEX", _assignedItems.indexOf(selectedItem));
-        } else {
-            intent = new Intent(this, EditAddTransaction.class);
-            intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
-            intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
-        }
-        startActivityForResult(intent,1);
     }
 
     /**
@@ -459,36 +407,8 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         startActivityForResult(intent,1);
     }
 
-    /**
-     * Prompts the user to confirm they want to delete the selected item. If the user confirms,
-     * it deletes the object and updates the recyclerView
-     * @param selectedItem the object to be deleted.
-     */
-    private void  confirmDelete(final ListItem selectedItem){
-        //Confirm the user wants to delete the record
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Delete " + selectedItem.getName() + "?").setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedItem.delete();
-                _assignedItems.remove(selectedItem);
-                // updateAdapter(selectedItem.getType());
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                return;
-            }
-        });
-        builder.show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        //updateAdapter(ENTITY);
-        //updateAdapter(TASK);
-        //updateAdapter(REWARD);
     }
 
     /**

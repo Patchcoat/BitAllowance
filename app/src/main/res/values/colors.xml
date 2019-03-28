@@ -6,4 +6,8 @@
     <color name="Blue">#2E7BEE</color>
     <color name="Green">#A8E3AE</color>
     <color name="Red">#D81B1B</color>
+    <color name="LtYellow">#fff8dc</color>
+    <color name="LtBlue">#bbffff</color>
+    <color name="LtGreen">#b8ffd0</color>
+    <color name="LtRed">#fe9894</color>
 </resources>
