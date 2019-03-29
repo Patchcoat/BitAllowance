@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,11 +34,13 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
      * @param listItems A list of ListItems to be displayed on the RecycleView (List<ListItem>)
      * @param type The amount of details that should be displayed on each card. (SIMPLE, NORMAL or DETAILED)
      */
-    public ListItemRecycleViewAdapter(Context context, ListItemClickListener listItemClickListener, List<ListItem> listItems, CardType type) {
+    public ListItemRecycleViewAdapter(Context context, ListItemClickListener listItemClickListener,
+                                      List<ListItem> listItems, CardType type) {
         this._context = context;
         this._listItems = listItems;
         this._type = type;
         this._listItemClickListener = listItemClickListener;
+
     }
 
     @Override
@@ -60,12 +63,27 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
         TextView textViewName = (TextView)holder.itemView.findViewById(R.id.recyclerView_txtName);
 
 
-        //Bind data depending on CardType
+        // Bind data depending on CardType
         bindSimple(textViewName, position);
         if (_type != CardType.Simple )
             bindNormal(textViewDetails1, imageView, position);
         if (_type == CardType.Detailed)
             bindDetailed(textViewDetails2, position);
+
+        // Color change based on type
+        if (_listItems.get(position).getType() == ListItemType.ENTITY) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(_context, R.color.LtYellow));
+        }
+        if (_listItems.get(position).getType() == ListItemType.REWARD) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(_context, R.color.LtBlue));
+        }
+        if (_listItems.get(position).getType() == ListItemType.TASK) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(_context, R.color.LtGreen));
+        }
+        if (_listItems.get(position).getType() == ListItemType.FINE) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(_context, R.color.LtRed));
+        }
+
     }
 
     /**

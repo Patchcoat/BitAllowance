@@ -89,8 +89,8 @@
 
     <!-- Display Details -->
     <string name="displayDetailsTitle">Display Details</string>
-    <string name="displayDetailsLblName">Task Name:</string>
-    <string name="displayDetailsLblValue">Task Value:</string>
+    <string name="displayDetailsLblName">Name:</string>
+    <string name="displayDetailsLblValue">Value:</string>
     <string name="displayDetailsLblExpires">Expiration:</string>
     <string name="displayDetailsLblDescription">Description:</string>
     <string name="displayDetailsLblAssigned">Assigned to:</string>
