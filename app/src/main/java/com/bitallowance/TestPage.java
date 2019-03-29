@@ -129,6 +129,7 @@ public class TestPage extends AppCompatActivity {
                 default:
                     entity.setEmail("");
             }
+            entity.update();
             Reserve.addEntity(entity);
 
             Transaction task = new Transaction();
@@ -203,7 +204,9 @@ public class TestPage extends AppCompatActivity {
             task.setAssignments(taskMap);
             reward.setAssignments(rewardMap);
             fine.setAssignments(fineMap);
-
+            task.update();
+            reward.update();
+            fine.update();
 
             Reserve.addTransaction(task);
             Reserve.addTransaction(reward);

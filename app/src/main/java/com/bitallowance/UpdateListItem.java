@@ -1,5 +1,6 @@
 package com.bitallowance;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -7,8 +8,10 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -23,6 +26,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.HashMap;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     // the socket is the connection to the server
@@ -32,7 +42,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     //private DataOutputStream _out;
     //private DataInputStream _in;
     private PrivateKey _priv;
-    private PublicKey _pub;
+    private String _pubKeyString;
     // the port is the door use to connect to the sever
     private static final int SERVER_PORT = 3490;
     // the address of the server
@@ -41,6 +51,13 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     ListItem _item;
     DataOutputStream _out;
     DataInputStream _in;
+
+    private Context _context;
+
+    public void SetContext(Context _context) {
+        this._context = _context;
+    }
+
     private void getKeyPair() {
         //  get the public and private key pair
     }
@@ -154,6 +171,29 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write(operator);// operator
                     _out.flush();
                     read = _in.read();
+                    char type = 'E';
+                    switch (transaction.getTransactionType()) {
+                        case ENTITY:
+                            operator = 'E';
+                            break;
+                        case FINE:
+                            operator = 'F';
+                            break;
+                        case TASK:
+                            operator = 'T';
+                            break;
+                        case REWARD:
+                            operator = 'R';
+                            break;
+                        case ALL:
+                            operator = 'A';
+                            break;
+                    }
+                    _out.write(type);// operator
+                    _out.flush();
+                    read = _in.read();
+                    _out.write(transaction._name.getBytes());// name
+                    read = _in.read();
                     String timestamp = transaction._operator.toString();
                     _out.write((timestamp + "\n").getBytes());// timestamp
                     _out.flush();
@@ -163,11 +203,14 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     read = _in.read();
                     boolean linked = transaction._linked;
-                    _out.write(linked ? 0 : 1);// linked
+                    _out.write(linked ? 1 : 0);// linked
                     _out.flush();
                     read = _in.read();
                     boolean executed = transaction._executed;
-                    _out.write(executed ? 0 : 1);// executed
+                    _out.write(executed ? 1 : 0);// executed
+                    _out.flush();
+                    read = _in.read();
+                    _out.write(transaction.isExpirable() ? 1 : 0);// expirable
                     _out.flush();
                     read = _in.read();
                     String expiration = transaction.getExpirationDate().toString();
@@ -176,6 +219,10 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     read = _in.read();
                     int cool = transaction.getCoolDown();
                     _out.write(cool);// cool down
+                    _out.flush();
+                    read = _in.read();
+                    boolean repeat = transaction.isRepeatable();
+                    _out.write(repeat ? 1 : 0);// cool down
                     _out.flush();
                     idBytes = new byte[4];
                     read = _in.read(idBytes);// get ID
@@ -218,6 +265,56 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
 
     }
 
+    private static String decrypt(HashMap<String, byte[]> map, String password) {
+        String decrypted = new String();
+
+        try {
+            byte salt[] = map.get("salt");
+            byte iv[] = map.get("iv");
+            byte encrypted[] = map.get("encrypted");
+
+            char[] passwordChar = password.toCharArray();
+            PBEKeySpec pbeKeySpec = new PBEKeySpec(passwordChar, salt, 1324, 256);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] keyBytes = secretKeyFactory.generateSecret(pbeKeySpec).getEncoded();
+            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            decrypted = new String(cipher.doFinal(encrypted));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return decrypted;
+    }
+
+    private void getKeyPair(String password) {
+        try {
+            FileInputStream fisPub = _context.openFileInput("publicKey.dat");
+            FileInputStream fisPriv = _context.openFileInput("privateKey.dat");
+            ObjectInputStream oisPub = new ObjectInputStream(fisPub);
+            ObjectInputStream oisPriv = new ObjectInputStream(fisPriv);
+
+            HashMap<String, byte[]> pubMap = (HashMap<String, byte[]>) oisPub.readObject();
+            HashMap<String, byte[]> privMap = (HashMap<String, byte[]>) oisPriv.readObject();
+
+            oisPub.close();
+            oisPriv.close();
+
+            String publicKeyString = decrypt(pubMap, password);
+            String privateKeyString = decrypt(privMap, password);
+
+            Log.d("Login", publicKeyString);
+            _pubKeyString = publicKeyString;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected Void doInBackground(String... strings) {
         getKeyPair();
@@ -254,8 +351,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             Log.d("Update Transaction", serverPEMKey);
 
             String nul = "\0";
-            _out.write(_pub.toString().getBytes());
-            Log.d("Update Transaction", _pub.toString());
+            _out.write(_pubKeyString.getBytes());
+            Log.d("Update Transaction", _pubKeyString);
             _out.write("ut\n".getBytes());// 'u'pdate 't'ransaction
             read = _in.read();
             int idNum = Integer.parseInt(id);
