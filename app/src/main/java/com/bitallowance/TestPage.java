@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -99,6 +102,24 @@ public class TestPage extends AppCompatActivity {
         intent.putExtra("TRANSACTION_INDEX", -1);
         intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
         startActivity(intent);
+    }
+
+    public void SendTransaction (View view) {
+        Transaction transaction = new Transaction();
+        transaction._id = "0";
+        transaction._value = new BigDecimal(100);
+        transaction._operator = Operator.ADD;
+        transaction._timeStamp = new Date();
+        transaction._memo = "TEST";
+        transaction._linked = false;
+        transaction._executed = false;
+        transaction._transactionType = ListItemType.REWARD;
+        transaction._name = "test";
+        transaction._affected = new ArrayList<Entity>();
+        transaction.setIsExpirable(false);
+        transaction.setExpirationDate(new Date());
+        transaction.setCoolDown(10);
+        transaction.update();
     }
 
     /**
