@@ -275,10 +275,12 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     byte expirableByte = (byte) (transaction.isExpirable() ? 1 : 0);
                     _out.write(expirableByte);// expirable
                     _out.flush();
-                    read = _in.read();
-                    String expiration = df.format(transaction.getExpirationDate());
-                    _out.write((expiration).getBytes());// expiration date
-                    _out.flush();
+                    if (transaction.isExpirable()) {
+                        read = _in.read();
+                        String expiration = df.format(transaction.getExpirationDate());
+                        _out.write((expiration).getBytes());// expiration date
+                        _out.flush();
+                    }
                     read = _in.read();
                     int cool = transaction.getCoolDown();
                     byte[] coolByte = new byte[] {(byte) cool,
@@ -363,7 +365,26 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
 
                     break;
                 case 'r': // remote update
-
+                    String value = entity.getCashBalance().toPlainString();
+                    _out.write(value.getBytes());// value
+                    _out.flush();
+                    read = _in.read();
+                    String username = entity.getName();
+                    _out.write(username.getBytes());// username
+                    _out.flush();
+                    read = _in.read();
+                    String displayName = entity.getDisplayName();
+                    _out.write(displayName.getBytes());// displayName
+                    _out.flush();
+                    read = _in.read();
+                    String birthday = df.format(entity.getBirthday());
+                    _out.write(birthday.getBytes());// birthday
+                    _out.flush();
+                    read = _in.read();
+                    String email = entity.getEmail();
+                    _out.write(email.getBytes());// email
+                    _out.flush();
+                    read = _in.read();
                     break;
             }
         } catch(IOException e) {
