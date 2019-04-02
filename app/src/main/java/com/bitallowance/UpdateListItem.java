@@ -332,7 +332,43 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     }
 
     protected void updateEntity() {
+        Entity entity = (Entity) _item;
+        try {
+            int idNum = entity.getId();
+            byte[] idByte = new byte[]{(byte) idNum,
+                    (byte) (idNum >> 8),
+                    (byte) (idNum >> 16),
+                    (byte) (idNum >> 24)};
+            _out.write(idByte); // ID
+            int read = _in.read();
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss\0");
+            df.setTimeZone(tz);
+            String timestamp = df.format(entity.getTimeSinceLastLoad());
+            Log.d("Timestamp", timestamp);
+            _out.write((timestamp).getBytes());// timestamp
+            _out.flush();
+            Log.d("Update Transaction", String.valueOf(entity.getId()));
+            // if the transaction doesn't have a database id (0) that means it was just created
+            // and it needs to get an ID, and the rest of the information is pushed to the server
+            // if it does have an ID then depending on the timestamp either the local transaction
+            // is updated or the transaction on the server is updated.
+            byte[] updateType = new byte[1];
+            read = _in.read(updateType, 0, 1);
+            // update types
+            // l = local update of transaction
+            // r = remote update of transaction, or create the transaction on the server
+            switch ((char) updateType[0]) {
+                case 'l': //local update
 
+                    break;
+                case 'r': // remote update
+
+                    break;
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String decrypt(HashMap<String, byte[]> map, String password) {
