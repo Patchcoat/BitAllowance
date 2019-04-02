@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -101,6 +104,24 @@ public class TestPage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void SendTransaction (View view) {
+        Transaction transaction = new Transaction();
+        transaction._id = "0";
+        transaction._value = new BigDecimal(100);
+        transaction._operator = Operator.ADD;
+        transaction._timeStamp = new Date();
+        transaction._memo = "TEST";
+        transaction._linked = false;
+        transaction._executed = false;
+        transaction._transactionType = ListItemType.REWARD;
+        transaction._name = "test";
+        transaction._affected = new ArrayList<Entity>();
+        transaction.setIsExpirable(false);
+        transaction.setExpirationDate(new Date());
+        transaction.setCoolDown(10);
+        transaction.update();
+    }
+
     /**
      * Generates 10 of each Entity, Task, Reward, Fine
      * @param view
@@ -129,6 +150,7 @@ public class TestPage extends AppCompatActivity {
                 default:
                     entity.setEmail("");
             }
+            entity.update();
             Reserve.addEntity(entity);
 
             Transaction task = new Transaction();
@@ -203,7 +225,9 @@ public class TestPage extends AppCompatActivity {
             task.setAssignments(taskMap);
             reward.setAssignments(rewardMap);
             fine.setAssignments(fineMap);
-
+            task.update();
+            reward.update();
+            fine.update();
 
             Reserve.addTransaction(task);
             Reserve.addTransaction(reward);

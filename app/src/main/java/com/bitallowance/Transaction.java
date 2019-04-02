@@ -1,5 +1,6 @@
 package com.bitallowance;
 
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 

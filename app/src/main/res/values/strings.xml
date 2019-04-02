@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bit Allowance</string>
+    <string name="app_name">Kid Currencies</string>
     <string name="usernameInputMain">Enter Username/Email</string>
     <string name="passwordInputMain">Enter Password</string>
     <string name="loginButton">Login</string>
