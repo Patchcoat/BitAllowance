@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -183,11 +184,50 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         selectDialog.show(fragmentManager, "");
     }
 
+    /**
+     * Handles onclick events for RecyclerView items
+     * @param position  position in recyclerView/_assignedList
+     * @param adapter the RecyclerView adapter making the call
+     */
     @Override
     public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
-        Toast toast = makeText(getApplicationContext(), "Selected " + _assignedTransactions.get(position).getName(), Toast.LENGTH_SHORT);
-        toast.show();
 
+        //Declare new Fragment Manager & ListItemSelectDialog
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ListItemSelectDialog selectDialog = new ListItemSelectDialog();
+
+        //Create a bundle to hold title & menu options
+        Bundle bundle = new Bundle();
+
+        //Get a dynamic list of items that can be applied
+        ArrayList options = new ArrayList<>();
+
+        String type;
+        switch (_assignedTransactions.get(position).getType()){
+            case TASK:
+                type = "task";
+                break;
+            case REWARD:
+                type = "reward";
+                break;
+            case FINE:
+                type = "fine";
+                break;
+            default:
+                type = "transaction";
+        }
+        options.addAll(Arrays.asList("Un-assign " + type, "View " + type, "Edit " + type, "Cancel"));
+
+        bundle.putString("TITLE", "What would you like to do?");
+        bundle.putStringArrayList("OPTIONS", options);
+
+        //Initialize a Dialogue
+        selectDialog.initialize(_assignedTransactions.get(position),this);
+        //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
+        selectDialog.setArguments(bundle);
+
+        //Show the dialog
+        selectDialog.show(fragmentManager, "");
     }
 
     @Override
@@ -196,7 +236,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         //If selected item is null, we know that the user was responding to the AddTransaction dialog
         if(selectedItems == null){
             switch (position) {
-                //If TASK is selected
+                //If Task is selected
                 case 0:
                     displayTransactions(ListItemType.TASK);
                     return;
@@ -212,9 +252,67 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
                 default:
                     return;
             }
+
+        } else {
+            switch (position) {
+                //If Un-assign is selected
+                case 0:
+                    _assignedTransactions.remove(selectedItems);
+                    _unassignedTransactions.add(selectedItems);
+                    _recyclerViewAdapter.notifyDataSetChanged();
+                    return;
+                //If View is selected
+                case 1:
+                    displayDetails(selectedItems);
+                    return;
+                //If Edit is selected
+                case 2:
+                    editItem(selectedItems);
+                    return;
+                //If CANCEL is selected
+                default:
+                    return;
+            }
         }
-        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
-        toast.show();
+    }
+
+    /**
+     * Opens a new activity to allow the selected item to be edited
+     * @param selectedItem the item to be edited
+     */
+    private void editItem(ListItem selectedItem) {
+        Intent intent;
+        intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
+        intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
+        startActivityForResult(intent, 1);
+    }
+
+    /**
+     * Opens a new activity that displays the details of the passed item.
+     * @param selectedItem the item to be displayed
+     */
+    private void displayDetails(ListItem selectedItem){
+        Intent intent = new Intent(this, DisplayDetails.class);
+        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
+        intent.putExtra("TYPE", selectedItem.getType());
+        startActivityForResult(intent,1);
+    }
+
+    /**
+     * Runs after finish() is called by a child activity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        _assignedTransactions.clear();
+        for (ListItem item: Reserve.getListItems(ListItemType.ALL)) {
+            if (!_unassignedTransactions.contains(item))
+                _assignedTransactions.add(item);
+        }
+        _recyclerViewAdapter.notifyDataSetChanged();
     }
 
     /**
