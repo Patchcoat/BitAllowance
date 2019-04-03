@@ -109,6 +109,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         } else {
             Reserve.updateEntity(_currentEntity, _entityIndex);
         }
+        _currentEntity.update();
     }
 
     public void editNextEntity(View view) {

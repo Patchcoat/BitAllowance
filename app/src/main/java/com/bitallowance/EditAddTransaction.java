@@ -404,7 +404,7 @@ public class EditAddTransaction extends AppCompatActivity
         else {
             Reserve.updateTransaction(_currentTransaction, _transIndex);
         }
-
+        _currentTransaction.update();
 
         Toast toast = Toast.makeText(getApplicationContext(),"Record Saved.", Toast.LENGTH_SHORT);
         toast.show();
