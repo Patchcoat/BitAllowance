@@ -10,4 +10,9 @@
     <color name="LtBlue">#bbffff</color>
     <color name="LtGreen">#b8ffd0</color>
     <color name="LtRed">#fe9894</color>
+    <color name="LtPink">#ffd6fa</color>
+    <color name="LtGrey">#dadfd7</color>
+    <color name="LtOrange">#ffd88f</color>
+    <color name="LtPurple">#e2b8ff</color>
+    <color name="LtBluePurple">#d1e0ff</color>
 </resources>
