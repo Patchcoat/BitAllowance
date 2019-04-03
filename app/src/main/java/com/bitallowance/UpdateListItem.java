@@ -362,7 +362,28 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             // r = remote update of transaction, or create the transaction on the server
             switch ((char) updateType[0]) {
                 case 'l': //local update
-
+                    byte[] buffer = new byte[100];
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// value
+                    entity.updateBalance(new BigDecimal(new String(buffer)));
+                    String usernameSrt = entity.getName();
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    entity.setUserName(new String(buffer));
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// displayName
+                    entity.setDisplayName(new String(buffer));
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// birthday
+                    Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(new String(buffer));
+                    entity.setBirthday(birthdayDate);
+                    _out.write("_".getBytes());
+                    _out.flush();
+                    read = _in.read(buffer);// email
+                    entity.setEmail(new String(buffer));
                     break;
                 case 'r': // remote update
                     String value = entity.getCashBalance().toPlainString();
@@ -388,6 +409,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     break;
             }
         } catch(IOException e) {
+            e.printStackTrace();
+        } catch(ParseException e) {
             e.printStackTrace();
         }
     }
