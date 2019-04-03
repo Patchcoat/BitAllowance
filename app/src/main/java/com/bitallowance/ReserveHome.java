@@ -88,21 +88,90 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
 
     }
 
-    public void openEntityList(View view) {
-
+    /**
+     * Starts DisplayList activity for Task Items
+     * @param view
+     */
+    public void ShowTaskList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.TASK);
+        startActivity(intent);
     }
 
-    public void openTaskList(View view) {
-
+    /**
+     * Starts DisplayList activity for Reward Items
+     * @param view
+     */
+    public void ShowRewardList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.REWARD);
+        startActivity(intent);
     }
 
-    public void openRewardList(View view) {
-
+    /**
+     * Starts DisplayList activity for Fine Items
+     * @param view
+     */
+    public void ShowFineList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.FINE);
+        startActivity(intent);
     }
 
-    public void openGiveReward(View view) {
-
+    /**
+     * Starts DisplayList activity for Entity Items
+     * @param view
+     */
+    public void ShowEntityList (View view){
+        Intent intent = new Intent(this, DisplayList.class);
+        intent.putExtra("LIST_ITEM_TYPE", ListItemType.ENTITY);
+        startActivity(intent);
     }
+
+
+    /**
+     * Starts EditAddEntity Activity
+     * @param view
+     */
+    public void AddEntity (View view){
+        Intent intent = new Intent(this, EditAddEntity.class);
+        intent.putExtra("ENTITY_INDEX", -1);
+        startActivity(intent);
+    }
+
+    /**
+     * Starts EditAddTransaction Activity to add a reward
+     * @param view
+     */
+    public void AddReward (View view){
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.REWARD);
+        startActivity(intent);
+    }
+
+    /**
+     * Starts EditAddTransaction Activity to add a task
+     * @param view
+     */
+    public void AddTask (View view){
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
+        startActivity(intent);
+    }
+
+    /**
+     * Starts EditAddTransaction Activity to add a fine
+     * @param view
+     */
+    public void AddFine (View view) {
+        Intent intent = new Intent(this, EditAddTransaction.class);
+        intent.putExtra("TRANSACTION_INDEX", -1);
+        intent.putExtra("TRANSACTION_TYPE", ListItemType.FINE);
+        startActivity(intent);
+    }
+
 
 
     private void updateAdapter(ListItemType type) {
