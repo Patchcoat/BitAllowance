@@ -11,9 +11,11 @@
     <string name="createPasswordInitial">Enter Password</string>
     <string name="createPasswordReEnter">Re-Enter Password</string>
     <string name="submitNewReserveAccount">Submit</string>
-    <string name="entityTextView">Entity List</string>
-    <string name="taskTextView">Task List</string>
-    <string name="rewardTextView">Reward List</string>
+    <string name="entityTextView">Children</string>
+    <string name="taskTextView">Tasks</string>
+    <string name="rewardTextView">Rewards</string>
+    <string name="fineTextView">Fines</string>
+    <string name="reserveHomeLblTitle">Account Home</string>
 
     <!-- Generic Button Text -->
     <string name="SAVE"> Save </string>
@@ -23,6 +25,8 @@
     <string name="NEXT">Next</string>
     <string name="EDIT">Edit</string>
     <string name="PLUS">+</string>
+    <string name="ADDNEW">Add New</string>
+    <string name="VIEWALL">View All</string>
 
     <!-- Edit/Add Currency Strings -->
     <string name="editCurrencyTitle"> Add/Edit Account Currency</string>
