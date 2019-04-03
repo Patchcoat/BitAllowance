@@ -78,7 +78,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="start|center_vertical"
-
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline10"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
@@ -93,7 +92,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="start|center_vertical"
-
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7"

@@ -22,6 +22,7 @@
     <string name="PREVIOUS">Previous</string>
     <string name="NEXT">Next</string>
     <string name="EDIT">Edit</string>
+    <string name="PLUS">+</string>
 
     <!-- Edit/Add Currency Strings -->
     <string name="editCurrencyTitle"> Add/Edit Account Currency</string>
@@ -55,7 +56,7 @@
     <string name="editEntityBirthdayHint">Enter Birth Date</string>
     <string name="editEntityLblEmail">Email Address:</string>
     <string name="editEntityEmailHint">Optional</string>
-    <string name="editEntityLblTransactions">Assigned Tasks/Rewards</string>
+    <string name="editEntityLblTransactions">Assigned Tasks/Rewards/Fines</string>
 
     <!-- Edit/Add Transactions -->
     <string name="editTransactionTitle">Add/Edit Task</string>

@@ -117,6 +117,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="16sp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -129,12 +130,26 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="16sp"
         android:ems="10"
         android:hint="@string/editEntityEmailHint"
         android:inputType="textEmailAddress"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/editEntity_btnDatePicker" />
 
+    <Button
+        android:id="@+id/editCurrency_btnAddTransaction"
+        android:layout_width="37dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="addTransactions"
+        android:text="@string/PLUS"
+        app:layout_constraintBottom_toBottomOf="@+id/editEntity_lblTransactions"
+        app:layout_constraintStart_toEndOf="@+id/editEntity_lblTransactions"
+        app:layout_constraintTop_toTopOf="@+id/editEntity_lblTransactions"
+        app:layout_constraintVertical_bias="0.0" />
     <Button
         android:id="@+id/editCurrency_btnSave"
         android:layout_width="150dp"
