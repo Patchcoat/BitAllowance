@@ -142,6 +142,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
+        android:onClick="addTransactions"
         android:text="@string/PLUS"
         app:layout_constraintBottom_toBottomOf="@+id/editEntity_lblTransactions"
         app:layout_constraintStart_toEndOf="@+id/editEntity_lblTransactions"
