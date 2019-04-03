@@ -1,6 +1,8 @@
 package com.bitallowance;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -473,16 +475,101 @@ public class EditAddTransaction extends AppCompatActivity
         finish();
     }
 
+    /**
+     * Handles onclick events for RecyclerView items
+     * @param position  position in recyclerView/_assignedList
+     * @param adapter the RecyclerView adapter making the call
+     */
     @Override
     public void onRecyclerViewItemClick(int position, ListItemRecycleViewAdapter adapter) {
-        Toast toast = makeText(getApplicationContext(), "Selected " + _entityListAssigned.get(position).getName(), Toast.LENGTH_SHORT);
-        toast.show();
+
+        //Declare new Fragment Manager & ListItemSelectDialog
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ListItemSelectDialog selectDialog = new ListItemSelectDialog();
+
+        //Create a bundle to hold title & menu options
+        Bundle bundle = new Bundle();
+
+        //Get a dynamic list of items that can be applied
+        ArrayList options = new ArrayList<>(Arrays.asList("Remove Assignment ", "View " + _entityListAssigned.get(position).getName(), "Edit " + _entityListAssigned.get(position).getName(), "Cancel"));
+
+        bundle.putString("TITLE", "What would you like to do?");
+        bundle.putStringArrayList("OPTIONS", options);
+
+        //Initialize a Dialogue
+        selectDialog.initialize(_entityListAssigned.get(position),this);
+        //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
+        selectDialog.setArguments(bundle);
+
+        //Show the dialog
+        selectDialog.show(fragmentManager, "");
     }
 
+    /**
+     * Handles onclick events for the ListItemDialog
+     * @param position
+     * @param selectedItems
+     */
     @Override
-    public void onListItemDialogClick(int position, ListItem selectedItem ) {
-        Toast toast = makeText(getApplicationContext(), "Selected option " + position, Toast.LENGTH_SHORT);
-        toast.show();
+    public void onListItemDialogClick(int position, ListItem selectedItems) {
+        switch (position) {
+            //If Un-assign is selected
+            case 0:
+                _entityListAssigned.remove(selectedItems);
+                _entityListUnassigned.add(selectedItems);
+                _recycleViewAdapter.notifyDataSetChanged();
+                return;
+            //If View is selected
+            case 1:
+                displayDetails(selectedItems);
+                return;
+            //If Edit is selected
+            case 2:
+                editItem(selectedItems);
+                return;
+            //If CANCEL is selected
+            default:
+                return;
+
+        }
+    }
+
+    /**
+     * Opens a new activity to allow the selected item to be edited
+     * @param selectedItem the item to be edited
+     */
+    private void editItem(ListItem selectedItem) {
+        Intent intent;
+        intent = new Intent(this, EditAddEntity.class);
+        intent.putExtra("ENTITY_INDEX", Reserve.getListItems(ListItemType.ENTITY).indexOf(selectedItem));
+        startActivityForResult(intent, 1);
+    }
+
+    /**
+     * Opens a new activity that displays the details of the passed item.
+     * @param selectedItem the item to be displayed
+     */
+    private void displayDetails(ListItem selectedItem){
+        Intent intent = new Intent(this, DisplayDetails.class);
+        intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
+        intent.putExtra("TYPE", selectedItem.getType());
+        startActivityForResult(intent,1);
+    }
+
+    /**
+     * Runs after finish() is called by a child activity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        _entityListAssigned.clear();
+        for (ListItem item: Reserve.getListItems(ListItemType.ENTITY)) {
+            if (!_entityListUnassigned.contains(item))
+                _entityListAssigned.add(item);
+        }
+        _recycleViewAdapter.notifyDataSetChanged();
     }
 }
 
