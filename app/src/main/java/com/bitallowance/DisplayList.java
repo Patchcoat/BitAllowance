@@ -2,6 +2,7 @@ package com.bitallowance;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -62,6 +63,21 @@ public class DisplayList extends AppCompatActivity implements
 
 
 
+    }
+
+    /**
+     * Allows users to enter new ListItems.
+     * @param view
+     */
+    void addNewItem(View view){
+        Intent intent;
+        if (_type == ENTITY) {
+            intent = new Intent(this, EditAddEntity.class);
+        } else {
+            intent = new Intent(this, EditAddTransaction.class);
+            intent.putExtra("TRANSACTION_TYPE", _type);
+        }
+        startActivityForResult(intent,1);
     }
 
     /**
@@ -249,7 +265,7 @@ public class DisplayList extends AppCompatActivity implements
             intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(selectedItem));
             intent.putExtra("TRANSACTION_TYPE", selectedItem.getType());
         }
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     /**
@@ -260,7 +276,7 @@ public class DisplayList extends AppCompatActivity implements
         Intent intent = new Intent(this, DisplayDetails.class);
         intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
         intent.putExtra("TYPE", selectedItem.getType());
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 
     /**
@@ -415,5 +431,19 @@ public class DisplayList extends AppCompatActivity implements
             }
         }
         toast.show();
+    }
+
+    /**
+     * Runs after finish() is called by a child activity
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //Reload _listItems
+        _listItems.clear();
+        _listItems.addAll(Reserve.getListItems(_type));
+        _recycleViewAdapter.notifyDataSetChanged();
     }
 }
