@@ -35,18 +35,22 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     private RecyclerView entityView;
     private RecyclerView taskView;
     private RecyclerView rewardView;
+    private RecyclerView fineView;
 
     private RecyclerView.Adapter mEntityList;
     private RecyclerView.Adapter mTaskList;
     private RecyclerView.Adapter mRewardList;
+    private RecyclerView.Adapter mFineList;
 
     private RecyclerView.LayoutManager entityLayoutManager;
     private RecyclerView.LayoutManager taskLayoutManager;
     private RecyclerView.LayoutManager rewardLayoutManager;
+    private RecyclerView.LayoutManager fineLayoutManager;
 
     private List<ListItem> entityList;
     private List<ListItem> taskList;
     private List<ListItem> rewardList;
+    private List<ListItem> fineList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,25 +59,30 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         entityList = new ArrayList();
         taskList = new ArrayList();
         rewardList = new ArrayList();
+        fineList = new ArrayList();
 
         entityList.addAll(Reserve.getListItems(ListItemType.ENTITY));
         taskList.addAll(Reserve.getListItems(ListItemType.TASK));
         rewardList.addAll(Reserve.getListItems(ListItemType.REWARD));
+        fineList.addAll(Reserve.getListItems(ListItemType.FINE));
 
 
         //The RecyclerView
         entityView = findViewById(R.id.entityView);
         taskView = findViewById(R.id.taskView);
         rewardView = findViewById(R.id.rewardView);
+        fineView = findViewById(R.id.fineView);
 
         //Layout Manager
         entityLayoutManager = new LinearLayoutManager(this);
         taskLayoutManager = new LinearLayoutManager(this);
         rewardLayoutManager = new LinearLayoutManager(this);
+        fineLayoutManager = new LinearLayoutManager(this);
 
         entityView.setLayoutManager(entityLayoutManager);
         taskView.setLayoutManager(taskLayoutManager);
         rewardView.setLayoutManager(rewardLayoutManager);
+        fineView.setLayoutManager(fineLayoutManager);
 
         //Adapter
         mEntityList = new ListItemRecycleViewAdapter(this, this, entityList, ListItemRecycleViewAdapter.CardType.Normal);
@@ -82,6 +91,8 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         taskView.setAdapter(mTaskList);
         mRewardList = new ListItemRecycleViewAdapter(this, this, rewardList, ListItemRecycleViewAdapter.CardType.Normal);
         rewardView.setAdapter(mRewardList);
+        mFineList = new ListItemRecycleViewAdapter(this, this, fineList, ListItemRecycleViewAdapter.CardType.Normal);
+        fineView.setAdapter(mFineList);
     }
 
     public void openSettings(View view) {
@@ -173,7 +184,10 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     }
 
 
-
+    /**
+     * Reloads the recyclerView adapter for the specified listItem type
+     * @param type
+     */
     private void updateAdapter(ListItemType type) {
         switch (type) {
             case ENTITY:
@@ -185,6 +199,11 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 taskList.clear();
                 taskList.addAll(Reserve.getListItems(TASK));
                 mTaskList.notifyDataSetChanged();
+                return;
+            case FINE:
+                fineList.clear();
+                fineList.addAll(Reserve.getListItems(FINE));
+                mFineList.notifyDataSetChanged();
                 return;
             default:
                 rewardList.clear();
@@ -206,6 +225,8 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 return mEntityList;
             case TASK:
                 return mTaskList;
+            case FINE:
+                return mFineList;
             default:
                 return mRewardList;
         }
@@ -223,6 +244,8 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 return entityList;
             case TASK:
                 return taskList;
+            case FINE:
+                return fineList;
             default:
                 return rewardList;
         }
@@ -242,8 +265,10 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
             currentList = entityList;
         } else if (adapter == mTaskList) {
             currentList = taskList;
-        } else {
+        } else if (adapter == mRewardList){
             currentList = rewardList;
+        } else {
+            currentList = fineList;
         }
 
         /* * * * * EXAMPLE OF HOW TO IMPLEMENT A LIST_ITEM_SELECT_DIALOG * * * * */
@@ -397,11 +422,18 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         builder.show();
     }
 
+    /**
+     * Refreshes data in case of change
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         updateAdapter(ENTITY);
         updateAdapter(TASK);
         updateAdapter(REWARD);
+        updateAdapter(FINE);
     }
 
     /**
@@ -491,11 +523,11 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
      */
     @Override
     public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
-        Toast toast;
+        String toastMessage;
         List<ListItem> options = new ArrayList<>();
         //applyType must list a specific type.
         if (applyType == null || applyType == ALL) {
-            toast = makeText(this, "An Error Occurred...", Toast.LENGTH_SHORT);
+            toastMessage = "An Error Occurred...";
         }else {
             try {
                 //Get the current options list
@@ -515,23 +547,24 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                     return;
                     //An item was selected
                 } else if (selectedItem.applyTransaction(options.get(position))) {
-                    toast = makeText(this, "Transaction Applied", Toast.LENGTH_SHORT);
+                    toastMessage ="Transaction Applied";
                     //Only Entities should visibly change after a transaction has been applied.
                     updateAdapter(ENTITY);
                 } else {
                     if (applyType == ENTITY) {
-                        toast = makeText(this, Reserve.getListItems(applyType).get(position).getName() +
-                                " does not have enough " + Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                        toastMessage = Reserve.getListItems(applyType).get(position).getName() +
+                                " does not have enough " + Reserve.getCurrencyName() + " for that reward.";
                     } else {
-                        toast = makeText(this, selectedItem.getName() + " does not have enough " +
-                                Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
+                        toastMessage = selectedItem.getName() + " does not have enough " +
+                                Reserve.getCurrencyName() + " for that reward.";
                     }
                 }
             } catch (IllegalArgumentException e)
             {
-                toast = makeText(this, "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
+                toastMessage = "Uh-Oh - An unexpected error occurred...";
             }
         }
+        Toast toast = makeText(this, toastMessage, Toast.LENGTH_SHORT);
         toast.show();
     }
 

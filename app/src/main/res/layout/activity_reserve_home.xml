@@ -6,60 +6,118 @@
     android:layout_height="match_parent"
     tools:context=".ReserveHome">
 
+    <ImageView
+        android:id="@+id/borderBox1"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toBottomOf="@+id/reserveHome_lblTitle"
+        app:srcCompat="@drawable/border" />
+    <ImageView
+        android:id="@+id/borderBox2"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toBottomOf="@+id/borderBox1"
+        app:srcCompat="@drawable/border" />
+    <ImageView
+        android:id="@+id/borderBox3"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toBottomOf="@+id/borderBox2"
+        app:srcCompat="@drawable/border" />
+    <ImageView
+        android:id="@+id/borderBox4"
+        android:layout_width="0dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toBottomOf="@+id/borderBox3"
+        app:srcCompat="@drawable/border" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/entityView"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/reserveHome_lblTitle" />
+        app:layout_constraintEnd_toEndOf="@+id/borderBox1"
+        app:layout_constraintStart_toStartOf="@+id/borderBox1"
+        app:layout_constraintTop_toTopOf="@+id/borderBox1" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/taskView"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/entityView" />
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="@+id/borderBox2"
+        app:layout_constraintStart_toStartOf="@+id/borderBox2"
+        app:layout_constraintTop_toTopOf="@+id/borderBox2" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rewardView"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/taskView" />
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="@+id/borderBox3"
+        app:layout_constraintStart_toStartOf="@+id/borderBox3"
+        app:layout_constraintTop_toTopOf="@+id/borderBox3" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fineView"
         android:layout_width="0dp"
         android:layout_height="120dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/rewardView" />
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintEnd_toEndOf="@+id/borderBox4"
+        app:layout_constraintStart_toStartOf="@+id/borderBox4"
+        app:layout_constraintTop_toTopOf="@+id/borderBox4" />
 
     <TextView
         android:id="@+id/entityTextView"
@@ -146,106 +204,132 @@
     <Button
         android:id="@+id/reserveHome_btnAddEntity"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="AddEntity"
         android:text="@string/ADDNEW"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/entityTextView" />
 
     <Button
         android:id="@+id/reserveHome_btnViewEntityList"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
         android:layout_marginTop="0sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="ShowEntityList"
         android:padding="1dp"
         android:text="@string/VIEWALL"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reserveHome_btnAddEntity" />
 
     <Button
         android:id="@+id/reserveHome_btnAddTask"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="AddTask"
         android:text="@string/ADDNEW"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tastTextView" />
 
     <Button
         android:id="@+id/reserveHome_btnViewTaskList"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
         android:layout_marginTop="0sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="ShowTaskList"
         android:padding="1dp"
         android:text="@string/VIEWALL"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reserveHome_btnAddTask" />
 
     <Button
         android:id="@+id/reserveHome_btnAddReward"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="AddReward"
         android:text="@string/ADDNEW"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rewardTextView" />
 
     <Button
         android:id="@+id/reserveHome_btnViewRewardList"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
         android:layout_marginTop="0sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="ShowRewardList"
         android:padding="1dp"
         android:text="@string/VIEWALL"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reserveHome_btnAddReward" />
 
     <Button
         android:id="@+id/reserveHome_btnAddFine"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="AddFine"
         android:text="@string/ADDNEW"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fineTextView" />
 
     <Button
         android:id="@+id/reserveHome_btnViewFineList"
         android:layout_width="86dp"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
         android:layout_marginTop="0sp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:onClick="ShowFineList"
         android:padding="1dp"
         android:text="@string/VIEWALL"
         android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reserveHome_btnAddFine" />
+
+
 
 
 </android.support.constraint.ConstraintLayout>
