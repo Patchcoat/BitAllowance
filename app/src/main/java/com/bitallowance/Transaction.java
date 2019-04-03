@@ -142,6 +142,17 @@ public class Transaction implements ListItem{
     }
     public void setTransactionType(ListItemType transactionType){
         _transactionType = transactionType;
+        switch (transactionType){
+            case TASK:
+            case FINE:
+                _operator = Operator.SUBTRACT;
+                break;
+            case REWARD:
+                _operator = Operator.ADD;
+                break;
+            default:
+                _operator = Operator.MULTIPLY;
+        }
     }
     public String get_id() {
         return _id;

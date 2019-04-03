@@ -80,6 +80,7 @@ public class EditAddTransaction extends AppCompatActivity
             _currentTransaction = new Transaction();
             _currentTransaction.setTransactionType(_transType);
             isExisting = false;
+            _currentTransaction._id = "0";
             for (Entity entity : Reserve.get_entityList()){
                 _entityListUnassigned.add(entity);
                 _spinAddEntityOptions.add(entity.getName());
