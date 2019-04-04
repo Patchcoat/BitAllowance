@@ -398,6 +398,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write((displayName + "\0").getBytes());// displayName
                     _out.flush();
                     read = _in.read();
+                    DateFormat bdf = new SimpleDateFormat("yyyy-MM-dd\0");
+                    bdf.setTimeZone(tz);
                     String birthday = df.format(entity.getBirthday());
                     _out.write(birthday.getBytes());// birthday
                     _out.flush();
