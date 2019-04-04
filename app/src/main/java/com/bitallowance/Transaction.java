@@ -279,6 +279,11 @@ public class Transaction implements ListItem{
                 entity.updateBalance(_value, true);
         }
 
+        Transaction transactionRecord = this;
+        transactionRecord.setExpirationDate(new Date());
+
+        entity.addToHistory(transactionRecord);
+
         //Apply changes to Reserve Entity List.
         int index = Reserve.get_entityList().indexOf(item);
         Reserve.get_entityList().set(index, entity);

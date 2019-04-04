@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DisplayList">
+    tools:context=".DisplayHistory">
+
+    <TextView
+        android:id="@+id/displayHistory_lblTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="39dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/displayHistoryLblTitle"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/displayHistory_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/displayList_recyclerView"
+        android:id="@+id/displayHistory_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
@@ -22,18 +37,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/displayList_spinSort" />
+        app:layout_constraintTop_toBottomOf="@+id/displayHistory_spinSort" />
 
     <Spinner
-        android:id="@+id/displayList_spinSort"
+        android:id="@+id/displayHistory_spinSort"
         android:layout_width="129dp"
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="@+id/guideline12"
-        app:layout_constraintTop_toBottomOf="@+id/displayList_lblSort" />
+        app:layout_constraintStart_toStartOf="@+id/displayHistory_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/displayHistory_lblSort" />
 
     <TextView
-        android:id="@+id/displayList_lblSort"
+        android:id="@+id/displayHistory_lblSort"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -44,28 +59,14 @@
         android:gravity="center"
         android:text="@string/displayListLblSort"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline12"
+        app:layout_constraintStart_toStartOf="@+id/displayHistory_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/guideline12"
+        android:id="@+id/displayHistory_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.67" />
-
-    <Button
-        android:id="@+id/button14"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="addNewItem"
-        android:text="@string/ADDNEW"
-        app:layout_constraintBottom_toTopOf="@+id/displayList_recyclerView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -103,6 +103,9 @@
     <string name="displayDetailsTextExpires">Date of Expiration</string>
     <string name="displayDetailsTextRepeat">Repeat</string>
 
+    <!-- DisplayHistory -->
+    <string name="displayHistoryLblTitle">History</string>
+
     <!-- Arrays of Details -->
     <string-array name="displayDetailsSpinRepeat">
         <item>Repeatable</item>
