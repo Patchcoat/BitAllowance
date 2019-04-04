@@ -165,7 +165,7 @@ public class Entity implements ListItem {
 
     // Balance methods
     public void updateBalance(BigDecimal value) {
-
+        cashBalance = value;
     }
 
     public void modifyBalance(BigDecimal value, boolean addToBalance) {

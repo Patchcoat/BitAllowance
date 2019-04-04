@@ -378,7 +378,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// birthday
-                    Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(new String(buffer));
+                    Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd").parse(new String(buffer));
                     entity.setBirthday(birthdayDate);
                     _out.write("_".getBytes());
                     _out.flush();
@@ -391,11 +391,11 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     read = _in.read();
                     String username = entity.getUserName();
-                    _out.write(username.getBytes());// username
+                    _out.write((username + "\0").getBytes());// username
                     _out.flush();
                     read = _in.read();
                     String displayName = entity.getDisplayName();
-                    _out.write(displayName.getBytes());// displayName
+                    _out.write((displayName + "\0").getBytes());// displayName
                     _out.flush();
                     read = _in.read();
                     String birthday = df.format(entity.getBirthday());
@@ -403,7 +403,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     read = _in.read();
                     String email = entity.getEmail();
-                    _out.write(email.getBytes());// email
+                    _out.write((email + "\0").getBytes());// email
                     _out.flush();
                     read = _in.read();
                     break;
