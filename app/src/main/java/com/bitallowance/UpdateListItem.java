@@ -350,7 +350,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             Log.d("Timestamp", timestamp);
             _out.write((timestamp).getBytes());// timestamp
             _out.flush();
-            Log.d("Update Transaction", String.valueOf(entity.getId()));
+            Log.d("Update Entity", String.valueOf(entity.getId()));
             // if the transaction doesn't have a database id (0) that means it was just created
             // and it needs to get an ID, and the rest of the information is pushed to the server
             // if it does have an ID then depending on the timestamp either the local transaction
@@ -367,7 +367,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     read = _in.read(buffer);// value
                     entity.updateBalance(new BigDecimal(new String(buffer)));
-                    String usernameSrt = entity.getName();
+                    String usernameSrt = entity.getUserName();
                     _out.write("_".getBytes());
                     _out.flush();
                     entity.setUserName(new String(buffer));
@@ -390,7 +390,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write(value.getBytes());// value
                     _out.flush();
                     read = _in.read();
-                    String username = entity.getName();
+                    String username = entity.getUserName();
                     _out.write(username.getBytes());// username
                     _out.flush();
                     read = _in.read();
