@@ -55,6 +55,10 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     }
 
+    private void setReserve(Reserve reserve) {
+        _reserve = reserve;
+    }
+
     private Transaction getTransaction(int read) {
         byte[] buffer = new byte[100];
         Transaction transaction = new Transaction();
@@ -173,6 +177,10 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
     }
 
     private void getTransactionList() {
+        if (_reserve == null) {
+            Log.e("GetListItemList", "Reserve cannot be null. Be sure to call \"SetReserve\"");
+            return;
+        }
         try {
             int idNum = _reserve.get_id();
             byte[] idByte = new byte[] {(byte) idNum,
