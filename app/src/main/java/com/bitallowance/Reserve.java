@@ -28,12 +28,18 @@ public class Reserve {
     public static void updateEntity(Entity newEntity, int index){
         _entityList.set(index, newEntity);
     }
+    public static void setEntityList(List<Entity> entityList) {
+        _entityList = entityList;
+    }
 
     public static void addTransaction(Transaction newTransaction){
         _transactionList.add(newTransaction);
     }
     public static void updateTransaction(Transaction newTransaction, int index) {
         _transactionList.set(index, newTransaction);
+    }
+    public static void setTransactionList(List<Transaction> transactionList) {
+        _transactionList = transactionList;
     }
 
     public static List<Entity> get_entityList() {

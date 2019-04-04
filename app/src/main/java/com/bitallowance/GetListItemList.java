@@ -18,8 +18,10 @@ import java.net.UnknownHostException;
 import java.security.PrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
@@ -200,10 +202,12 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             byte[] buffer = new byte[1];
             _out.write("_".getBytes());
             read = _in.read(buffer);
+            List<Transaction> transactionList = new ArrayList<>();
             while (buffer[0] == "u".getBytes()[0]) {
-                getTransaction(read);
+                transactionList.add(getTransaction(read));
                 read = _in.read(buffer);
             }
+            _reserve.setTransactionList(transactionList);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -272,10 +276,12 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             byte[] buffer = new byte[1];
             _out.write("_".getBytes());
             read = _in.read(buffer);
+            List<Entity> entityList = new ArrayList<>();
             while (buffer[0] == "u".getBytes()[0]) {
-                getEntity(read);
+                entityList.add(getEntity(read));
                 read = _in.read(buffer);
             }
+            _reserve.setEntityList(entityList);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -340,6 +346,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
         getKeyPair("password");
 
         // The server connection section
+        String type = strings[0];
         try {
             // the address has to be in the correct format for the socket to use it
             InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
@@ -372,12 +379,12 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             _out.write(_pubKeyString.getBytes());
             read = _in.read();
 
-            if (_item instanceof Transaction) {
+            if (type == "transaction") {
                 Log.d("Get Transaction", _pubKeyString);
                 _out.write("gt\0".getBytes());// 'g'et 't'ransaction
                 read = _in.read();
                 getTransactionList();
-            } else if (_item instanceof Entity) {
+            } else if (type == "entity") {
                 Log.d("Get Entity", _pubKeyString);
                 _out.write("ge\0".getBytes());// 'g'et 'e'tity
                 read = _in.read();
