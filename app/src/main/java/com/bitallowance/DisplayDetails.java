@@ -32,8 +32,7 @@ import static com.bitallowance.ListItemType.TASK;
  * @version 1.0
  * @since 03/18/2019
  */
-public class DisplayDetails extends AppCompatActivity implements ListItemClickListener,
-        AdapterView.OnItemSelectedListener, ListItemSelectDialog.NestedListItemClickListener {
+public class DisplayDetails extends AppCompatActivity implements ListItemClickListener {
 
 
     private static final String TAG = "BADDS-DisplayDetails";
@@ -43,7 +42,6 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
 
     //For the recycler View
     private List<ListItem> _assignedItems = new ArrayList<>();
-    private List<ListItem> _entityListUnassigned = new ArrayList<>();
 
 
     private ListItemRecycleViewAdapter _recycleViewAdapter;
@@ -94,46 +92,15 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
                         ListItemRecycleViewAdapter.CardType.Simple);
 
         recyclerView.setAdapter(_recycleViewAdapter);
-    }
 
-    /**
-     * This class dynamically updates the labels for the activity allowing us to use the same
-     * activity for TASKS, FINES and REWARDS
-     * @param isEditing - Are we editing or adding a transaction
-     */
-    private void updateLabels(boolean isEditing){
-
-        String strLblTitle = "Display Details ";
-        String strLblName;
-        String strLblValue;
-
-        switch (_itemType){
-            case FINE:
-                strLblTitle += "Fine";
-                strLblName = "Fine Name: ";
-                strLblValue = "Fine Cost: ";
-                break;
-            case REWARD:
-                strLblTitle += "Reward";
-                strLblName = "Reward Name";
-                strLblValue = "Reward Cost";
-                break;
-            default:
-                strLblTitle += "Task";
-                strLblName = "Task Name:";
-                strLblValue = "Task Value: ";
-                break;
+        //Hide history button unless item is an entity
+        if (_itemType == ENTITY){
+            findViewById(R.id.displayDetails_btnHistory).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.displayDetails_btnHistory).setVisibility(View.GONE);
         }
-        /* * * * * GET ONSCREEN ELEMENTS * * * * */
-        TextView lblTitle = (TextView) findViewById(R.id.displayDetails_lblTitle);
-        TextView lblName  = (TextView) findViewById(R.id.displayDetails_lblName);
-        TextView lblValue = (TextView) findViewById(R.id.displayDetails_lblValue);
-
-        lblTitle.setText(strLblTitle);
-        lblName.setText(strLblName);
-        lblValue.setText(strLblValue);
-
     }
+
     /**
      * This class updates the labels for displaying Transaction details.
      */
@@ -143,6 +110,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         TextView txtName  = (TextView) findViewById(R.id.displayDetails_txtName);
         TextView txtValue = (TextView) findViewById(R.id.displayDetails_txtValue);
         TextView txtDesc  = (TextView) findViewById(R.id.displayDetails_txtDesc);
+        TextView lblValue = (TextView) findViewById(R.id.displayDetails_lblValue);
 
         // _textDisplayDetails = (TextView)  findViewById(R.id.displayDetails_textDisplayDetails);
         TextView _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
@@ -153,6 +121,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         txtDesc.setText(transaction.getMemo());
         txtValue.setText(transaction.getValue().toString());
 
+        if (_itemType != TASK){
+            lblValue.setText("Cost:");
+        }
         // Populates the coolDown data
         switch (transaction.getCoolDown()) {
             case 0:
@@ -196,6 +167,8 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         TextView txtName  = (TextView) findViewById(R.id.displayDetails_txtName);
         TextView txtValue = (TextView) findViewById(R.id.displayDetails_txtValue);
         TextView txtDesc  = (TextView) findViewById(R.id.displayDetails_txtDesc);
+        TextView lblValue = (TextView) findViewById(R.id.displayDetails_lblValue);
+        TextView lblBDay  = (TextView) findViewById(R.id.displayDetails_lblExpires);
 
         // _textDisplayDetails = (TextView)  findViewById(R.id.displayDetails_textDisplayDetails);
         TextView _textCoolDown       = (TextView)  findViewById(R.id.displayDetails_textCoolDown);
@@ -205,6 +178,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         txtName.setText(entity.getName());
         txtDesc.setText(entity.getEmail());
         txtValue.setText(entity.getCardPrimaryDetails());
+        lblValue.setText("Balance:");
+        lblBDay.setText("Birthday:");
+
 
 
         _textExpires.setText(entity.getBirthday().toString());
@@ -212,33 +188,20 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     }
 
     /**
-     * This class provides setup for Activity Spinners.
-     * Defines Spinners and Array Adapters for Spinner member variables
-     * Sets the adapters and listeners for various spinners.
-     * @author Doug Barlow
-     * @param existingTransaction - indicates whether is Adding or Editing
-     */
-    private void setUpSpinners(boolean existingTransaction){
-
-    }
-
-
-    /**
-     * This creates a DatePickerFragment and displays it.
-     * @param v
-     */
-    public void showDatePickerDialog(View v) {
-
-    }
-
-    /**
-     * Saves the current  Transaction based on the current inputs.
-     * Basic Error checking for EditText items. Spinners are programmed
-     * in such a way it should be impossible for them to be in an invalid state.
+     * Allows the user to edit the current item
      * @param view
      */
-    public void editTransaction(View view) {
-
+    public void editListItem(View view) {
+        Intent intent;
+        if (_currentItem.getType() == ENTITY) {
+            intent = new Intent(this, EditAddEntity.class);
+            intent.putExtra("ENTITY_INDEX", Reserve.get_entityList().indexOf(_currentItem));
+        } else {
+            intent = new Intent(this, EditAddTransaction.class);
+            intent.putExtra("TRANSACTION_INDEX", Reserve.get_transactionList().indexOf(_currentItem));
+            intent.putExtra("TRANSACTION_TYPE", _currentItem.getType());
+        }
+        startActivityForResult(intent,1);
     }
 
     /**
@@ -246,7 +209,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
      * in the list.
      * @param view
      */
-    public void editNextTransaction(View view) {
+    public void viewNextDetails(View view) {
         Intent intent = new Intent(this, DisplayDetails.class);
         int newIndex;
 
@@ -271,7 +234,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
      * in the list.
      * @param view
      */
-    public void editPrevTransaction(View view) {
+    public void viewPreviousDetails(View view) {
         Intent intent = new Intent(this, DisplayDetails.class);
         int newIndex;
 
@@ -328,7 +291,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         switch (clickType){
             case ENTITY:
                 bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
-                        "Apply Payment", "Apply Reward", "Apply Fine", "Cancel")));
+                        "Apply Transaction", "Cancel")));
                 break;
             case TASK:
                 bundle.putStringArrayList("OPTIONS", new ArrayList<>(Arrays.asList("View Details",
@@ -353,6 +316,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
         selectDialog.setArguments(bundle);
 
+
         //Show the dialog
         selectDialog.show(fragmentManager, "");
     }
@@ -365,35 +329,34 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
     @Override
     public void onListItemDialogClick(int position, final ListItem selectedItem) {
 
-        if (selectedItem != null){
-
-            if (selectedItem.getType() == ListItemType.ENTITY){
-                switch (position) {
-                    case 0:
-                        displayDetails(selectedItem);
-                        break;
-                    case 1:
-                        getItemsToApply(selectedItem, TASK);
-                        break;
-                    case 2:
-                        getItemsToApply(selectedItem, REWARD);
-                        break;
-                    case 3:
-                        getItemsToApply(selectedItem, FINE);
-                        break;
-                }
-            }
-            else{
-                switch (position) {
-                    case 0:
-                        displayDetails(selectedItem);
-                        break;
-                    case 1:
-                        getItemsToApply(selectedItem, ENTITY);
-                        break;
-                }
+        if (selectedItem != null) {
+            switch (position) {
+                case 0:
+                    displayDetails(selectedItem);
+                    break;
+                case 1:
+                    selectedItem.applyTransaction(_currentItem);
+                    if (_itemType == ENTITY){
+                        updateTextFieldsEntity();
+                    } else {
+                        updateTextFieldsTransaction();
+                    }
+                    break;
+                default:
+                    Toast toast = makeText(this,"Cancelled", Toast.LENGTH_SHORT);
+                    toast.show();
             }
         }
+    }
+
+    /**
+     * Launches DisplayHistory Activity
+     * @param view
+     */
+    void displayHistory(View view){
+        Intent intent = new Intent(this, DisplayHistory.class);
+        intent.putExtra("INDEX",Reserve.getListItems(_currentItem.getType()).indexOf(_currentItem));
+        startActivity(intent);
     }
 
     /**
@@ -405,151 +368,20 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         intent.putExtra("INDEX",Reserve.getListItems(selectedItem.getType()).indexOf(selectedItem));
         intent.putExtra("TYPE", selectedItem.getType());
         startActivityForResult(intent,1);
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    }
-
-    /**
-     * Opens another dialogue fragment with a list of ListItems that can be applied to the
-     * current selection.
-     * @param item Currently selected item
-     * @param typeToApply
-     */
-    private void getItemsToApply(ListItem item, ListItemType typeToApply){
-        //Declare new Fragment Manager & ListItemSelectDialog
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ListItemSelectDialog selectDialog = new ListItemSelectDialog();
-
-        //Create a bundle to hold title & menu options
-        Bundle bundle = new Bundle();
-
-        //Dynamically add display options to bundle
-        //*Note* Options must be added as a String ArrayList
-
-        switch (typeToApply){
-            case ENTITY:
-                bundle.putString("TITLE", "Who do you want to apply " + item.getName() + "to?");
-                break;
-            case TASK:
-                bundle.putString("TITLE", "Which task would you like to apply to " + item.getName() + "?");
-                break;
-            case REWARD:
-                bundle.putString("TITLE", "Which reward would you like to apply to " + item.getName() + "?");
-                break;
-            case FINE:
-                bundle.putString("TITLE", "Which fine would you like to apply to " + item.getName() + "?");
-                break;
-        }
-
-        //Get a dynamic list of items that can be applied
-        ArrayList options = new ArrayList<>();
-
-        if (typeToApply == ENTITY){
-            Transaction tempTransaction = (Transaction) item;
-            for (Entity entity : Reserve.get_entityList()){
-
-                //Only add assigned entities to the options list.
-                if (tempTransaction.isAssigned(entity)) {
-                    options.add(entity.getName());
-                }
-                //Make sure the number of options is greater than 0
-                if(options.size() == 0){
-                    Toast toast = makeText(this, "Uh-oh. There is no-one assigned to that transaction.", Toast.LENGTH_SHORT);
-                    toast.show();
-                    return;
-                }
-            }
+        if (_itemType == ENTITY){
+            updateTextFieldsEntity();
         } else {
-            //Only add assigned transactions to the options list.
-            Entity tempEntity = (Entity)item;
-            for (Transaction transaction : tempEntity.getAssignedTransactions(typeToApply)) {
-                options.add(transaction.getName());
-            }
-            //Make sure the number of options is greater than 0
-            if(options.size() == 0){
-                Toast toast = makeText(this, "Uh-oh. This person has no " + typeToApply + "s assigned to them.", Toast.LENGTH_SHORT);
-                toast.show();
-                return;
-            }
+            updateTextFieldsTransaction();
         }
-
-
-        options.add("Cancel");
-        bundle.putStringArrayList("OPTIONS", options);
-
-        //Initialize a NestedDialogue
-        selectDialog.initializeNested(item, this, typeToApply);
-        //Step 2 - SET ARGUMENTS - pass bundle to dialog with title and options to display
-        selectDialog.setArguments(bundle);
-
-        //Show the dialog
-        selectDialog.show(fragmentManager, "");
-
+        _assignedItems.clear();
+        _assignedItems.addAll(_currentItem.getAssignmentList());
+        _recycleViewAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * The callback function for nested ListItem dialogs. This handles onclick events for the nested
-     * dialog fragments
-     * @param position index of the option selected by the user.
-     * @param selectedItem item to be affected
-     * @param applyType type of item to be applied to selectedItem.
-     */
-    @Override
-    public void onNestedListItemDialogClick(int position, ListItem selectedItem,ListItemType applyType) {
-        Toast toast;
-        List<ListItem> options = new ArrayList<>();
-        //applyType must list a specific type.
-        if (applyType == null || applyType == ALL) {
-            toast = makeText(this, "An Error Occurred...", Toast.LENGTH_SHORT);
-        }else {
-            try {
-                //Get the current options list
-                if (applyType == ENTITY){
-                    Transaction tempTransaction = (Transaction) selectedItem;
-                    for (Entity entity : Reserve.get_entityList()){
-                        if (tempTransaction.isAssigned(entity)) {
-                            options.add(entity);
-                        }
-                    }
-                } else {
-                    Entity tempEntity = (Entity) selectedItem;
-                    options.addAll(tempEntity.getAssignedTransactions(applyType));
-                }
-                //This indicates that CANCEL was selected
-                if (position == options.size()){
-                    return;
-                    //An item was selected
-                } else if (selectedItem.applyTransaction(options.get(position))) {
-                    toast = makeText(this, "Transaction Applied", Toast.LENGTH_SHORT);
-                    //Only Entities should visibly change after a transaction has been applied.
-                    //updateAdapter(ENTITY);
-                } else {
-                    if (applyType == ENTITY) {
-                        toast = makeText(this, Reserve.getListItems(applyType).get(position).getName() +
-                                " does not have enough " + Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
-                    } else {
-                        toast = makeText(this, selectedItem.getName() + " does not have enough " +
-                                Reserve.getCurrencyName() + " for that reward.", Toast.LENGTH_SHORT);
-                    }
-                }
-            } catch (IllegalArgumentException e)
-            {
-                toast = makeText(this, "Uh-Oh - An unexpected error occurred...", Toast.LENGTH_SHORT);
-            }
-        }
-        toast.show();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }
 
