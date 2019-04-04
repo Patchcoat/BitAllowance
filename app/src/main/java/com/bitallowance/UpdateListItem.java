@@ -344,7 +344,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             _out.write(idByte); // ID
             int read = _in.read();
             TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss\0");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd\0");
             df.setTimeZone(tz);
             String timestamp = df.format(entity.getTimeSinceLastLoad());
             Log.d("Timestamp", timestamp);

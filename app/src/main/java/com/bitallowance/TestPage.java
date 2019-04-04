@@ -249,7 +249,6 @@ public class TestPage extends AppCompatActivity {
         _entity.setDisplayName("Dustinsc77");
         _entity.setEmail("DSCOmega77@hello.out");
         _entity.setTimeSinceLastLoad(new Date());
-        _entity.
 
         _entity.update();
     }
