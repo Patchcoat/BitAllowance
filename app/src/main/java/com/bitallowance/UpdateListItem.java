@@ -31,6 +31,7 @@ import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -111,8 +112,9 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     byte[] buffer = new byte[100];
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
-                    read = _in.read(buffer);// get value
-                    String valueStr = buffer.toString();
+                    String valueStr = _in.readUTF();// get value
+                    // byte[] valueBytes = Arrays.copyOfRange(buffer, 0, read);
+                    // String valueStr = new String(valueBytes);
                     transaction._value = new BigDecimal(valueStr);
                     Log.e("Update TRANS", transaction._value.toString());
                     _out.write("_".getBytes());
@@ -186,7 +188,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get expiration
-                    String expirationDateStr = new String(buffer);
+                    byte[] expirationDateBytes = Arrays.copyOfRange(buffer, 0, read);
+                    String expirationDateStr = new String(expirationDateBytes);
                     transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
                             .parse(expirationDateStr));
                     Log.e("Update TRANS", transaction.getExpirationDate().toString());
