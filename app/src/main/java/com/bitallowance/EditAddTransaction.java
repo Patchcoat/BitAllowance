@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static android.widget.Toast.makeText;
@@ -407,6 +408,12 @@ public class EditAddTransaction extends AppCompatActivity
         else {
             Reserve.updateTransaction(_currentTransaction, _transIndex);
         }
+
+        // Default DATE is NULL is present
+        if(_currentTransaction.getExpirationDate() == null) {
+            _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
+        }
+
         _currentTransaction.update();
 
         Toast toast = Toast.makeText(getApplicationContext(),"Record Saved.", Toast.LENGTH_SHORT);

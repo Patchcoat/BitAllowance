@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -235,5 +236,18 @@ public class TestPage extends AppCompatActivity {
 
         }
 
+    }
+
+    public void sendEntity(View view) {
+        Entity _entity = new Entity();
+
+        _entity.setId(0);
+        _entity.setBirthday(new GregorianCalendar(1977, 06, 25).getTime());
+        _entity.setDisplayName("Dustinsc77");
+        _entity.setEmail("DSCOmega77@hello.out");
+
+        
+
+        _entity.update();
     }
 }
