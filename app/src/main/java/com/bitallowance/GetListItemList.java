@@ -18,6 +18,7 @@ import java.net.UnknownHostException;
 import java.security.PrivateKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.crypto.Cipher;
@@ -208,12 +209,76 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
         }
     }
 
-    private void getEntity() {
-
+    private Entity getEntity(int read) {
+        byte[] buffer = new byte[100];
+        Entity entity = new Entity();
+        try {
+            _out.write("_".getBytes());
+            read = _in.read(buffer);// get id
+            int idInt = (buffer[0] << 24 |
+                    (buffer[1] & 0xFF) << 16 |
+                    (buffer[2] & 0xFF) << 8 |
+                    (buffer[3] & 0xFF));
+            entity.setId(idInt);
+            _out.write("_".getBytes());
+            _out.flush();
+            read = _in.read(buffer);// value
+            entity.updateBalance(new BigDecimal(new String(buffer)));
+            String usernameSrt = entity.getName();
+            _out.write("_".getBytes());
+            _out.flush();
+            entity.setUserName(new String(buffer));
+            _out.write("_".getBytes());
+            _out.flush();
+            read = _in.read(buffer);// displayName
+            entity.setDisplayName(new String(buffer));
+            _out.write("_".getBytes());
+            _out.flush();
+            read = _in.read(buffer);// birthday
+            Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(new String(buffer));
+            entity.setBirthday(birthdayDate);
+            _out.write("_".getBytes());
+            _out.flush();
+            read = _in.read(buffer);// email
+            entity.setEmail(new String(buffer));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return entity;
     }
 
     private void getEntityList() {
-
+        if (_reserve == null) {
+            Log.e("GetListItemList", "Reserve cannot be null. Be sure to call \"SetReserve\"");
+            return;
+        }
+        try {
+            int idNum = _reserve.get_id();
+            byte[] idByte = new byte[] {(byte) idNum,
+                    (byte) (idNum >> 8),
+                    (byte) (idNum >> 16),
+                    (byte) (idNum >> 24)};
+            _out.write(idByte); // ID
+            byte[] countBytes = new byte[4];
+            int read = _in.read(countBytes);
+            int count = countBytes[3] & 0xFF |
+                    (countBytes[2] & 0xFF) << 8 |
+                    (countBytes[1] & 0xFF) << 16 |
+                    (countBytes[0] & 0xFF) << 24;
+            if (count == 0)
+                return;
+            byte[] buffer = new byte[1];
+            _out.write("_".getBytes());
+            read = _in.read(buffer);
+            while (buffer[0] == "u".getBytes()[0]) {
+                getEntity(read);
+                read = _in.read(buffer);
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String decrypt(HashMap<String, byte[]> map, String password) {

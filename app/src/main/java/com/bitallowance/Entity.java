@@ -34,7 +34,6 @@ public class Entity implements ListItem {
     public Entity() {
         cashBalance = new BigDecimal(0);
         _transactionHistory = new ArrayList<>();
-
     }
 
     // Getters
