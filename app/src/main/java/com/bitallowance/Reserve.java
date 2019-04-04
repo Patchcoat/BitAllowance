@@ -6,12 +6,20 @@ import java.util.Date;
 import java.util.List;
 
 public class Reserve {
+    private static int _id;
     private static List<Entity> _entityList = new ArrayList<>();
     private static List<Transaction> _transactionList = new ArrayList<>();
     private static String _currencyName;
     private static String _currencySymbol;
 
     public Reserve() {
+    }
+
+    public static int get_id(){
+        return _id;
+    }
+    public static void set_id(int id){
+        _id = id;
     }
 
     public static void addEntity(Entity newEntity) {
