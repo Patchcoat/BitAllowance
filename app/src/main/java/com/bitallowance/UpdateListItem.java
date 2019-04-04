@@ -494,24 +494,27 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             _out.flush();
 
             // read the public key into a byte array
-            Log.d("Update Transaction", "accepting new");
+            Log.d("Update List Item", "accepting new");
             ByteArrayOutputStream serverKeyByteStream = new ByteArrayOutputStream();
             byte[] serverKeyBytes = new byte[426];
             int read = _in.read(serverKeyBytes, 0, 426);
             String serverPEMKey = new String(serverKeyBytes);
             Log.d("Read", Integer.toString(read));
-            Log.d("Update Transaction", serverPEMKey);
+            Log.d("Update List Item", serverPEMKey);
 
             String nul = "\0";
             _out.write(_pubKeyString.getBytes());
             read = _in.read();
-            Log.d("Update Transaction", _pubKeyString);
-            _out.write("ut\0".getBytes());// 'u'pdate 't'ransaction
-            read = _in.read();
 
             if (_item instanceof Transaction) {
+                Log.d("Update Transaction", _pubKeyString);
+                _out.write("ut\0".getBytes());// 'u'pdate 't'ransaction
+                read = _in.read();
                 updateTransaction();
             } else if (_item instanceof Entity) {
+                Log.d("Update Entity", _pubKeyString);
+                _out.write("ue\0".getBytes());// 'u'pdate 'e'tity
+                read = _in.read();
                 updateEntity();
             }
 
