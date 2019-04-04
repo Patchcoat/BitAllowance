@@ -33,7 +33,7 @@ public class Entity implements ListItem {
     // Constructors
     public Entity() {
         cashBalance = new BigDecimal(0);
-
+        _transactionHistory = new ArrayList<>();
     }
 
     // Getters
@@ -74,6 +74,10 @@ public class Entity implements ListItem {
 
     public List<Transaction> getTransactionHistory() {
         return this._transactionHistory;
+    }
+
+    public void addToHistory(Transaction transaction) {
+        _transactionHistory.add(transaction);
     }
 
     // Setters

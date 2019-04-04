@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Reserve {
+    private static int _id;
     private static List<Entity> _entityList = new ArrayList<>();
     private static List<Transaction> _transactionList = new ArrayList<>();
     private static String _currencyName;
@@ -14,11 +15,21 @@ public class Reserve {
     public Reserve() {
     }
 
+    public static int get_id(){
+        return _id;
+    }
+    public static void set_id(int id){
+        _id = id;
+    }
+
     public static void addEntity(Entity newEntity) {
         _entityList.add(newEntity);
     }
     public static void updateEntity(Entity newEntity, int index){
         _entityList.set(index, newEntity);
+    }
+    public static void setEntityList(List<Entity> entityList) {
+        _entityList = entityList;
     }
 
     public static void addTransaction(Transaction newTransaction){
@@ -26,6 +37,9 @@ public class Reserve {
     }
     public static void updateTransaction(Transaction newTransaction, int index) {
         _transactionList.set(index, newTransaction);
+    }
+    public static void setTransactionList(List<Transaction> transactionList) {
+        _transactionList = transactionList;
     }
 
     public static List<Entity> get_entityList() {
