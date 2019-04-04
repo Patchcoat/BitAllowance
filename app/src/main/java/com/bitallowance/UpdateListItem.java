@@ -269,10 +269,10 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write(type);// type
                     _out.flush();
                     read = _in.read();
-                    _out.write(transaction._name.getBytes(Charset.defaultCharset()));// name
+                    _out.write((transaction._name + "\0").getBytes(Charset.defaultCharset()));// name
                     read = _in.read();
                     String memo = transaction._memo;
-                    _out.write((memo).getBytes());// memo
+                    _out.write((memo + "\0").getBytes());// memo
                     _out.flush();
                     read = _in.read();
                     boolean linked = transaction._linked;
@@ -412,6 +412,8 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write((displayName + "\0").getBytes());// displayName
                     _out.flush();
                     read = _in.read();
+                    DateFormat bdf = new SimpleDateFormat("yyyy-MM-dd\0");
+                    bdf.setTimeZone(tz);
                     String birthday = df.format(entity.getBirthday());
                     Log.e("UpdateEntity", birthday);
                     _out.write(birthday.getBytes());// birthday
