@@ -245,11 +245,38 @@ public class TestPage extends AppCompatActivity {
 
         _entity.setId(0);
         _entity.setUserName("Dustin");
-        _entity.setBirthday(new GregorianCalendar(1977, 06, 25).getTime());
+        _entity.setBirthday(new GregorianCalendar(1977, 6 - 1, 25).getTime());
         _entity.setDisplayName("Dustinsc77");
         _entity.setEmail("DSCOmega77@hello.out");
         _entity.setTimeSinceLastLoad(new Date());
 
         _entity.update();
     }
+
+    public void receiveTransaction(View view) {
+        Transaction _trans = new Transaction();
+
+        _trans.set_id("7");
+        _trans._timeStamp = new Date();
+
+        _trans.update();
+
+    }
+
+    public void receiveEntity(View view) {
+        Entity _entity = new Entity();
+
+
+    }
+
+    public void retrieveTransation(View view) {
+
+    }
+
+    public void retrieveEntity(View view) {
+
+    }
+
+
+
 }

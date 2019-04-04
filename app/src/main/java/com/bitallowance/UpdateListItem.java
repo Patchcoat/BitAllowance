@@ -114,6 +114,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     read = _in.read(buffer);// get value
                     String valueStr = buffer.toString();
                     transaction._value = new BigDecimal(valueStr);
+                    Log.e("Update TRANS", transaction._value.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get operator
@@ -132,6 +133,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             transaction._operator = Operator.SUBTRACT;
                             break;
                     }
+                    Log.e("Update TRANS", transaction._operator.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get type
@@ -153,33 +155,41 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             transaction._transactionType = ListItemType.ALL;
                             break;
                     }
+                    Log.e("Update TRANS", transaction._transactionType.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get name
                     String nameStr = new String(buffer);
                     transaction._name = nameStr;
+                    Log.e("Update TRANS", transaction._name);
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get memo
                     String memoStr = new String(buffer);
-                    transaction._name = memoStr;
+                    transaction._memo = memoStr;
+                    Log.e("Update TRANS",transaction._memo);
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get linked
                     transaction._linked = (buffer[0] != 0);
+                    Log.e("Update TRANS",transaction._linked?"true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get executed
                     transaction._executed = (buffer[0] != 0);
+                    Log.e("Update TRANS",transaction._executed? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get expirable
                     transaction.setIsExpirable(buffer[0] != 0);
+                    Log.e("Update TRANS",transaction.isExpirable()? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get expiration
                     String expirationDateStr = new String(buffer);
-                    transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(expirationDateStr));
+                    transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+                            .parse(expirationDateStr));
+                    Log.e("Update TRANS", transaction.getExpirationDate().toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get cool down
@@ -188,10 +198,12 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             (buffer[2] & 0xFF) << 8 |
                             (buffer[3] & 0xFF));
                     transaction.setCoolDown(coolDownInt);
+                    Log.e("Update TRANS", String.valueOf(transaction.getCoolDown()));
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get repeatable
                     transaction.setIsRepeatable(buffer[0] != 0);
+                    Log.e("Update TRANS", transaction.isRepeatable()? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     byte[] affecCntBytes = new byte[4];
@@ -230,6 +242,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             operator = '-';
                             break;
                     }
+                    // Log.e("Update TRANS", transaction._operator.toString());
                     _out.write(operator);// operator
                     _out.flush();
                     read = _in.read();
@@ -251,6 +264,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             type = 'A';
                             break;
                     }
+                    // Log.e("Update TRANS",transaction.getTransactionType().toString());
                     Log.d("Type", String.valueOf(type));
                     _out.write(type);// type
                     _out.flush();
@@ -344,7 +358,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             _out.write(idByte); // ID
             int read = _in.read();
             TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd\0");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             df.setTimeZone(tz);
             String timestamp = df.format(entity.getTimeSinceLastLoad());
             Log.d("Timestamp", timestamp);
@@ -399,6 +413,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     read = _in.read();
                     String birthday = df.format(entity.getBirthday());
+                    Log.e("UpdateEntity", birthday);
                     _out.write(birthday.getBytes());// birthday
                     _out.flush();
                     read = _in.read();
