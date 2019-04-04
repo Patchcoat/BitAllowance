@@ -242,11 +242,12 @@ public class TestPage extends AppCompatActivity {
         Entity _entity = new Entity();
 
         _entity.setId(0);
+        _entity.setUserName("Dustin");
         _entity.setBirthday(new GregorianCalendar(1977, 06, 25).getTime());
         _entity.setDisplayName("Dustinsc77");
         _entity.setEmail("DSCOmega77@hello.out");
-
-        
+        _entity.setTimeSinceLastLoad(new Date());
+        _entity.
 
         _entity.update();
     }
