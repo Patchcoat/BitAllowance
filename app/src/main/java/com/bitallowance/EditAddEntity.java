@@ -153,7 +153,6 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
 
             _currentEntity.update();
         }
-
     }
 
     public void editNextEntity(View view) {
