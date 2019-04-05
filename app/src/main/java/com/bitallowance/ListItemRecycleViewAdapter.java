@@ -50,7 +50,6 @@ public class ListItemRecycleViewAdapter extends RecyclerView.Adapter {
         //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_simple_row_layout, parent, false);
         // set the view's size, margins, paddings and layout parameters
         RecyclerView.ViewHolder vh = new ListItemViewHolder(v, _listItemClickListener, this); // pass the view to View Holder
-        Log.d(TAG, "onCreateViewHolder: RecycleView Created");
         return vh;
     }
 

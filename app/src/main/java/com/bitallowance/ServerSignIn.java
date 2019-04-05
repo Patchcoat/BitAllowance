@@ -106,6 +106,11 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
                 String data = "loadEntities&reserveID=" + resultCode;
                 new ServerLoadListItems(context, data, ListItemType.ENTITY).execute();
 
+                //Load TransactionsEntities
+                data = "loadTransactions&reserveID=" + resultCode;
+                new ServerLoadListItems(context, data, ListItemType.ALL).execute();
+
+
                 //Load Homepage
                 Intent intent = new Intent(context, ReserveHome.class);
                 context.startActivity(intent);
