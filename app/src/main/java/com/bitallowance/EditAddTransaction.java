@@ -394,6 +394,48 @@ public class EditAddTransaction extends AppCompatActivity
         }
 
 
+
+
+
+
+        //Save item to server
+        if (Reserve.serverIsPHP) {
+
+            //Convert bools to ints to work with the server.
+            int repeatBoolInt = 0;
+            int expireBoolInt = 0;
+            if (_currentTransaction.isRepeatable()){
+                repeatBoolInt = 1;
+            }
+            if (_currentTransaction.isExpirable()){
+                expireBoolInt = 1;
+            }
+
+            //build the string to send to the server
+            String data = "updateTransaction&txnPK=" + _currentTransaction.get_id() + "&name=" + _currentTransaction.getName() + "&value=" + _currentTransaction.getValue().toString() +
+                          "&memo=" + _currentTransaction.getMemo() + "&type=" + _currentTransaction.getType() + "&expires=" + expireBoolInt +
+                          "&expireDate=" + Reserve.dateStringSQL(_currentTransaction.getExpirationDate()) + "&repeat=" + repeatBoolInt +
+                          "&cooldown=" + _currentTransaction.getCoolDown() + "&resPK=" + Reserve.get_id();
+            new ServerUpdateListItem(this, data, _currentTransaction).execute();
+        } else {
+
+
+            // Default DATE is NULL is present
+            if(_currentTransaction.getExpirationDate() == null) {
+                _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
+            }
+            Log.d("entityList", String.valueOf(_currentTransaction._affected.size()));
+
+            for (int i = 0; i < _currentTransaction._affected.size(); i++) {
+                Log.d("entityList", _currentTransaction._affected.get(i).getName());
+            }
+
+            _currentTransaction.update();
+
+            Toast toast = Toast.makeText(getApplicationContext(), "Record Saved.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
         /* * * * * UPDATE ASSIGNMENT MAP * * * * */
         for (ListItem entity: _entityListAssigned) {
             _currentTransaction.updateAssignment((Entity) entity, Boolean.TRUE);
@@ -411,32 +453,6 @@ public class EditAddTransaction extends AppCompatActivity
         }
 
 
-
-        //Save item to server
-        if (Reserve.serverIsPHP) {
-            //build the string to send to the server
-            String data = "updateTransaction&txnPK=" + _currentTransaction.get_id() + "&name=" + _currentTransaction.getName() + "&value=" + _currentTransaction.getValue().toString() +
-                          "&memo=" + _currentTransaction.getMemo() + "&type=" + _currentTransaction.getType() + "&expires=" + _currentTransaction.isExpirable() +
-                          "&expireDate=" + Reserve.dateStringSQL(_currentTransaction.getExpirationDate()) + "&repeat=" + _currentTransaction.isRepeatable() +
-                          "&cooldown=" + _currentTransaction.getCoolDown() + "&resPK=" + Reserve.get_id();
-            new ServerUpdateListItem(this, data, _currentTransaction).execute();
-        } else {
-
-            // Default DATE is NULL is present
-            if(_currentTransaction.getExpirationDate() == null) {
-                _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
-            }
-            Log.d("entityList", String.valueOf(_currentTransaction._affected.size()));
-
-            for (int i = 0; i < _currentTransaction._affected.size(); i++) {
-                Log.d("entityList", _currentTransaction._affected.get(i).getName());
-            }
-
-            _currentTransaction.update();
-
-            Toast toast = Toast.makeText(getApplicationContext(), "Record Saved.", Toast.LENGTH_SHORT);
-            toast.show();
-        }
     }
 
     /**
