@@ -112,11 +112,11 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     byte[] buffer = new byte[100];
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
-                    String valueStr = _in.readUTF();// get value
-                    byte[] valueBytes = Arrays.copyOfRange(buffer, 0, read);
-                    // String valueStr = new String(valueBytes);
+                    read = _in.read(buffer);// get value
+                    String valueStr = new String(buffer);
+                    valueStr = valueStr.substring(0, valueStr.indexOf('\0'));
                     transaction._value = new BigDecimal(valueStr);
-                    Log.e("Update TRANS", transaction._value.toString());
+                    Log.e("Update Transaction", transaction._value.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get operator
@@ -135,7 +135,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             transaction._operator = Operator.SUBTRACT;
                             break;
                     }
-                    Log.e("Update TRANS", transaction._operator.toString());
+                    Log.e("Update Transaction", transaction._operator.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get type
@@ -157,34 +157,36 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             transaction._transactionType = ListItemType.ALL;
                             break;
                     }
-                    Log.e("Update TRANS", transaction._transactionType.toString());
+                    Log.e("Update Transaction", transaction._transactionType.toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get name
                     String nameStr = new String(buffer);
+                    nameStr = nameStr.substring(0, nameStr.indexOf('\0'));
                     transaction._name = nameStr;
-                    Log.e("Update TRANS", transaction._name);
+                    Log.e("Update Transaction", transaction._name);
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get memo
                     String memoStr = new String(buffer);
+                    memoStr = memoStr.substring(0, memoStr.indexOf('\0'));
                     transaction._memo = memoStr;
-                    Log.e("Update TRANS",transaction._memo);
+                    Log.e("Update Transaction",transaction._memo);
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get linked
                     transaction._linked = (buffer[0] != 0);
-                    Log.e("Update TRANS",transaction._linked?"true":"false");
+                    Log.e("Update Transaction",transaction._linked?"true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get executed
                     transaction._executed = (buffer[0] != 0);
-                    Log.e("Update TRANS",transaction._executed? "true":"false");
+                    Log.e("Update Transaction",transaction._executed? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get expirable
                     transaction.setIsExpirable(buffer[0] != 0);
-                    Log.e("Update TRANS",transaction.isExpirable()? "true":"false");
+                    Log.e("Update Transaction",transaction.isExpirable()? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get expiration
@@ -192,7 +194,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     String expirationDateStr = new String(expirationDateBytes);
                     transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
                             .parse(expirationDateStr));
-                    Log.e("Update TRANS", transaction.getExpirationDate().toString());
+                    Log.e("Update Transaction", transaction.getExpirationDate().toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get cool down
@@ -201,12 +203,12 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             (buffer[2] & 0xFF) << 8 |
                             (buffer[3] & 0xFF));
                     transaction.setCoolDown(coolDownInt);
-                    Log.e("Update TRANS", String.valueOf(transaction.getCoolDown()));
+                    Log.e("Update Transaction", String.valueOf(transaction.getCoolDown()));
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// get repeatable
                     transaction.setIsRepeatable(buffer[0] != 0);
-                    Log.e("Update TRANS", transaction.isRepeatable()? "true":"false");
+                    Log.e("Update Transaction", transaction.isRepeatable()? "true":"false");
                     _out.write("_".getBytes());
                     _out.flush();
                     byte[] affecCntBytes = new byte[4];
@@ -245,7 +247,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             operator = '-';
                             break;
                     }
-                    // Log.e("Update TRANS", transaction._operator.toString());
+                    // Log.e("Update Transaction", transaction._operator.toString());
                     _out.write(operator);// operator
                     _out.flush();
                     read = _in.read();
@@ -267,7 +269,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             type = 'A';
                             break;
                     }
-                    // Log.e("Update TRANS",transaction.getTransactionType().toString());
+                    // Log.e("Update Transaction",transaction.getTransactionType().toString());
                     Log.d("Type", String.valueOf(type));
                     _out.write(type);// type
                     _out.flush();
@@ -361,7 +363,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             _out.write(idByte); // ID
             int read = _in.read();
             TimeZone tz = TimeZone.getTimeZone("UTC");
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             df.setTimeZone(tz);
             String timestamp = df.format(entity.getTimeSinceLastLoad());
             Log.d("Timestamp", timestamp);
@@ -383,24 +385,38 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// value
-                    entity.updateBalance(new BigDecimal(new String(buffer)));
-                    String usernameSrt = entity.getUserName();
+                    String balanceStr = new String(buffer);
+                    balanceStr = balanceStr.substring(0, balanceStr.indexOf('\0'));
+                    entity.updateBalance(new BigDecimal(balanceStr));
+                    Log.d("Update Entity", entity.getCashBalance().toString());
                     _out.write("_".getBytes());
                     _out.flush();
-                    entity.setUserName(new String(buffer));
+                    read = _in.read(buffer);
+                    String nameStr = new String(buffer);
+                    nameStr = nameStr.substring(0, nameStr.indexOf('\0'));
+                    entity.setUserName(nameStr);
+                    Log.d("Update Entity", entity.getUserName());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// displayName
-                    entity.setDisplayName(new String(buffer));
+                    String dispNameStr = new String(buffer);
+                    dispNameStr = dispNameStr.substring(0, dispNameStr.indexOf('\0'));
+                    entity.setDisplayName(dispNameStr);
+                    Log.d("Update Entity", entity.getDisplayName());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// birthday
-                    Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd").parse(new String(buffer));
+                    String birthdayStr = new String(buffer);
+                    birthdayStr = birthdayStr.substring(0, birthdayStr.indexOf('\0'));
+                    Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd").parse(birthdayStr);
                     entity.setBirthday(birthdayDate);
+                    Log.d("Update Entity", entity.getBirthday().toString());
                     _out.write("_".getBytes());
                     _out.flush();
                     read = _in.read(buffer);// email
-                    entity.setEmail(new String(buffer));
+                    String emailStr = new String(buffer);
+                    emailStr = emailStr.substring(0, emailStr.indexOf('\0'));
+                    entity.setEmail(emailStr);
                     break;
                 case 'r': // remote update
                     String value = entity.getCashBalance().toPlainString();
