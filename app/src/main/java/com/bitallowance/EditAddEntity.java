@@ -104,6 +104,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         EditText name = (EditText)findViewById(R.id.editEntity_txtName);
         EditText email = (EditText)findViewById(R.id.editEntity_txtEmail);
         Button birthday = (Button)findViewById(R.id.editEntity_btnDatePicker);
+        _currentEntity.setTimeSinceLastLoad(new Date());
         if (birthday.getText().toString() == getResources().getString(R.string.editEntityBirthdayHint)){
             Toast toast = Toast.makeText(getApplicationContext(),"A birthdate is required", Toast.LENGTH_SHORT);
             toast.show();
@@ -137,13 +138,21 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         //Save item to server
         if (Reserve.serverIsPHP) {
             //build the string to send to the server
-            String data = "updateEntity&resPK=" + Reserve.get_id() + "&entPK=" + _currentEntity.getId() + "&display=" + _currentEntity.getDisplayName() +
-                    "&email=" + _currentEntity.getEmail() + "&birthday=" + Reserve.dateStringSQL(_currentEntity.getBirthday()) + "&balance=" + _currentEntity.getCashBalance().toString();
+            String data = "updateEntity&resPK=" + Reserve.get_id() + "&entPK=" + _currentEntity.getId()
+                    + "&display=" + _currentEntity.getDisplayName() + "&email=" + _currentEntity.getEmail()
+                    + "&birthday=" + Reserve.dateStringSQL(_currentEntity.getBirthday())
+                    + "&balance=" + _currentEntity.getCashBalance().toString();
             new ServerUpdateListItem(this, data, _currentEntity).execute();
         } else {
+
+            Log.d("CreateEntity", _currentEntity.getName());
+            Log.d("CreateEntity", _currentEntity.getEmail());
+            Log.d("CreateEntity", _currentEntity.getDisplayName());
+            Log.d("CreateEntity", Reserve.dateToString(_currentEntity.getBirthday()));
+            Log.d("CreateEntity", _currentEntity.getCashBalance().toString());
+
             _currentEntity.update();
         }
-
     }
 
     public void editNextEntity(View view) {
