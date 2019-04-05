@@ -225,12 +225,12 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
             byte[] idBytes = new byte[4];
             Log.d("Create Reserve", "receiving id");
-            _in.read(idBytes, 0, 4);
+            _in.read(idBytes);
             // convert byte array to integer
-            int id = idBytes[3] & 0xFF |
+            int id = (idBytes[0] << 24 |
+                    (idBytes[1] & 0xFF) << 16 |
                     (idBytes[2] & 0xFF) << 8 |
-                    (idBytes[1] & 0xFF) << 16|
-                    (idBytes[0] & 0xFF) << 24;
+                    (idBytes[3] & 0xFF));
             Log.d("Create Reserve ID", String.valueOf(id));
 
             Log.d("Create Reserve", "start closing things");
