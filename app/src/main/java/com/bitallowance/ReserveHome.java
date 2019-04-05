@@ -744,6 +744,12 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                         rewardList.addAll(Reserve.getListItems(REWARD));
                         mRewardList.notifyDataSetChanged();
                     }
+
+                    for (Transaction transaction: Reserve.get_transactionList()) {
+
+                        String data = "loadAssignments&txnPK=" + transaction.get_id();
+                        new ServerLoadAssignments(data, transaction).execute();
+                    }
                 }
 
             } catch (Exception e) {
