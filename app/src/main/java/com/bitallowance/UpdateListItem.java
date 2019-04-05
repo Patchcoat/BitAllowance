@@ -426,7 +426,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write(value.getBytes());// value
                     _out.flush();
                     read = _in.read();
-                    String username = entity.getUserName();
+                    String username = entity.getName();
                     _out.write((username + "\0").getBytes());// username
                     _out.flush();
                     read = _in.read();
