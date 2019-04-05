@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
@@ -111,9 +112,33 @@ public class ServerLoadListItems  extends AsyncTask<String, Void, Void> {
                     Reserve.get_entityList().add(entity);
                 }
             } else {
+                JSONArray jsonArray = new JSONArray(_results);
+                for (int i = 0; i < jsonArray.length(); i++){
+                    Transaction transaction = new Transaction();
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    transaction.set_id(object.getString("id"));
+                    transaction.setName(object.getString("name"));
+                    transaction.setType(object.getString("type"));
+                    transaction.setValue(object.getString("value"));
+                    transaction.setMemo(object.getString("memo"));
+                    if (object.getInt("expirable") == 1){
+                        transaction.setIsExpirable(true);
+                    } else {
+                        transaction.setIsExpirable(false);
+                    }
+                    transaction.setExpirationDate(new Date());
+                    if (object.getInt("repeatable") == 1){
+                        transaction.setIsRepeatable(true);
+                    } else {
+                        transaction.setIsExpirable(false);
+                    }
+                    transaction.setCoolDown(object.getInt("coolDown"));
+                    Reserve.get_transactionList().add(transaction);
+                }
             }
 
         } catch (Exception e) {
+            Log.e(TAG, "onPostExecute: " + e.getMessage());
             toastMessage = "An Error Occurred";
         }
 
