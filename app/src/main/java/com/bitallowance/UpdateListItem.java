@@ -95,7 +95,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             df.setTimeZone(tz);
             String timestamp = df.format(transaction._timeStamp);
             Log.d("Timestamp", timestamp);
-            _out.write((timestamp).getBytes());// timestamp
+            _out.write((timestamp + "\0").getBytes());// timestamp
             _out.flush();
             Log.d("Update Transaction", String.valueOf(transaction._id));
             // if the transaction doesn't have a database id (0) that means it was just created
@@ -318,10 +318,10 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.flush();
                     byte[] idBytes = new byte[4];
                     read = _in.read(idBytes);// get ID
-                    idNum = idBytes[3] & 0xFF |
-                            (idBytes[2] & 0xFF) << 8 |
-                            (idBytes[1] & 0xFF) << 16 |
-                            (idBytes[0] & 0xFF) << 24;
+                    idNum = idBytes[0] & 0xFF |
+                            (idBytes[1] & 0xFF) << 8 |
+                            (idBytes[2] & 0xFF) << 16 |
+                            (idBytes[3] & 0xFF) << 24;
                     transaction._id = Integer.toString(idNum);
                     int count = transaction._affected.size();
                     _out.write(count);// affected count
@@ -370,7 +370,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
             df.setTimeZone(tz);
             String timestamp = df.format(entity.getTimeSinceLastLoad());
             Log.d("Timestamp", timestamp);
-            _out.write((timestamp).getBytes());// timestamp
+            _out.write((timestamp + "\0").getBytes());// timestamp
             _out.flush();
             Log.d("Update Entity", String.valueOf(entity.getId()));
             // if the transaction doesn't have a database id (0) that means it was just created
@@ -444,7 +444,17 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     String email = entity.getEmail();
                     _out.write((email + "\0").getBytes());// email
                     _out.flush();
-                    read = _in.read();
+                    if (entity.getId() == 0) {
+                        byte[] idBytes = new byte[4];
+                        read = _in.read(idBytes);
+                        int id = ((idBytes[0] & 0xFF) |
+                                (idBytes[1] & 0xFF) << 8 |
+                                (idBytes[2] & 0xFF) << 16 |
+                                (idBytes[3] & 0xFF) << 24);
+                        entity.setId(id);
+                    } else {
+                        read = _in.read();
+                    }
                     break;
             }
         } catch(IOException e) {
