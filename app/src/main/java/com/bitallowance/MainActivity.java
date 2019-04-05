@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             new ServerSignIn(this, data).execute("login");
         } else {
             Login login = new Login();
-            login.SetContext(getApplicationContext());
+            login.SetContext(this);
             login.execute(password);
         }
     }
