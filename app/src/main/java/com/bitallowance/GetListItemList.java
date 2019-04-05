@@ -58,7 +58,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     }
 
-    private void setReserve(Reserve reserve) {
+    public void setReserve(Reserve reserve) {
         _reserve = reserve;
     }
 
