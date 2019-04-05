@@ -254,7 +254,7 @@ public class Transaction implements ListItem{
     @Override
     public String getCardSecondaryDetails() {
         if (_expirable)
-            return _expirationDate.toString();
+            return Reserve.dateToString(_expirationDate);
         else
             return "Does not expire";
     }
