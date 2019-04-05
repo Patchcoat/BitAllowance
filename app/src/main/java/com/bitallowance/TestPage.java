@@ -286,7 +286,7 @@ public class TestPage extends AppCompatActivity {
     }
 
     public void retrieveEntityList(View view) {
-        Reserve _reserve = new Reserve();
+        Reserve reserve = new Reserve();
 
     }
 
