@@ -280,7 +280,7 @@ public class TestPage extends AppCompatActivity {
 
     public void retrieveEntityList(View view) {
         Reserve reserve = new Reserve();
-        
+
     }
 
 

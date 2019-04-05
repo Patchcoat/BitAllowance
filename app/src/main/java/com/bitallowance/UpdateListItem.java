@@ -391,6 +391,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     Log.d("Update Entity", entity.getCashBalance().toString());
                     _out.write("_".getBytes());
                     _out.flush();
+                    read = _in.read(buffer);
                     String nameStr = new String(buffer);
                     nameStr = nameStr.substring(0, nameStr.indexOf('\0'));
                     entity.setUserName(nameStr);
