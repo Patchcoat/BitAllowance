@@ -110,9 +110,27 @@ public class ServerUpdateListItem extends AsyncTask<String, Void, Void> {
                 if (resultCode > 0) {
                     int index = Reserve.get_transactionList().indexOf(_currentItem);
 
+                    boolean isNew = false;
+                    if (Reserve.get_transactionList().get(index).get_id() == "0"){
+                        isNew = true;
+                    }
                     if (index >= 0)
                         Reserve.get_transactionList().get(index).set_id(String.valueOf(resultCode));
                     toastMessage = "Record Created";
+
+                    if (isNew){
+                        for (Entity entity : Reserve.get_entityList()) {
+                            boolean bool = Reserve.get_transactionList().get(index).getAssignments().get(entity);
+
+                            String data;
+                            if (bool) {
+                                data = "updateAssignment&entPK=" + entity.getId() + "&txnPK=" + _results + "&assigned=1";
+                            } else {
+                                data = "updateAssignment&entPK=" + entity.getId() + "&txnPK=" + _results + "&assigned=0";
+                            }
+                            new ServerUpdateAssignments(data).execute();
+                        }
+                    }
                 } else if (resultCode == 0) {
                     toastMessage = "Record Updated";
                 } else if (resultCode == -1) {

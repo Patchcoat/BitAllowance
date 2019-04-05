@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -130,6 +131,11 @@ public class TestPage extends AppCompatActivity {
      * @param view
      */
     public void generateTestData(View view){
+
+        if (Reserve.serverIsPHP){
+            Toast toast = Toast.makeText(this,"You cannot do this while the PHP server is enabled.", Toast.LENGTH_SHORT);
+            return;
+        }
 
 
         Random random = new Random();

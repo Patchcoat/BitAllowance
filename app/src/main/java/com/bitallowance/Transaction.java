@@ -53,11 +53,24 @@ public class Transaction implements ListItem{
     void setAssignments (Map<Entity, Boolean> newMap){
         _assignments = new ArrayMap<>();
         _assignments.putAll(newMap);
+
     }
     void updateAssignment (Entity entity, Boolean bool){
-        if (entity == null)
+        if (entity == null || _assignments.get(entity) == bool){
             return;
+        }
+
         _assignments.put(entity, bool);
+
+        if (Reserve.serverIsPHP && get_id() != "0") {
+            String data;
+            if (bool) {
+                data = "updateAssignment&entPK=" + entity.getId() + "&txnPK=" + this.get_id() + "&assigned=1";
+            } else {
+                data = "updateAssignment&entPK=" + entity.getId() + "&txnPK=" + this.get_id() + "&assigned=0";
+            }
+            new ServerUpdateAssignments(data).execute();
+        }
     }
 
     /**
