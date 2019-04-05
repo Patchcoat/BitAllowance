@@ -46,8 +46,11 @@ public class Entity implements ListItem {
         } else {
             cashBalance = cashBalance.subtract(amount);
         }
-
     }
+    public void setCashBalance(double balance){
+        cashBalance = new BigDecimal(balance);
+    }
+
     public int getId() {
         return  this.id;
     }
