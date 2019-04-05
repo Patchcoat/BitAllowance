@@ -337,7 +337,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write(countBytes);// affected count
                     _out.flush();
                     read = _in.read();
-                    for (int i = 0; i < 0; i++) {// loop through each affected entity
+                    for (int i = 0; i < count; i++) {// loop through each affected entity
                         int affected = transaction._affected.get(i).getId();
                         byte[] affectedidByte = new byte[] {(byte) affected,
                                 (byte) (affected >> 8),

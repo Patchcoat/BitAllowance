@@ -361,7 +361,11 @@ public class EditAddTransaction extends AppCompatActivity
         _currentTransaction.setName(txtName.getText().toString());
         _currentTransaction.setValue(txtValue.getText().toString());
         _currentTransaction.setMemo(txtDesc.getText().toString());
-
+        _currentTransaction._affected = new ArrayList<>();
+        for (ListItem item : _entityListAssigned) {
+            _currentTransaction._affected.add((Entity) item);
+        }
+        
         //Save ExpireSpinner State.
         //Expiration Date tentatively saved in onDateSet()
         //Expiration Date save locked when this object is saved in Reserve's master transaction list
