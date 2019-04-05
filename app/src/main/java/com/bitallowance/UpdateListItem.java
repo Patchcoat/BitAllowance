@@ -324,7 +324,17 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                             (idBytes[3] & 0xFF) << 24;
                     transaction._id = Integer.toString(idNum);
                     int count = transaction._affected.size();
-                    _out.write(count);// affected count
+                    Log.d("Update Transaction Cnt", String.valueOf(count));
+                    byte[] countBytes = new byte[4];
+                    countBytes = new byte[] {(byte) count,
+                            (byte) (count >> 8),
+                            (byte) (count >> 16),
+                            (byte) (count >> 24)};
+                    Log.d("Update Transaction Bits", Integer.toBinaryString(countBytes[0]));
+                    Log.d("Update Transaction Bits", Integer.toBinaryString(countBytes[1]));
+                    Log.d("Update Transaction Bits", Integer.toBinaryString(countBytes[2]));
+                    Log.d("Update Transaction Bits", Integer.toBinaryString(countBytes[3]));
+                    _out.write(countBytes);// affected count
                     _out.flush();
                     read = _in.read();
                     for (int i = 0; i < 0; i++) {// loop through each affected entity
