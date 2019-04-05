@@ -231,7 +231,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
                     (idBytes[2] & 0xFF) << 8 |
                     (idBytes[1] & 0xFF) << 16|
                     (idBytes[0] & 0xFF) << 24;
-            Log.d("Create Reserve", String.valueOf(id));
+            Log.d("Create Reserve ID", String.valueOf(id));
 
             Log.d("Create Reserve", "start closing things");
             _out.close();
