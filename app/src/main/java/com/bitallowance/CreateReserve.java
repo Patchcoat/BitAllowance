@@ -227,7 +227,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             Log.d("Create Reserve", "receiving id");
             _in.read(idBytes);
             // convert byte array to integer
-            int id = (idBytes[0] << 24 |
+            int id = ((idBytes[0] & 0xFF) << 24 |
                     (idBytes[1] & 0xFF) << 16 |
                     (idBytes[2] & 0xFF) << 8 |
                     (idBytes[3] & 0xFF));
@@ -240,7 +240,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             Log.d("Create Reserve", "closed everything");
             SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("AccountID", Integer.valueOf(id));
+            editor.putInt("AccountID", id);
             editor.apply();
             Log.d("Create Reserve", "Saved ID");
             _context = null;
