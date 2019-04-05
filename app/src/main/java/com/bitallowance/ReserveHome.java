@@ -147,7 +147,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     public void AddEntity (View view){
         Intent intent = new Intent(this, EditAddEntity.class);
         intent.putExtra("ENTITY_INDEX", -1);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -158,7 +158,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
         intent.putExtra("TRANSACTION_TYPE", ListItemType.REWARD);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -169,7 +169,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
         intent.putExtra("TRANSACTION_TYPE", ListItemType.TASK);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -180,7 +180,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         Intent intent = new Intent(this, EditAddTransaction.class);
         intent.putExtra("TRANSACTION_INDEX", -1);
         intent.putExtra("TRANSACTION_TYPE", ListItemType.FINE);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
 
@@ -430,10 +430,21 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        updateAdapter(ENTITY);
-        updateAdapter(TASK);
-        updateAdapter(REWARD);
-        updateAdapter(FINE);
+        entityList.clear();
+        entityList.addAll(Reserve.get_entityList());
+        mEntityList.notifyDataSetChanged();
+
+        taskList.clear();
+        taskList.addAll(Reserve.getListItems(TASK));
+        mTaskList.notifyDataSetChanged();
+
+        fineList.clear();
+        fineList.addAll(Reserve.getListItems(FINE));
+        mFineList.notifyDataSetChanged();
+
+        rewardList.clear();
+        rewardList.addAll(Reserve.getListItems(REWARD));
+        mRewardList.notifyDataSetChanged();
     }
 
     /**

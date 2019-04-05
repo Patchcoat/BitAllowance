@@ -35,17 +35,27 @@ public class EditAddCurrency extends AppCompatActivity {
 
 
     public void updateCurrency(View view){
-        EditText currency = (EditText)findViewById(R.id.editCurrency_txtName);
-        Spinner symbol = (Spinner)findViewById(R.id.editCurrency_spinSymbol);
+        EditText txtCurrency = (EditText)findViewById(R.id.editCurrency_txtName);
+        Spinner spinSymbol = (Spinner)findViewById(R.id.editCurrency_spinSymbol);
+
+        String currency = txtCurrency.getText().toString();
+        String symbol = spinSymbol.getSelectedItem().toString();
 
         //Stop if currency name invalid
-        if (!Reserve.setCurrencyName(currency.getText().toString())) {
+        if (!Reserve.setCurrencyName(currency)){
             Toast toast = Toast.makeText(getApplicationContext(), "Invalid Currency Name", Toast.LENGTH_SHORT);
             toast.show();
             return;
         }else {
-            Reserve.set_currencySymbol(symbol.getSelectedItem().toString());
-            finish(view);
+            Reserve.set_currencySymbol(symbol);
+
+            if (Reserve.serverIsPHP) {
+                //build the string to send to the server
+                String data = "updateSettings&resPK=" + Reserve.get_id() + "&currency=" + currency + "&symbol=" + symbol;
+                new ServerUpdateSettings(this, data).execute();
+            }
+
+            //finish(view);
         }
     }
 
