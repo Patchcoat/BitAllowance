@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -205,9 +206,10 @@ public class Login extends AsyncTask<String, Integer, Void> {
             // go to a new activity
             Intent intent = new Intent(_context, ReserveHome.class);
             _context.startActivity(intent);
-        } else {
+        } else if (_context != null) {
             // display "wrong password" or something
-
+            Toast toast = Toast.makeText(_context, "Wrong Password", Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 }
