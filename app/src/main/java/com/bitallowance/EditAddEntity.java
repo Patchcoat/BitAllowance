@@ -104,6 +104,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
         EditText name = (EditText)findViewById(R.id.editEntity_txtName);
         EditText email = (EditText)findViewById(R.id.editEntity_txtEmail);
         Button birthday = (Button)findViewById(R.id.editEntity_btnDatePicker);
+        _currentEntity.setTimeSinceLastLoad(new Date());
         if (birthday.getText().toString() == getResources().getString(R.string.editEntityBirthdayHint)){
             Toast toast = Toast.makeText(getApplicationContext(),"A birthdate is required", Toast.LENGTH_SHORT);
             toast.show();
