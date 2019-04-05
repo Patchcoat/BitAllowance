@@ -51,15 +51,9 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     private Context _context;
 
-    private Reserve _reserve;
-
     @Override
     protected void onPreExecute() {
 
-    }
-
-    private void setReserve(Reserve reserve) {
-        _reserve = reserve;
     }
 
     private Transaction getTransaction(int read) {
@@ -180,12 +174,8 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
     }
 
     private void getTransactionList() {
-        if (_reserve == null) {
-            Log.e("GetListItemList", "Reserve cannot be null. Be sure to call \"SetReserve\"");
-            return;
-        }
         try {
-            int idNum = _reserve.get_id();
+            int idNum = Reserve.get_id();
             byte[] idByte = new byte[] {(byte) idNum,
                     (byte) (idNum >> 8),
                     (byte) (idNum >> 16),
@@ -207,7 +197,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
                 transactionList.add(getTransaction(read));
                 read = _in.read(buffer);
             }
-            _reserve.setTransactionList(transactionList);
+            Reserve.setTransactionList(transactionList);
         } catch(IOException e) {
             e.printStackTrace();
         }
@@ -254,12 +244,8 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
     }
 
     private void getEntityList() {
-        if (_reserve == null) {
-            Log.e("GetListItemList", "Reserve cannot be null. Be sure to call \"SetReserve\"");
-            return;
-        }
         try {
-            int idNum = _reserve.get_id();
+            int idNum = Reserve.get_id();
             byte[] idByte = new byte[] {(byte) idNum,
                     (byte) (idNum >> 8),
                     (byte) (idNum >> 16),
@@ -281,7 +267,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
                 entityList.add(getEntity(read));
                 read = _in.read(buffer);
             }
-            _reserve.setEntityList(entityList);
+            Reserve.setEntityList(entityList);
         } catch(IOException e) {
             e.printStackTrace();
         }
