@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,12 +22,11 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
 
     private Context context;
     private String data;
-    private boolean success = false;
     private String _results;
     private static String TAG = "BADDS";
     private String host = "http://bitallowance.hybar.com";
     //assume user is logging in by default
-    private boolean isLogin = true;
+    private boolean _isLogin = true;
 
     public ServerSignIn(Context context, String data) {
         this.context = context;
@@ -44,7 +44,7 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
             } else if(params[0].equals("register")) {
                 url = new URL(this.host + "/register.php");
                 //The user is not logging in
-                isLogin = false;
+                _isLogin = false;
             } else
             {
                 Log.e(TAG, "doInBackground: Unexpected param value");
@@ -78,12 +78,8 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
                     Log.d("BADDS", "doInBackground: responseLine = " + nextLine );
                 }
 
-                if (response.equals("1"))
-                    this.success = true;
-
                 reader.close();
                 _results = response;
-
 
             }
 
@@ -97,7 +93,59 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        Toast toast = Toast.makeText(context, _results, Toast.LENGTH_SHORT);
+        int resultCode = Integer.parseInt(_results);
+        String toastMessage = "";
+
+        //Do different things depending on whether we are logging in or registering.
+        if (_isLogin) {
+            if (resultCode > 0) {
+                //Set Reserve ID = res_pk
+                Reserve.set_id(resultCode);
+                Intent intent = new Intent(context, ReserveHome.class);
+                context.startActivity(intent);
+                toastMessage = "Login Successful";
+            } else {
+                toastMessage = "Incorrect username or password";
+            }
+        } else {
+            // Handle code if we are registering a new reserve account.
+            switch (resultCode) {
+                case -1:
+                    toastMessage = "An error has occurred";
+                    break;
+                case -2:
+                    toastMessage = "That username has already been taken";
+                    break;
+                case -3:
+                    toastMessage = "That email has already been registered";
+                    break;
+                case -4:
+                    toastMessage = "Invalid Username";
+                    break;
+                case -5:
+                    toastMessage = "Invalid email";
+                    break;
+                case -6:
+                    toastMessage = "Invalid password";
+                    break;
+                case -7:
+                    toastMessage = "Invalid display name";
+                    break;
+                default:
+                    if (resultCode > 0) {
+                        Reserve.set_id(resultCode);
+                        //Defaults
+                        Reserve.setCurrencyName("Bit-Bucks");
+                        Reserve.set_currencySymbol("$");
+                        Intent intent = new Intent(context, EditAddCurrency.class);
+                        intent.putExtra("FIRST_TIME", true);
+                        context.startActivity(intent);
+                        toastMessage = "Account Created";
+                    }
+            }
+        }
+        Toast toast = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
         toast.show();
+
     }
 }

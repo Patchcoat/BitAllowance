@@ -83,7 +83,7 @@ public class EditAddTransaction extends AppCompatActivity
             _currentTransaction = new Transaction();
             _currentTransaction.setTransactionType(_transType);
             isExisting = false;
-            _currentTransaction._id = "0";
+            _currentTransaction.set_id("0");
             for (Entity entity : Reserve.get_entityList()){
                 _entityListUnassigned.add(entity);
                 _spinAddEntityOptions.add(entity.getName());
@@ -409,15 +409,28 @@ public class EditAddTransaction extends AppCompatActivity
             Reserve.updateTransaction(_currentTransaction, _transIndex);
         }
 
-        // Default DATE is NULL is present
-        if(_currentTransaction.getExpirationDate() == null) {
-            _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
+
+
+        //Save item to server
+        if (Reserve.serverIsPHP) {
+            //build the string to send to the server
+            String data = "updateTransaction&txnPK=" + _currentTransaction.get_id() + "&name=" + _currentTransaction.getName() + "&value=" + _currentTransaction.getValue().toString() +
+                          "&memo=" + _currentTransaction.getMemo() + "&type=" + _currentTransaction.getType() + "&expires=" + _currentTransaction.isExpirable() +
+                          "&expireDate=" + Reserve.dateStringSQL(_currentTransaction.getExpirationDate()) + "&repeat=" + _currentTransaction.isRepeatable() +
+                          "&cooldown=" + _currentTransaction.getCoolDown() + "&resPK=" + Reserve.get_id();
+            new ServerUpdateListItem(this, data, _currentTransaction).execute();
+        } else {
+
+            // Default DATE is NULL is present
+            if(_currentTransaction.getExpirationDate() == null) {
+                _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
+            }
+
+            _currentTransaction.update();
+
+            Toast toast = Toast.makeText(getApplicationContext(), "Record Saved.", Toast.LENGTH_SHORT);
+            toast.show();
         }
-
-        _currentTransaction.update();
-
-        Toast toast = Toast.makeText(getApplicationContext(),"Record Saved.", Toast.LENGTH_SHORT);
-        toast.show();
     }
 
     /**
