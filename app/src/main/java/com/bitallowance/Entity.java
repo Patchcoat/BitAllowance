@@ -1,5 +1,6 @@
 package com.bitallowance;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.math.BigDecimal;
@@ -216,11 +217,11 @@ public class Entity implements ListItem {
      * @throws IllegalArgumentException ListItem CANNOT be of type ENTITY
      */
     @Override
-    public boolean applyTransaction(ListItem item) {
+    public boolean applyTransaction(ListItem item, Context context) {
         if (item.getType() == ListItemType.ENTITY)
             Log.e(TAG, "applyTransaction: ListItem item type is not REWARD, FINE or TASK", new IllegalArgumentException());
         //We can use the transaction logic for this.
-        return item.applyTransaction(this);
+        return item.applyTransaction(this, context);
     }
 
     @Override

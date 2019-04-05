@@ -335,7 +335,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
                     displayDetails(selectedItem);
                     break;
                 case 1:
-                    selectedItem.applyTransaction(_currentItem);
+                    selectedItem.applyTransaction(_currentItem, this);
                     if (_itemType == ENTITY){
                         updateTextFieldsEntity();
                     } else {
