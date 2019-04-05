@@ -15,11 +15,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLogin(View view) {
-        Login login = new Login();
-        login.SetContext(getApplicationContext());
-        EditText editText = (EditText)findViewById(R.id.passwordInputMain);
-        String password = editText.getText().toString();
-        login.execute(password);
+        EditText txtPassword = findViewById(R.id.passwordInputMain);
+        EditText txtUsername = findViewById(R.id.usernameInputMain);
+        String username = txtUsername.getText().toString();
+        String password = txtPassword.getText().toString();
+
+        if (Reserve.serverIsPHP) {
+            //build the string to send to the server
+            String data = "login&username=" + username + "&password=" + password;
+            new ServerSignIn(this, data).execute("login");
+        } else {
+            Login login = new Login();
+            login.SetContext(getApplicationContext());
+            login.execute(password);
+        }
     }
 
     public void onClickCreateAccount(View view) {
