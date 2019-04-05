@@ -230,7 +230,7 @@ public class Reserve {
         Log.d(TAG, "stringToDate: DateString = " + date);
 
         Calendar calendar = new GregorianCalendar();
-       
+
         int year;
         int month;
         int day;
