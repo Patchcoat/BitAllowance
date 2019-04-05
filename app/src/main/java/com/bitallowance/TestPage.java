@@ -266,14 +266,20 @@ public class TestPage extends AppCompatActivity {
     public void receiveEntity(View view) {
         Entity _entity = new Entity();
 
+        _entity.setId(1);
+        _entity.setTimeSinceLastLoad(new Date());
+
+        _entity.update();
+    }
+
+    public void retrieveTransationList(View view) {
+        Reserve reserve = new Reserve();
+
 
     }
 
-    public void retrieveTransation(View view) {
-
-    }
-
-    public void retrieveEntity(View view) {
+    public void retrieveEntityList(View view) {
+        Reserve reserve = new Reserve();
 
     }
 
