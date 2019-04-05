@@ -112,6 +112,9 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     byte[] buffer = new byte[100];
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
+                    // String valueStr = _in.readUTF();// get value
+                    byte[] valueBytes = Arrays.copyOfRange(buffer, 0, read);
+                    // String valueStr = new String(valueBytes);
                     read = _in.read(buffer);// get value
                     String valueStr = new String(buffer);
                     valueStr = valueStr.substring(0, valueStr.indexOf('\0'));
