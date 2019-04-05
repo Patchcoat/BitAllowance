@@ -143,17 +143,39 @@ public class Transaction implements ListItem{
     public void setTransactionType(ListItemType transactionType){
         _transactionType = transactionType;
         switch (transactionType){
-            case TASK:
+            case REWARD:
             case FINE:
                 _operator = Operator.SUBTRACT;
                 break;
-            case REWARD:
+            case TASK:
                 _operator = Operator.ADD;
                 break;
             default:
                 _operator = Operator.MULTIPLY;
         }
     }
+
+    /**
+     * A special setType function that takes a string rather than a Transaction Type
+     * @param transactionType
+     */
+    public void setType (String transactionType){
+        switch (transactionType){
+            case "TASK":
+                _transactionType = ListItemType.TASK;
+                _operator = Operator.ADD;
+                break;
+            case "FINE":
+                _transactionType = ListItemType.FINE;
+                _operator = Operator.SUBTRACT;
+                break;
+            case "REWARD":
+                _transactionType = ListItemType.REWARD;
+                _operator = Operator.SUBTRACT;
+                break;
+        }
+    }
+
     public String get_id() {
         return _id;
     }
