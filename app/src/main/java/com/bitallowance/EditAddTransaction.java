@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -422,6 +423,11 @@ public class EditAddTransaction extends AppCompatActivity
             // Default DATE is NULL is present
             if(_currentTransaction.getExpirationDate() == null) {
                 _currentTransaction.setExpirationDate(new GregorianCalendar(1977, 01, 01).getTime());
+            }
+            Log.d("entityList", String.valueOf(_currentTransaction._affected.size()));
+
+            for (int i = 0; i < _currentTransaction._affected.size(); i++) {
+                Log.d("entityList", _currentTransaction._affected.get(i).getName());
             }
 
             _currentTransaction.update();
