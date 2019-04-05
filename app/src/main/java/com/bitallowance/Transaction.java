@@ -31,7 +31,7 @@ public class Transaction implements ListItem{
     boolean _linked;
     boolean _executed;
     ListItemType _transactionType;
-    List<Entity> _affected;
+    List<Entity> _affected = new ArrayList<>();
     String _name;
     private boolean _expirable;
     private Date _expirationDate;

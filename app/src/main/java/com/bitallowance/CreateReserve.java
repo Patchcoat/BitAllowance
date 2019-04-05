@@ -225,14 +225,18 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
 
             byte[] idBytes = new byte[4];
             Log.d("Create Reserve", "receiving id");
-            _in.read(idBytes, 0, 4);
+            _in.read(idBytes);
             // convert byte array to integer
-            int id = idBytes[3] & 0xFF |
-                    (idBytes[2] & 0xFF) << 8 |
-                    (idBytes[1] & 0xFF) << 16|
-                    (idBytes[0] & 0xFF) << 24;
-            Log.d("Create Reserve", String.valueOf(id));
-
+            int id = ((idBytes[0] & 0xFF) |
+                    (idBytes[1] & 0xFF) << 8 |
+                    (idBytes[2] & 0xFF) << 16 |
+                    (idBytes[3] & 0xFF) << 24);
+            Log.d("Create Reserve ID", String.valueOf(id));
+            Log.d("ID/bytes 3", Integer.toBinaryString(id));
+            Log.d("ID/byte", Integer.toBinaryString(idBytes[3]));
+            Log.d("ID/byte", Integer.toBinaryString(idBytes[2]));
+            Log.d("ID/byte", Integer.toBinaryString(idBytes[1]));
+            Log.d("ID/byte", Integer.toBinaryString(idBytes[0]));
             Log.d("Create Reserve", "start closing things");
             _out.close();
             _in.close();
@@ -240,7 +244,7 @@ public class CreateReserve extends AsyncTask<String, Integer, Void> {
             Log.d("Create Reserve", "closed everything");
             SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("AccountID", Integer.valueOf(id));
+            editor.putInt("AccountID", id);
             editor.apply();
             Log.d("Create Reserve", "Saved ID");
             _context = null;

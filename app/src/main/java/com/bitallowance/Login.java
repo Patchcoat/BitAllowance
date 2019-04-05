@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -139,7 +140,7 @@ public class Login extends AsyncTask<String, Integer, Void> {
             Log.d("Read", Integer.toString(read));
             Log.d("Login", serverPEMKey);
 
-            SharedPreferences preferences = _context.getSharedPreferences("AccountID", MODE_PRIVATE);
+            SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
             int id = preferences.getInt("AccountID", 0);
             byte[] idBytes = new byte[] {(byte) id,
                     (byte) (id >> 8),
@@ -205,9 +206,10 @@ public class Login extends AsyncTask<String, Integer, Void> {
             // go to a new activity
             Intent intent = new Intent(_context, ReserveHome.class);
             _context.startActivity(intent);
-        } else {
+        } else if (_context != null) {
             // display "wrong password" or something
-
+            Toast toast = Toast.makeText(_context, "Wrong Password", Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 }
