@@ -101,6 +101,12 @@ public class ServerSignIn extends AsyncTask<String, Void, Void> {
             if (resultCode > 0) {
                 //Set Reserve ID = res_pk
                 Reserve.set_id(resultCode);
+
+                //Load Entities
+                String data = "loadEntities&reserveID=" + resultCode;
+                new ServerLoadListItems(context, data, ListItemType.ENTITY).execute();
+
+                //Load Homepage
                 Intent intent = new Intent(context, ReserveHome.class);
                 context.startActivity(intent);
                 toastMessage = "Login Successful";
