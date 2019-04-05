@@ -40,7 +40,7 @@ public class ServerUpdateListItem extends AsyncTask<String, Void, Void> {
             if(_currentItem.getType() == ListItemType.ENTITY) {
                 url = new URL(this.host + "/updateEntity.php");
             } else {
-                url = new URL(this.host + "/login.php");
+                url = new URL(this.host + "/updateTransaction.php");
             }
 
             connection = (HttpURLConnection) url.openConnection();
@@ -85,28 +85,45 @@ public class ServerUpdateListItem extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        //int resultCode = Integer.parseInt(_results);
         String toastMessage = "";
-        int resultCode = Integer.parseInt(_results);
 
-        //Do different things depending on whether we are logging in or registering.
-        if (_currentItem.getType() == ListItemType.ENTITY) {
-            if (resultCode > 0) {
-                int index = Reserve.get_entityList().indexOf(_currentItem);
+        try {
 
-                if (index >= 0)
-                    Reserve.get_entityList().get(index).setId(resultCode);
-                toastMessage = "Record Created";
-            } else if (resultCode == 0) {
-                toastMessage = "Record Updated";
-            } else if (resultCode == -1) {
-                toastMessage = "Error updating record";
+            //Do different things depending on whether we are logging in or registering.
+            if (_currentItem.getType() == ListItemType.ENTITY) {
+                int resultCode = Integer.parseInt(_results);
+                if (resultCode > 0) {
+                    int index = Reserve.get_entityList().indexOf(_currentItem);
+
+                    if (index >= 0)
+                        Reserve.get_entityList().get(index).setId(resultCode);
+                    toastMessage = "Record Created";
+                } else if (resultCode == 0) {
+                    toastMessage = "Record Updated";
+                } else if (resultCode == -1) {
+                    toastMessage = "Error updating record";
+                } else {
+                    toastMessage = "Error creating record";
+                }
             } else {
-                toastMessage = "Error creating record";
+                int resultCode = Integer.parseInt(_results);
+                if (resultCode > 0) {
+                    int index = Reserve.get_transactionList().indexOf(_currentItem);
+
+                    if (index >= 0)
+                        Reserve.get_transactionList().get(index).set_id(String.valueOf(resultCode));
+                    toastMessage = "Record Created";
+                } else if (resultCode == 0) {
+                    toastMessage = "Record Updated";
+                } else if (resultCode == -1) {
+                    toastMessage = "Error updating record";
+                } else {
+                    toastMessage = "Error creating record";
+                }
             }
+        } catch (Exception e) {
+            toastMessage = "An Error Occurred";
         }
-
-
 
         Toast toast = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
         toast.show();
