@@ -193,7 +193,7 @@ public class Entity implements ListItem {
     }
     @Override
     public String getCardSecondaryDetails() {
-        return birthday.toString();
+        return Reserve.dateToString(birthday);
     }
     @Override
     public float getSortableValue(){

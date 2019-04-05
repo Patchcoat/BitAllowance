@@ -1,7 +1,9 @@
 package com.bitallowance;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -15,8 +17,20 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static android.widget.Toast.makeText;
@@ -56,10 +70,12 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reserve_home);
+
         entityList = new ArrayList();
         taskList = new ArrayList();
         rewardList = new ArrayList();
         fineList = new ArrayList();
+
 
         entityList.addAll(Reserve.getListItems(ListItemType.ENTITY));
         taskList.addAll(Reserve.getListItems(ListItemType.TASK));
@@ -93,6 +109,16 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         rewardView.setAdapter(mRewardList);
         mFineList = new ListItemRecycleViewAdapter(this, this, fineList, ListItemRecycleViewAdapter.CardType.Normal);
         fineView.setAdapter(mFineList);
+
+        if (Reserve.serverIsPHP) {
+            //Load Entities
+            String data = "loadEntities&reserveID=" + Reserve.get_id();
+            new ServerLoadListItems(this, data, ListItemType.ENTITY).execute();
+            //Load TransactionsEntities
+            data = "loadTransactions&reserveID=" + Reserve.get_id();
+            new ServerLoadListItems(this, data, ListItemType.ALL).execute();
+        }
+
     }
 
     public void openSettings(View view) {
@@ -587,5 +613,144 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private class ServerLoadListItems  extends AsyncTask<String, Void, Void> {
+
+        private Context context;
+        private String data;
+        private String _results;
+        private String host = "http://bitallowance.hybar.com";
+        //assume user is saving a Transaction by default
+        private ListItemType _type;
+
+        public ServerLoadListItems(Context context, String data, ListItemType type) {
+            this.context = context;
+            this.data = data;
+            this._type = type;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            HttpURLConnection connection = null;
+            URL url;
+            try {
+                if (_type == ListItemType.ENTITY) {
+                    url = new URL(this.host + "/loadEntities.php");
+                } else {
+                    url = new URL(this.host + "/loadTransactions.php");
+                }
+
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+
+                OutputStream output = connection.getOutputStream();
+
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+                writer.write(this.data);
+                writer.flush();
+                writer.close();
+                output.close();
+
+
+                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                    InputStream input = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+                    String nextLine;
+                    String response = "";
+
+                    while ((nextLine = reader.readLine()) != null) {
+                        response += nextLine;
+                        Log.d("BADDS", "doInBackground: responseLine = " + nextLine);
+                    }
+
+                    reader.close();
+                    _results = response;
+
+                }
+
+            } catch (Exception e) {
+                Log.d("BADDS", e.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            String toastMessage = _results;
+
+            try {
+
+                //Do different things depending on whether we are logging in or registering.
+                if (_type == ListItemType.ENTITY) {
+                    JSONArray jsonArray = new JSONArray(_results);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Entity entity = new Entity();
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        entity.setId(object.getInt("id"));
+                        entity.setUserName("");
+                        entity.setDisplayName(object.getString("displayName"));
+                        entity.setBirthday(Reserve.stringToDate(object.getString("birthday")));
+                        entity.setEmail(object.getString("email"));
+                        entity.setCashBalance(object.getDouble("cashBalance"));
+                        Reserve.get_entityList().add(entity);
+
+                        entityList.clear();
+                        entityList.addAll(Reserve.get_entityList());
+                        mEntityList.notifyDataSetChanged();
+                    }
+                } else {
+                    JSONArray jsonArray = new JSONArray(_results);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Transaction transaction = new Transaction();
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        transaction.set_id(object.getString("id"));
+                        transaction.setName(object.getString("name"));
+                        transaction.setType(object.getString("type"));
+                        transaction.setValue(object.getString("value"));
+                        transaction.setMemo(object.getString("memo"));
+                        if (object.getInt("expirable") == 1) {
+                            transaction.setIsExpirable(true);
+                        } else {
+                            transaction.setIsExpirable(false);
+                        }
+                        transaction.setExpirationDate(Reserve.stringToDate(object.getString("expireDate")));
+                        if (object.getInt("repeatable") == 1) {
+                            transaction.setIsRepeatable(true);
+                        } else {
+                            transaction.setIsExpirable(false);
+                        }
+                        transaction.setCoolDown(object.getInt("coolDown"));
+                        Reserve.get_transactionList().add(transaction);
+
+                        taskList.clear();
+                        taskList.addAll(Reserve.getListItems(TASK));
+                        mTaskList.notifyDataSetChanged();
+
+                        fineList.clear();
+                        fineList.addAll(Reserve.getListItems(FINE));
+                        mFineList.notifyDataSetChanged();
+
+                        rewardList.clear();
+                        rewardList.addAll(Reserve.getListItems(REWARD));
+                        mRewardList.notifyDataSetChanged();
+                    }
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "onPostExecute: " + e.getMessage());
+                toastMessage = "An Error Occurred";
+            }
+
+            Toast toast = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }
