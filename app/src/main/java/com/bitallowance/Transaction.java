@@ -3,6 +3,7 @@ package com.bitallowance;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.view.ViewParent;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -279,7 +280,7 @@ public class Transaction implements ListItem{
      * @throws IllegalArgumentException ListItem MUST be type ENTITY
      */
     @Override
-    public boolean applyTransaction(ListItem item) {
+    public boolean applyTransaction(ListItem item, Context context) {
         //You can't apply a transaction to another transaction.
         if(item.getType() != ListItemType.ENTITY){
             Log.e(TAG, "applyTransaction: ListItem item not of type ENTITY", new IllegalArgumentException());
@@ -305,6 +306,16 @@ public class Transaction implements ListItem{
         transactionRecord.setExpirationDate(new Date());
 
         entity.addToHistory(transactionRecord);
+
+        //Save item to server
+        if (Reserve.serverIsPHP) {
+            //build the string to send to the server
+            String data = "updateEntity&resPK=" + Reserve.get_id() + "&entPK=" + entity.getId() + "&display=" + entity.getDisplayName() +
+                    "&email=" + entity.getEmail() + "&birthday=" + Reserve.dateStringSQL(entity.getBirthday()) + "&balance=" + entity.getCashBalance().toString();
+            new ServerUpdateListItem(context, data, entity).execute();
+        } else {
+            entity.update();
+        }
 
         //Apply changes to Reserve Entity List.
         int index = Reserve.get_entityList().indexOf(item);

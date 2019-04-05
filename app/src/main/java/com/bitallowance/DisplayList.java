@@ -413,7 +413,7 @@ public class DisplayList extends AppCompatActivity implements
                 //This indicates that CANCEL was selected
                 if (position == options.size()){
                     return;
-                } else if (selectedItem.applyTransaction(options.get(position))) {
+                } else if (selectedItem.applyTransaction(options.get(position), this)) {
                     toast = makeText(this, "Transaction Applied", Toast.LENGTH_SHORT);
                     _recycleViewAdapter.notifyDataSetChanged();
                 } else {
