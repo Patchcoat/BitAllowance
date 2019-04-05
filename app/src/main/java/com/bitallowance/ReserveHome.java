@@ -112,11 +112,15 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
 
         if (Reserve.serverIsPHP) {
             //Load Entities
-            String data = "loadEntities&reserveID=" + Reserve.get_id();
-            new ServerLoadListItems(this, data, ListItemType.ENTITY).execute();
+            if (Reserve.get_entityList().size() == 0) {
+                String data = "loadEntities&reserveID=" + Reserve.get_id();
+                new ServerLoadListItems(this, data, ListItemType.ENTITY).execute();
+            }
             //Load TransactionsEntities
-            data = "loadTransactions&reserveID=" + Reserve.get_id();
-            new ServerLoadListItems(this, data, ListItemType.ALL).execute();
+            if (Reserve.get_transactionList().size() == 0) {
+                String data = "loadTransactions&reserveID=" + Reserve.get_id();
+                new ServerLoadListItems(this, data, ListItemType.ALL).execute();
+            }
         }
 
     }
@@ -583,7 +587,7 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 if (position == options.size()){
                     return;
                     //An item was selected
-                } else if (selectedItem.applyTransaction(options.get(position))) {
+                } else if (selectedItem.applyTransaction(options.get(position), this )) {
                     toastMessage ="Transaction Applied";
                     //Only Entities should visibly change after a transaction has been applied.
                     updateAdapter(ENTITY);
@@ -684,8 +688,6 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            String toastMessage = _results;
-
             try {
 
                 //Do different things depending on whether we are logging in or registering.
@@ -746,11 +748,11 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
 
             } catch (Exception e) {
                 Log.e(TAG, "onPostExecute: " + e.getMessage());
-                toastMessage = "An Error Occurred";
+                Toast toast = Toast.makeText(context, "An Error Occurred", Toast.LENGTH_SHORT);
+                toast.show();
             }
 
-            Toast toast = Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT);
-            toast.show();
+
         }
     }
 }
