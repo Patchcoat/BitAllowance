@@ -140,7 +140,7 @@ public class Login extends AsyncTask<String, Integer, Void> {
             Log.d("Read", Integer.toString(read));
             Log.d("Login", serverPEMKey);
 
-            SharedPreferences preferences = _context.getSharedPreferences("AccountID", MODE_PRIVATE);
+            SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
             int id = preferences.getInt("AccountID", 0);
             byte[] idBytes = new byte[] {(byte) id,
                     (byte) (id >> 8),
