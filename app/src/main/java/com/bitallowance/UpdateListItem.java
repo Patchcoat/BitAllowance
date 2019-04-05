@@ -113,7 +113,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     _out.write("_".getBytes()); // this line and the next one say "I'm ready"
                     _out.flush();
                     String valueStr = _in.readUTF();// get value
-                    // byte[] valueBytes = Arrays.copyOfRange(buffer, 0, read);
+                    byte[] valueBytes = Arrays.copyOfRange(buffer, 0, read);
                     // String valueStr = new String(valueBytes);
                     transaction._value = new BigDecimal(valueStr);
                     Log.e("Update TRANS", transaction._value.toString());
