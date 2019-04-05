@@ -205,7 +205,6 @@ public class Reserve {
         if (date == null) {
             return "0000-00-00";
         }
-        Log.d(TAG, "dateStringSQL: DateString = " + date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date.getTime());
         int year = calendar.get(Calendar.YEAR);
@@ -227,7 +226,6 @@ public class Reserve {
      * @return formatted date string.
      */
     public static Date stringToDate(String date) {
-        Log.d(TAG, "stringToDate: DateString = " + date);
 
         Calendar calendar = new GregorianCalendar();
 
@@ -243,8 +241,6 @@ public class Reserve {
             if (year < 1900){
                 return null;
             }
-
-            Log.e(TAG, "stringToDate: Year " + year + " Month " + month + " Day " + day);
         } catch (Exception e) {
             Log.e(TAG, "stringToDate: Error: Invalid datestring format");
             return null;
