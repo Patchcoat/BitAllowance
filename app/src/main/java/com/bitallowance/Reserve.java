@@ -120,4 +120,24 @@ public class Reserve {
         return dateString;
     }
 
+    /**
+     * Takes a date object and returns a SQL formatted datestring;
+     * @return formatted date string.
+     */
+    public static String dateStringSQL (Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date.getTime());
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        String dateString = year + "-";
+        if (month < 10)
+            dateString += "0";
+        dateString += month + "-";
+        if (day < 10)
+            dateString += "0";
+        dateString += day;
+        return dateString;
+    }
+
 }
