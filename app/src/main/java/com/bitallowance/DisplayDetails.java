@@ -145,9 +145,9 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
 
         // Populates whether is repeatable
         if (transaction.isRepeatable()){
-            _textRepeatable.setText("Not-Repeatable");
-        } else {
             _textRepeatable.setText("Repeatable");
+        } else {
+            _textRepeatable.setText("Not-Repeatable");
         }
 
         // Populates Expiration Data
