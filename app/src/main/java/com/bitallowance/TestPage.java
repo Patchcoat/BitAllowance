@@ -280,9 +280,13 @@ public class TestPage extends AppCompatActivity {
 
     public void retrieveTransationList(View view) {
 
+        Reserve.retrieveTransactionList();
+
+
     }
 
     public void retrieveEntityList(View view) {
+        Reserve reserve = new Reserve();
 
     }
 
