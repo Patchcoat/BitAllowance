@@ -355,7 +355,7 @@ public class DisplayList extends AppCompatActivity implements
                 toast.show();
                 return;
             }
-            
+
         } else {
             //Only add assigned transactions to the options list.
             Entity tempEntity = (Entity)item;

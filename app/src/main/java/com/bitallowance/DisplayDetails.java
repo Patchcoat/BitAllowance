@@ -162,7 +162,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         if (!transaction.isExpirable()){
             _textExpires.setText("Does Not Expire");
         } else {
-            _textExpires.setText(transaction.getExpirationDate().toString());
+            _textExpires.setText(Reserve.dateToString(transaction.getExpirationDate()));
         }
     }
 
@@ -191,7 +191,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
 
 
 
-        _textExpires.setText(entity.getBirthday().toString());
+        _textExpires.setText(Reserve.dateToString(((Entity) _currentItem).getBirthday()));
 
     }
 

@@ -149,6 +149,11 @@ public class Transaction implements ListItem{
 
     }
 
+    @Override
+    public int getItemID(){
+        return Integer.parseInt(_id);
+    }
+
     /**
      * Getters & Setters Below
      */
@@ -357,5 +362,6 @@ public class Transaction implements ListItem{
     @Override
     public void delete() {
         Reserve.get_transactionList().remove(this);
+        new ServerDropItem(this).execute();
     }
 }
