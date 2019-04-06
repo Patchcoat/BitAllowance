@@ -757,8 +757,6 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 Toast toast = Toast.makeText(context, "An Error Occurred", Toast.LENGTH_SHORT);
                 toast.show();
             }
-
-
         }
     }
 }

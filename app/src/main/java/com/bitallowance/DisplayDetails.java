@@ -124,6 +124,14 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         if (_itemType != TASK){
             lblValue.setText("Cost:");
         }
+
+        // If Not ISREPEATABLE
+        if(!transaction.isRepeatable()) {
+            _textCoolDown.setVisibility(View.INVISIBLE);
+        } else {
+            _textCoolDown.setVisibility(View.VISIBLE);
+        }
+
         // Populates the coolDown data
         switch (transaction.getCoolDown()) {
             case 0:
