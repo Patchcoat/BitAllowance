@@ -244,6 +244,14 @@ public class Entity implements ListItem {
             transaction.deleteEntity(this);
         }
         Reserve.get_entityList().remove(this);
+
+
+        new ServerDropItem(this).execute();
+    }
+
+    @Override
+    public int getItemID(){
+        return id;
     }
 
 }
