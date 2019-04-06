@@ -124,6 +124,14 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
         if (_itemType != TASK){
             lblValue.setText("Cost:");
         }
+
+        // If Not ISREPEATABLE
+        if(!transaction.isRepeatable()) {
+            _textCoolDown.setVisibility(View.INVISIBLE);
+        } else {
+            _textCoolDown.setVisibility(View.VISIBLE);
+        }
+
         // Populates the coolDown data
         switch (transaction.getCoolDown()) {
             case 0:
@@ -145,16 +153,16 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
 
         // Populates whether is repeatable
         if (transaction.isRepeatable()){
-            _textRepeatable.setText("Not-Repeatable");
-        } else {
             _textRepeatable.setText("Repeatable");
+        } else {
+            _textRepeatable.setText("Not-Repeatable");
         }
 
         // Populates Expiration Data
         if (!transaction.isExpirable()){
             _textExpires.setText("Does Not Expire");
         } else {
-            _textExpires.setText(transaction.getExpirationDate().toString());
+            _textExpires.setText(Reserve.dateToString(transaction.getExpirationDate()));
         }
     }
 
@@ -183,7 +191,7 @@ public class DisplayDetails extends AppCompatActivity implements ListItemClickLi
 
 
 
-        _textExpires.setText(entity.getBirthday().toString());
+        _textExpires.setText(Reserve.dateToString(((Entity) _currentItem).getBirthday()));
 
     }
 

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +16,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // If using PHP hide the button
+        Button testButton = (Button) findViewById(R.id.button3);
+
+        if(Reserve.serverIsPHP) {
+            testButton.setVisibility(View.INVISIBLE);
+        } else {
+            testButton.setVisibility(View.VISIBLE);
+        }
     }
 
     public void onClickLogin(View view) {

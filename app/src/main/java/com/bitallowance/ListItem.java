@@ -10,6 +10,8 @@ public interface ListItem {
     String getCardPrimaryDetails();
     String getCardSecondaryDetails();
 
+    int getItemID();
+
     float getSortableValue();
     Date getSortableDate();
 

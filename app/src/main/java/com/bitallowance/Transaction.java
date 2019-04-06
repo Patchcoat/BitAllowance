@@ -95,6 +95,7 @@ public class Transaction implements ListItem{
         if (_assignments.containsKey(entity)) {
             return _assignments.get(entity);
         } else {
+            Log.e(TAG, "isAssigned: ERROR - Not in MAP.  Entity - " + entity.getName() );
             return false;
         }
     }
@@ -147,6 +148,11 @@ public class Transaction implements ListItem{
 
     void updateOnlyUnexecute() {
 
+    }
+
+    @Override
+    public int getItemID(){
+        return Integer.parseInt(_id);
     }
 
     /**
@@ -358,5 +364,6 @@ public class Transaction implements ListItem{
     @Override
     public void delete() {
         Reserve.get_transactionList().remove(this);
+        new ServerDropItem(this).execute();
     }
 }
