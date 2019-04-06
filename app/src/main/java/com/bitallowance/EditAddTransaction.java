@@ -434,7 +434,7 @@ public class EditAddTransaction extends AppCompatActivity
                 Log.d("entityList", _currentTransaction._affected.get(i).getName());
             }
 
-            _currentTransaction.update();
+            _currentTransaction.update(this);
 
             Toast toast = Toast.makeText(getApplicationContext(), "Record Saved.", Toast.LENGTH_SHORT);
             toast.show();

@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -31,6 +32,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import android.os.AsyncTask;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class GetListItemList extends AsyncTask<String, Integer, Void> {
     // the socket is the connection to the server
     private Socket _socket;
@@ -51,6 +54,10 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     private Context _context;
 
+    protected void setContext(Context context) {
+        _context = context;
+    }
+
     @Override
     protected void onPreExecute() {
 
@@ -69,7 +76,8 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             transaction._id = Integer.toString(idInt);
             _out.write("_".getBytes());
             read = _in.read(buffer);// get value
-            String valueStr = buffer.toString();
+            String valueStr = new String(buffer);
+            valueStr = valueStr.substring(0, valueStr.indexOf('\0'));
             transaction._value = new BigDecimal(valueStr);
             _out.write("_".getBytes());
             _out.flush();
@@ -134,11 +142,13 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             transaction.setIsExpirable(buffer[0] != 0);
             _out.write("_".getBytes());
             _out.flush();
-            read = _in.read(buffer);// get expiration
-            String expirationDateStr = new String(buffer);
-            transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(expirationDateStr));
-            _out.write("_".getBytes());
-            _out.flush();
+            if (transaction.isExpirable()) {
+                read = _in.read(buffer);// get expiration
+                String expirationDateStr = new String(buffer);
+                transaction.setExpirationDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(expirationDateStr));
+                _out.write("_".getBytes());
+                _out.flush();
+            }
             read = _in.read(buffer);// get cool down
             int coolDownInt = (buffer[0] << 24 |
                     (buffer[1] & 0xFF) << 16 |
@@ -151,7 +161,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             transaction.setIsRepeatable(buffer[0] != 0);
             _out.write("_".getBytes());
             _out.flush();
-            byte[] affecCntBytes = new byte[4];
+            /*byte[] affecCntBytes = new byte[4];
             read = _in.read(buffer);// get affected count
             _in.read(affecCntBytes, 0, 4);
             // convert byte array to integer
@@ -163,8 +173,8 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
                 _out.write("_".getBytes());
                 _out.flush();
                 read = _in.read(buffer);
-                /* TODO separate from the buffer into the two values, affected/and assignments */
-            }
+                /* TODO separate from the buffer into the two values, affected/and assignments
+            }*/
         } catch(IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -175,7 +185,9 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     private void getTransactionList() {
         try {
-            int idNum = Reserve.get_id();
+            SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
+            int idNum = preferences.getInt("AccountID", 0);
+            Log.d("GetListItemID", String.valueOf(idNum));
             byte[] idByte = new byte[] {(byte) idNum,
                     (byte) (idNum >> 8),
                     (byte) (idNum >> 16),
@@ -183,10 +195,10 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             _out.write(idByte); // ID
             byte[] countBytes = new byte[4];
             int read = _in.read(countBytes);
-            int count = countBytes[3] & 0xFF |
-                    (countBytes[2] & 0xFF) << 8 |
-                    (countBytes[1] & 0xFF) << 16 |
-                    (countBytes[0] & 0xFF) << 24;
+            int count = countBytes[0] & 0xFF |
+                    (countBytes[1] & 0xFF) << 8 |
+                    (countBytes[2] & 0xFF) << 16 |
+                    (countBytes[3] & 0xFF) << 24;
             if (count == 0)
                 return;
             byte[] buffer = new byte[1];
@@ -195,7 +207,9 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             List<Transaction> transactionList = new ArrayList<>();
             while (buffer[0] == "u".getBytes()[0]) {
                 transactionList.add(getTransaction(read));
+                buffer[0] = 's';
                 read = _in.read(buffer);
+                Log.d("Read Buffer", new String(buffer));
             }
             Reserve.setTransactionList(transactionList);
         } catch(IOException e) {
@@ -208,28 +222,43 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
         Entity entity = new Entity();
         try {
             _out.write("_".getBytes());
+            _out.flush();
             read = _in.read(buffer);// get id
-            int idInt = (buffer[0] << 24 |
-                    (buffer[1] & 0xFF) << 16 |
-                    (buffer[2] & 0xFF) << 8 |
-                    (buffer[3] & 0xFF));
+            int idInt = (buffer[3] << 24 |
+                    (buffer[2] & 0xFF) << 16 |
+                    (buffer[1] & 0xFF) << 8 |
+                    (buffer[0] & 0xFF));
             entity.setId(idInt);
+            Log.d("ID", String.valueOf(idInt));
             _out.write("_".getBytes());
             _out.flush();
             read = _in.read(buffer);// value
-            entity.updateBalance(new BigDecimal(new String(buffer)));
-            String usernameSrt = entity.getName();
+            String valueStr = new String(buffer);
+            valueStr = valueStr.substring(0, valueStr.indexOf('\0'));
+            Log.d("Value", valueStr);
+            entity.updateBalance(new BigDecimal(valueStr));
             _out.write("_".getBytes());
             _out.flush();
-            entity.setUserName(new String(buffer));
+            read = _in.read(buffer);
+            String userStr = new String(buffer);
+            userStr = userStr.substring(0, userStr.indexOf('\0'));
+            entity.setUserName(userStr);
+            Log.d("Username", entity.getUserName());
             _out.write("_".getBytes());
             _out.flush();
             read = _in.read(buffer);// displayName
-            entity.setDisplayName(new String(buffer));
+            String dispStr = new String(buffer);
+            dispStr = dispStr.substring(0, dispStr.indexOf('\0'));
+            entity.setUserName(userStr);
+            entity.setDisplayName(dispStr);
+            Log.d("Display", entity.getDisplayName());
             _out.write("_".getBytes());
             _out.flush();
             read = _in.read(buffer);// birthday
-            Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(new String(buffer));
+            String birthdayStr = new String(buffer);
+            birthdayStr = birthdayStr.substring(0, birthdayStr.indexOf('\0'));
+            Date birthdayDate = new SimpleDateFormat("yyyy-MM-dd").parse(birthdayStr);
+            Log.d("Birthday", birthdayStr);
             entity.setBirthday(birthdayDate);
             _out.write("_".getBytes());
             _out.flush();
@@ -245,7 +274,8 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
 
     private void getEntityList() {
         try {
-            int idNum = Reserve.get_id();
+            SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
+            int idNum = preferences.getInt("AccountID", 0);
             byte[] idByte = new byte[] {(byte) idNum,
                     (byte) (idNum >> 8),
                     (byte) (idNum >> 16),
@@ -263,9 +293,12 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             _out.write("_".getBytes());
             read = _in.read(buffer);
             List<Entity> entityList = new ArrayList<>();
+            Log.d("Buffer", new String(buffer));
             while (buffer[0] == "u".getBytes()[0]) {
                 entityList.add(getEntity(read));
+                buffer[0] = 's';
                 read = _in.read(buffer);
+                Log.d("Read Buffer", new String(buffer));
             }
             Reserve.setEntityList(entityList);
         } catch(IOException e) {
@@ -299,7 +332,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
     }
 
     private void getKeyPair(String password) {
-        if (_context == null) {
+        if (_context != null) {
             _pubKeyString = "sdf";
             return;
         }
@@ -361,7 +394,7 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
             Log.d("Read", Integer.toString(read));
             Log.d("Get List Item", serverPEMKey);
 
-            String nul = "\0";
+            Log.d("Get List Item", _pubKeyString);
             _out.write(_pubKeyString.getBytes());
             read = _in.read();
 
@@ -377,11 +410,11 @@ public class GetListItemList extends AsyncTask<String, Integer, Void> {
                 getEntityList();
             }
 
-            Log.d("Update Transaction", "start closing things");
+            Log.d("Get List Item", "start closing things");
             _out.close();
             _in.close();
             _socket.close();
-            Log.d("Update Transaction", "closed everything");
+            Log.d("Get List Item", "closed everything");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

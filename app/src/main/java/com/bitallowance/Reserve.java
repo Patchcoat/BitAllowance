@@ -1,5 +1,6 @@
 package com.bitallowance;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class Reserve {
     private static List<Transaction> _transactionList = new ArrayList<>();
     private static String _currencyName;
     private static String _currencySymbol;
-    static boolean serverIsPHP = true;
+    static boolean serverIsPHP = false;
 
     public Reserve() {
     }
@@ -253,11 +254,18 @@ public class Reserve {
     /**
      *  To retrieve transaction list from the server.
      */
-    public static void retrieveTransactionList() {
-
+    public static void retrieveTransactionList(Context context) {
         GetListItemList update = new GetListItemList();
+        update.setContext(context);
         update.execute("transaction");
-
     }
 
+    /**
+     *  To retrieve entity list from the server.
+     */
+    public static void retrieveEntityList(Context context) {
+        GetListItemList update = new GetListItemList();
+        update.setContext(context);
+        update.execute("entity");
+    }
 }

@@ -121,7 +121,7 @@ public class TestPage extends AppCompatActivity {
         transaction.setIsExpirable(false);
         transaction.setExpirationDate(new Date());
         transaction.setCoolDown(10);
-        transaction.update();
+        transaction.update(this);
     }
 
 
@@ -159,7 +159,7 @@ public class TestPage extends AppCompatActivity {
                 default:
                     entity.setEmail("");
             }
-            entity.update();
+            entity.update(this);
             Reserve.addEntity(entity);
 
             Transaction task = new Transaction();
@@ -234,9 +234,9 @@ public class TestPage extends AppCompatActivity {
             task.setAssignments(taskMap);
             reward.setAssignments(rewardMap);
             fine.setAssignments(fineMap);
-            task.update();
-            reward.update();
-            fine.update();
+            task.update(this);
+            reward.update(this);
+            fine.update(this);
 
             Reserve.addTransaction(task);
             Reserve.addTransaction(reward);
@@ -256,7 +256,7 @@ public class TestPage extends AppCompatActivity {
         _entity.setEmail("DSCOmega77@hello.out");
         _entity.setTimeSinceLastLoad(new Date());
 
-        _entity.update();
+        _entity.update(this);
     }
 
     public void receiveTransaction(View view) {
@@ -265,7 +265,7 @@ public class TestPage extends AppCompatActivity {
         _trans.set_id("7");
         _trans._timeStamp = new Date();
 
-        _trans.update();
+        _trans.update(this);
 
     }
 
@@ -275,18 +275,18 @@ public class TestPage extends AppCompatActivity {
         _entity.setId(1);
         _entity.setTimeSinceLastLoad(new Date());
 
-        _entity.update();
+        _entity.update(this);
     }
 
     public void retrieveTransationList(View view) {
 
-        Reserve.retrieveTransactionList();
+        Reserve.retrieveTransactionList(this);
 
 
     }
 
     public void retrieveEntityList(View view) {
-        Reserve reserve = new Reserve();
+        Reserve.retrieveEntityList(this);
 
     }
 
