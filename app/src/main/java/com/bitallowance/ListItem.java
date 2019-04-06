@@ -17,7 +17,7 @@ public interface ListItem {
     boolean applyTransaction(ListItem item, Context context);
     List<ListItem> getAssignmentList();
 
-    void update();
+    void update(Context context);
 
     void delete();
 }

@@ -151,7 +151,7 @@ public class EditAddEntity extends AppCompatActivity implements DatePickerFragme
             Log.d("CreateEntity", Reserve.dateToString(_currentEntity.getBirthday()));
             Log.d("CreateEntity", _currentEntity.getCashBalance().toString());
 
-            _currentEntity.update();
+            _currentEntity.update(this);
         }
     }
 
