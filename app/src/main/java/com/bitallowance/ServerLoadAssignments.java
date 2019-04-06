@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static com.bitallowance.ListItemType.FINE;
@@ -87,10 +89,16 @@ public class ServerLoadAssignments  extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
+        int timeKeeper = -1;
+
         try {
             JSONArray jsonArray = new JSONArray(_results);
             Map<Entity, Boolean> newMap = new ArrayMap<>();
+            List<Entity> entityList = Reserve.get_entityList();
+            Collections.sort(entityList, new SortByID());
+            int j = 0;
             for (int i = 0; i < jsonArray.length(); i++) {
+                timeKeeper = i;
                 JSONObject object = jsonArray.getJSONObject(i);
                 Boolean bool;
                 if (object.getInt("assigned") == 1) {
@@ -99,14 +107,18 @@ public class ServerLoadAssignments  extends AsyncTask<String, Void, Void> {
                     bool = false;
                 }
 
-                if (Reserve.get_entityList().get(i).getId() == object.getInt("ent_fk")) {
-                    newMap.put(Reserve.get_entityList().get(i), bool);
+                if (entityList.get(j).getId() == object.getInt("ent_fk")) {
+                    newMap.put(entityList.get(j), bool);
+                    j++;
+                } else {
+                    Log.e(TAG, "onPostExecute: LocalEntID:" + entityList.get(i).getId() + "   DbEntID:" + object.getInt("ent_fk") + "   Txn:" + _item.getName());
+                    Log.e(TAG, "onPostExecute: LocalEntID:" + object.toString());
                 }
             }
             Reserve.get_transactionList().get(Reserve.get_transactionList().indexOf(_item)).setAssignments(newMap);
 
         } catch (Exception e) {
-            Log.e(TAG, "onPostExecute: " + e.getMessage());
+            Log.e(TAG, "onPostExecute: " + timeKeeper+ "  *  " + e.getMessage());
         }
 
 

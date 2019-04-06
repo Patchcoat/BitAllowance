@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 public class EditAddCurrency extends AppCompatActivity {
 
+    private Boolean isFirstLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
