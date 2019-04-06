@@ -250,4 +250,14 @@ public class Reserve {
         return new Date(calendar.getTimeInMillis());
     }
 
+    /**
+     *  To retrieve transaction list from the server.
+     */
+    public static void retrieveTransactionList() {
+
+        GetListItemList update = new GetListItemList();
+        update.execute("transaction");
+
+    }
+
 }
