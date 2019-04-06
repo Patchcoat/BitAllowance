@@ -520,12 +520,12 @@ public class ReserveHome extends AppCompatActivity implements ListItemClickListe
                 if (tempTransaction.isAssigned(entity)) {
                     options.add(entity.getName());
                 }
-                //Make sure the number of options is greater than 0
-                if(options.size() == 0){
-                    Toast toast = makeText(this, "Uh-oh. There is no-one assigned to that transaction.", Toast.LENGTH_SHORT);
-                    toast.show();
-                    return;
-                }
+            }
+            //Make sure the number of options is greater than 0
+            if(options.size() == 0){
+                Toast toast = makeText(this, "Uh-oh. There is no-one assigned to that transaction.", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
             }
         } else {
             //Only add assigned transactions to the options list.
