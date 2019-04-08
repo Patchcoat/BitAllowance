@@ -94,7 +94,7 @@ public class Transaction implements ListItem{
         if (_assignments.containsKey(entity)) {
             return _assignments.get(entity);
         } else {
-            Log.e(TAG, "isAssigned: ERROR - Not in MAP.  Entity - " + entity.getName() );
+            Log.e(TAG, "isAssigned: Error. Txn " + _name +" does not contain mas assignment for - " + entity.getName() );
             return false;
         }
     }
