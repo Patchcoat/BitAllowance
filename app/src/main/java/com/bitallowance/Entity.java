@@ -232,9 +232,10 @@ public class Entity implements ListItem {
     }
 
     @Override
-    public void update() {
+    public void update(Context context) {
         UpdateListItem update = new UpdateListItem();
         update.itemToUpdate(this);
+        update.SetContext(context);
         update.execute(String.valueOf(id));
     }
 

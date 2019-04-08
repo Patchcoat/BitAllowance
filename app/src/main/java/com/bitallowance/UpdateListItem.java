@@ -1,6 +1,7 @@
 package com.bitallowance;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -41,6 +42,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     // the socket is the connection to the server
@@ -316,6 +319,15 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     byte repeatByte = (byte) (repeat ? 1 : 0);
                     _out.write(repeatByte);// repeat
                     _out.flush();
+                    read = _in.read();
+                    SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
+                    int reserveID = preferences.getInt("AccountID", 0);
+                    byte[] resIDByte = new byte[] {(byte) reserveID,
+                            (byte) (reserveID >> 8),
+                            (byte) (reserveID >> 16),
+                            (byte) (reserveID >> 24)};
+                    _out.write(resIDByte);// Reserve ID
+                    _out.flush();
                     byte[] idBytes = new byte[4];
                     read = _in.read(idBytes);// get ID
                     idNum = idBytes[0] & 0xFF |
@@ -454,6 +466,15 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
                     String email = entity.getEmail();
                     _out.write((email + "\0").getBytes());// email
                     _out.flush();
+                    read = _in.read();
+                    SharedPreferences preferences = _context.getSharedPreferences("com.bitallowance", MODE_PRIVATE);
+                    int reserveID = preferences.getInt("AccountID", 0);
+                    byte[] resIDByte = new byte[] {(byte) reserveID,
+                            (byte) (reserveID >> 8),
+                            (byte) (reserveID >> 16),
+                            (byte) (reserveID >> 24)};
+                    _out.write(resIDByte);// Reserve ID
+                    _out.flush();
                     if (entity.getId() == 0) {
                         byte[] idBytes = new byte[4];
                         read = _in.read(idBytes);
@@ -500,7 +521,7 @@ public class UpdateListItem extends AsyncTask<String, Integer, Void> {
     }
 
     private void getKeyPair(String password) {
-        if (_context == null) {
+        if (_context != null) {
             _pubKeyString = "sdf";
             return;
         }

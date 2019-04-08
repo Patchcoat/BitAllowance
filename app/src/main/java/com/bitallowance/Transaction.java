@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.ViewParent;
 
+import java.lang.invoke.ConstantCallSite;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -333,7 +334,7 @@ public class Transaction implements ListItem{
                     "&email=" + entity.getEmail() + "&birthday=" + Reserve.dateStringSQL(entity.getBirthday()) + "&balance=" + entity.getCashBalance().toString();
             new ServerUpdateListItem(context, data, entity).execute();
         } else {
-            entity.update();
+            entity.update(context);
         }
 
         //Apply changes to Reserve Entity List.
@@ -353,9 +354,10 @@ public class Transaction implements ListItem{
     }
 
     @Override
-    public void update() {
+    public void update(Context context) {
         UpdateListItem update = new UpdateListItem();
         update.itemToUpdate(this);
+        update.SetContext(context);
         update.execute(_id);
     }
 
