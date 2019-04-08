@@ -16,7 +16,7 @@ public class Reserve {
     private static List<Transaction> _transactionList = new ArrayList<>();
     private static String _currencyName;
     private static String _currencySymbol;
-    static boolean serverIsPHP = false;
+    static boolean serverIsPHP = true;
 
     public Reserve() {
     }
