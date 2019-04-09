@@ -29,7 +29,7 @@
     if ($result != null){
       $query = $db->getDB()->prepare("UPDATE reserve SET res_currencyname = :CURRENCY, res_symbol = :SYMBOL WHERE res_pk = :RESPK");
       if ($query->execute([":CURRENCY"=> $currency, ":SYMBOL"=> $symbol, ":RESPK"=>$resPK])){
-        echo "success";
+        echo "Success";
       } else {
         echo "Update Failed";
       }
